@@ -2,6 +2,7 @@
   "extends": "@reckoner/config/tsconfig",
   "include": ["src/**/*", "__tests__/**/*"],
   "compilerOptions": {
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   }
 }

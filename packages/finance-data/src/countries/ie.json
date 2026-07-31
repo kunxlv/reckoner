@@ -1,0 +1,27 @@
+{
+  "code": "ie",
+  "locale": "en-IE",
+  "currency": "EUR",
+  "currencySymbol": "€",
+  "convention": "standardMonthly",
+  "tier": 2,
+  "defaults": {
+    "price": 350000,
+    "deposit": 52500,
+    "rate": 0.039,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.90,
+    "source": "Central Bank of Ireland macro-prudential mortgage measures",
+    "sourceUrl": "https://www.centralbank.ie/financial-system/financial-stability/macro-prudential-policy/mortgage-measures",
+    "lastReviewed": "2026-07-01"
+  },
+  "ltiLimit": {
+    "value": 4.0,
+    "source": "Central Bank of Ireland — loan-to-income limit for first-time buyers",
+    "sourceUrl": "https://www.centralbank.ie/financial-system/financial-stability/macro-prudential-policy/mortgage-measures",
+    "lastReviewed": "2026-07-01"
+  }
+}

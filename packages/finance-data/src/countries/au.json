@@ -1,0 +1,21 @@
+{
+  "code": "au",
+  "locale": "en-AU",
+  "currency": "AUD",
+  "currencySymbol": "$",
+  "convention": "standardMonthly",
+  "tier": 1,
+  "defaults": {
+    "price": 750000,
+    "deposit": 150000,
+    "rate": 0.06,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.95,
+    "source": "APRA prudential standard APS 112",
+    "sourceUrl": "https://www.apra.gov.au/",
+    "lastReviewed": "2026-07-01"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "code": "nl",
+  "locale": "nl-NL",
+  "currency": "EUR",
+  "currencySymbol": "€",
+  "convention": "standardMonthly",
+  "tier": 2,
+  "defaults": {
+    "price": 400000,
+    "deposit": 0,
+    "rate": 0.038,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 1.0,
+    "source": "Nibud — Financieringslastnormen 2024",
+    "sourceUrl": "https://www.nibud.nl/",
+    "lastReviewed": "2026-07-01"
+  }
+}

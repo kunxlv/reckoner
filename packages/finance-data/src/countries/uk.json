@@ -1,0 +1,21 @@
+{
+  "code": "uk",
+  "locale": "en-GB",
+  "currency": "GBP",
+  "currencySymbol": "£",
+  "convention": "standardMonthly",
+  "tier": 1,
+  "defaults": {
+    "price": 300000,
+    "deposit": 60000,
+    "rate": 0.045,
+    "termYears": 25,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.95,
+    "source": "FCA mortgage lending rules",
+    "sourceUrl": "https://www.fca.org.uk/consumers/mortgages",
+    "lastReviewed": "2026-07-01"
+  }
+}

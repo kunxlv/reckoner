@@ -1,0 +1,21 @@
+{
+  "code": "nz",
+  "locale": "en-NZ",
+  "currency": "NZD",
+  "currencySymbol": "$",
+  "convention": "standardMonthly",
+  "tier": 2,
+  "defaults": {
+    "price": 750000,
+    "deposit": 150000,
+    "rate": 0.062,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.80,
+    "source": "Reserve Bank of New Zealand LVR restrictions",
+    "sourceUrl": "https://www.rbnz.govt.nz/financial-stability/macro-financial/loan-to-value-ratio-restrictions",
+    "lastReviewed": "2026-07-01"
+  }
+}

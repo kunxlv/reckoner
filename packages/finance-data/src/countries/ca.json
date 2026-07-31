@@ -1,0 +1,22 @@
+{
+  "code": "ca",
+  "locale": "en-CA",
+  "currency": "CAD",
+  "currencySymbol": "$",
+  "convention": "canadianSemiAnnual",
+  "tier": 1,
+  "defaults": {
+    "price": 700000,
+    "deposit": 140000,
+    "rate": 0.05,
+    "termYears": 25,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.95,
+    "source": "Office of the Superintendent of Financial Institutions (OSFI) B-20 guideline",
+    "sourceUrl": "https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/residential-mortgage-underwriting-practices-procedures",
+    "lastReviewed": "2026-07-01"
+  },
+  "subdivisions": {}
+}

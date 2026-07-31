@@ -1,0 +1,21 @@
+{
+  "code": "de",
+  "locale": "de-DE",
+  "currency": "EUR",
+  "currencySymbol": "€",
+  "convention": "standardMonthly",
+  "tier": 2,
+  "defaults": {
+    "price": 400000,
+    "deposit": 80000,
+    "rate": 0.036,
+    "termYears": 25,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.80,
+    "source": "Deutsche Bundesbank residential real estate lending standards",
+    "sourceUrl": "https://www.bundesbank.de/en/",
+    "lastReviewed": "2026-07-01"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "code": "sg",
+  "locale": "en-SG",
+  "currency": "SGD",
+  "currencySymbol": "S$",
+  "convention": "standardMonthly",
+  "tier": 3,
+  "defaults": {
+    "price": 1200000,
+    "deposit": 240000,
+    "rate": 0.038,
+    "termYears": 25,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.75,
+    "source": "Monetary Authority of Singapore — LTV limits for residential property",
+    "sourceUrl": "https://www.mas.gov.sg/regulation/explainers/housing-loan-measures",
+    "lastReviewed": "2026-07-01"
+  }
+}

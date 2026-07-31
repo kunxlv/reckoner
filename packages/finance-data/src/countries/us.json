@@ -1,0 +1,28 @@
+{
+  "code": "us",
+  "locale": "en-US",
+  "currency": "USD",
+  "currencySymbol": "$",
+  "convention": "standardMonthly",
+  "tier": 1,
+  "defaults": {
+    "price": 400000,
+    "deposit": 80000,
+    "rate": 0.065,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "propertyTax": {
+    "value": 1.1,
+    "source": "Tax Foundation, Average Effective Property Tax Rate by State 2024",
+    "sourceUrl": "https://taxfoundation.org/data/all/state/property-taxes-by-state-county/",
+    "lastReviewed": "2026-07-01"
+  },
+  "ltvLimit": {
+    "value": 0.97,
+    "source": "Fannie Mae conventional loan LTV limits",
+    "sourceUrl": "https://www.fanniemae.com/",
+    "lastReviewed": "2026-07-01"
+  },
+  "subdivisions": {}
+}

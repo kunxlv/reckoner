@@ -1,0 +1,21 @@
+{
+  "code": "in",
+  "locale": "en-IN",
+  "currency": "INR",
+  "currencySymbol": "₹",
+  "convention": "standardMonthly",
+  "tier": 3,
+  "defaults": {
+    "price": 8000000,
+    "deposit": 1600000,
+    "rate": 0.085,
+    "termYears": 20,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.80,
+    "source": "Reserve Bank of India — LTV ratio for individual housing loans",
+    "sourceUrl": "https://www.rbi.org.in/",
+    "lastReviewed": "2026-07-01"
+  }
+}

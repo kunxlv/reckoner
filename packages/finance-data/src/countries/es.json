@@ -1,0 +1,21 @@
+{
+  "code": "es",
+  "locale": "es-ES",
+  "currency": "EUR",
+  "currencySymbol": "€",
+  "convention": "standardMonthly",
+  "tier": 3,
+  "defaults": {
+    "price": 300000,
+    "deposit": 60000,
+    "rate": 0.038,
+    "termYears": 30,
+    "periodsPerYear": 12
+  },
+  "ltvLimit": {
+    "value": 0.80,
+    "source": "Banco de España — resident buyer LTV limit",
+    "sourceUrl": "https://www.bde.es/",
+    "lastReviewed": "2026-07-01"
+  }
+}
