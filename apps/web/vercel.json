@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd ../.. && pnpm turbo build --filter=@reckoner/web...",
+  "installCommand": "cd ../.. && pnpm install"
+}
