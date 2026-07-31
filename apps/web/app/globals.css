@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surface */
+  --color-canvas: #ffffff;
+  --color-canvas-inverse: #000000;
+  --color-surface-mute: #2f2f2f;
+
+  /* Ink */
+  --color-ink: #000000;
+  --color-ink-deep: #2f2f2f;
+  --color-ink-mid: #5a5a5a;
+  --color-ink-mute: #898989;
+
+  /* Data / brand */
+  --color-principal: #0f7a4d;
+  --color-interest: #c2321f;
+  --color-scenario: #e0a92a;
+  --color-principal-soft: #e8f5ee;
+  --color-interest-soft: #fbeceb;
+  --color-scenario-soft: #f8f1e0;
+
+  /* Semantic */
+  --color-positive: #0f7a4d;
+  --color-negative: #c2321f;
+  --color-focus: #0072f0;
+  --color-hairline: #dddddd;
+  --color-hairline-strong: #000000;
+
+  /* Radius — 0 everywhere except pills */
+  --radius: 0;
+  --radius-pill: 100px;
+
+  /* Font families */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* Motion */
+  --ease-brand: cubic-bezier(0.2, 0, 0, 1);
+  --duration-fast: 160ms;
+  --duration-base: 220ms;
+  --duration-slow: 400ms;
+}
+
+*,
+*::before,
+*::after {
+  font-variant-numeric: tabular-nums lining-nums slashed-zero;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-sans);
+}
+
+a {
+  color: #0072f0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: #000000;
+}
+
+:focus-visible {
+  outline: 2px solid #0072f0;
+  outline-offset: 2px;
+}

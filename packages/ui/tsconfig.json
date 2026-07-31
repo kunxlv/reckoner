@@ -1,0 +1,7 @@
+{
+  "extends": "@reckoner/config/tsconfig",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
