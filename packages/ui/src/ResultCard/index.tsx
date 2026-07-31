@@ -1,11 +1,11 @@
 interface ResultCardProps {
   monthlyPayment: string;      // formatted, e.g. "$2,528"
-  paymentLabel?: string;       // "Principal and interest"
+  paymentLabel?: string | undefined;       // "Principal and interest"
   totalInterest: string;
   totalPaid: string;
   payoffDate: string;          // "August 2056"
   conversionLine?: React.ReactNode;
-  overpaymentCallout?: string;
+  overpaymentCallout?: string | undefined;
   shareButton?: React.ReactNode;
 }
 

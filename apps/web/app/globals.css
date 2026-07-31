@@ -68,3 +68,23 @@ a:hover {
   outline: 2px solid #0072f0;
   outline-offset: 2px;
 }
+
+/* Skip navigation link — visible only on keyboard focus */
+.skip-nav {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  color: #000000;
+  text-decoration: none;
+  z-index: 9999;
+}
+.skip-nav:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  padding: 8px 16px;
+}

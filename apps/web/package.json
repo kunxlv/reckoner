@@ -17,7 +17,8 @@
     "@reckoner/ui": "workspace:*",
     "next": "^15",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@reckoner/config": "workspace:*",

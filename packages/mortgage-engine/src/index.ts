@@ -9,3 +9,4 @@ export type {
   MortgageConvention,
   PeriodsPerYear,
 } from './types.js';
+export { TEST_VECTORS } from '../vectors/index.js';
