@@ -146,7 +146,7 @@ export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculato
           }}
         >
           This covers principal and interest only. If you are breaking a fixed-rate term early, check your
-          lender&apos;s early repayment charge first -- it may exceed the saving.
+          lender&apos;s early repayment charge first. It may exceed the saving.
         </div>
       </div>
     </div>

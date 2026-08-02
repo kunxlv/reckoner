@@ -50,8 +50,8 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
               </h1>
               <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px', maxWidth: '72ch' }}>
                 Enter your current loan details and the new rate on offer. The calculator works out your monthly saving
-                and how many months it takes to recover the upfront refinancing costs -- your break-even point. Refinancing
-                only makes sense if you plan to stay in the property long enough to pass it.
+                and how many months it takes to recover the upfront refinancing costs. Your break-even point is when you
+                have recouped those costs through lower monthly payments. Refinancing only makes sense if you plan to stay in the property long enough to pass it.
               </p>
               <RefinanceCalculator country={country} defaultRate={defaultRate} />
 
