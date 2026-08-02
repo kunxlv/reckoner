@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "IE",
+    "provenance": {
+      "source": "Central Bank of Ireland Mortgage Measures Framework",
+      "sourceUrl": "https://www.centralbank.ie/financial-system/financial-stability/macro-prudential-policy/mortgage-measures",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "lti_ltv",
+    "params": { "ltiFtb": 4, "ltiSsb": 3.5, "ltvFtb": 0.9, "ltvSsb": 0.9, "ltvBtl": 0.7 }
+  }
+]

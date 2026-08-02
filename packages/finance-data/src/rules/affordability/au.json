@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "AU",
+    "provenance": {
+      "source": "APRA Prudential Practice Guide APG 223 — serviceability buffer reaffirmed November 2024",
+      "sourceUrl": "https://www.apra.gov.au/sites/default/files/apg_223_november_2021_0.pdf",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2021-11-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.03 }
+  }
+]

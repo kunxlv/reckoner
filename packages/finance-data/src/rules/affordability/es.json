@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "ES",
+    "provenance": {
+      "source": "Standard estimate — Bank of Spain recommends mortgage payments not exceed 30–35% of net income",
+      "sourceUrl": "https://www.bde.es/bde/en/secciones/informes/estabilidad-financiera/",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

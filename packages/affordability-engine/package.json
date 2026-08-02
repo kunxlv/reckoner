@@ -1,0 +1,21 @@
+{
+  "name": "@reckoner/affordability-engine",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reckoner/rules-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@reckoner/config": "workspace:*",
+    "@vitest/coverage-v8": "^2",
+    "typescript": "^5",
+    "vitest": "^2"
+  }
+}

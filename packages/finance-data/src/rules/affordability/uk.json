@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "GB",
+    "provenance": {
+      "source": "Bank of England FPC — lenders assess at their own stressed rate under FCA MCOB 11.6 (post FG25/4, July 2025). Rule of thumb: 4.5x income.",
+      "sourceUrl": "https://www.bankofengland.co.uk/financial-stability/macroprudential-policy/loan-to-income-ratio",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2025-07-01"
+    },
+    "method": "lti_ltv",
+    "params": { "ltiFtb": 4.5, "ltiSsb": 4.5, "ltvFtb": 0.95, "ltvSsb": 0.90, "ltvBtl": 0.75 }
+  }
+]

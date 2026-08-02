@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "IN",
+    "provenance": {
+      "source": "Standard estimate — RBI guidelines suggest EMI-to-income ratio of 40–50%; conservative buffer applied",
+      "sourceUrl": "https://www.rbi.org.in/Scripts/PublicationsView.aspx?id=12701",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

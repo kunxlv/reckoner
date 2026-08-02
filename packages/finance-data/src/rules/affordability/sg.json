@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "SG",
+    "provenance": {
+      "source": "MAS Notice 645 — Total Debt Servicing Ratio Framework",
+      "sourceUrl": "https://www.mas.gov.sg/regulation/notices/notice-645",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "tdsr_msr",
+    "params": { "tdsr": 0.55, "msr": 0.30, "rateFloor": 0.04 }
+  }
+]

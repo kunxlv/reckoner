@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "FR",
+    "provenance": {
+      "source": "Standard estimate — HCSF limits total debt service to 35% of gross income; conservative buffer applied",
+      "sourceUrl": "https://www.hcsf.fr/en/recommendations/",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

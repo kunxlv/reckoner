@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "US",
+    "provenance": {
+      "source": "Standard estimate — no single federal serviceability rule; Fannie Mae/Freddie Mac DTI guidelines vary by lender",
+      "sourceUrl": "https://www.fanniemae.com/content/guide/selling/b3/6/02.html",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

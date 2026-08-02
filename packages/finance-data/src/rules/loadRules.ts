@@ -27,8 +27,23 @@ export async function loadStampDutyRules(cc: CountryCode): Promise<TransferTaxRu
   return mod.default as TransferTaxRuleSet[];
 }
 
-// Stub — Task 4 will populate affordability JSON data files.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function loadAffordabilityRules(_cc: CountryCode): Promise<AffordabilityRuleSet[]> {
-  return [];
+const AFFORDABILITY_MAP: Record<CountryCode, () => JsonModule> = {
+  us: () => import('./affordability/us.json'),
+  uk: () => import('./affordability/uk.json'),
+  ca: () => import('./affordability/ca.json'),
+  au: () => import('./affordability/au.json'),
+  ie: () => import('./affordability/ie.json'),
+  de: () => import('./affordability/de.json'),
+  nl: () => import('./affordability/nl.json'),
+  nz: () => import('./affordability/nz.json'),
+  fr: () => import('./affordability/fr.json'),
+  es: () => import('./affordability/es.json'),
+  sg: () => import('./affordability/sg.json'),
+  in: () => import('./affordability/in.json'),
+};
+
+export async function loadAffordabilityRules(cc: CountryCode): Promise<AffordabilityRuleSet[]> {
+  const loader = AFFORDABILITY_MAP[cc];
+  const mod = await loader();
+  return mod.default as AffordabilityRuleSet[];
 }

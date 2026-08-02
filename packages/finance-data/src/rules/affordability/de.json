@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "DE",
+    "provenance": {
+      "source": "Standard estimate — German lenders apply internal affordability checks; no statutory stress test rate",
+      "sourceUrl": "https://www.bundesbank.de/en/tasks/financial-stability/macroprudential-policy/residential-real-estate",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

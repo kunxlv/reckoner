@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "NL",
+    "provenance": {
+      "source": "Standard estimate — Dutch lenders follow NHG and AFM income norms; conservative buffer applied",
+      "sourceUrl": "https://www.nibud.nl/consumenten/wat-kan-ik-lenen/",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]

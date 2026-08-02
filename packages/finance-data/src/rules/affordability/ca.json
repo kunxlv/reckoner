@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "CA",
+    "provenance": {
+      "source": "OSFI Guideline B-20 — Minimum Qualifying Rate",
+      "sourceUrl": "https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/residential-mortgage-underwriting-practices-procedures",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2021-06-01"
+    },
+    "method": "dti_stress",
+    "params": { "stressFloor": 0.0525 }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "calculator": "affordability",
+    "jurisdiction": "NZ",
+    "provenance": {
+      "source": "Standard estimate — RBNZ removed DTI restrictions Nov 2023; lenders apply internal stress tests",
+      "sourceUrl": "https://www.rbnz.govt.nz/financial-stability/macro-financial-policy",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "method": "serviceability_buffer",
+    "params": { "buffer": 0.02 }
+  }
+]
