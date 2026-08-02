@@ -1,6 +1,6 @@
 import { getAllCountries } from '@reckoner/finance-data';
-import { Header } from '../src/components/Header.js';
-import { Footer } from '../src/components/Footer.js';
+import { Header } from '../src/components/Header';
+import { Footer } from '../src/components/Footer';
 
 const FLAG_MAP: Record<string, string> = {
   us: '🇺🇸', uk: '🇬🇧', ca: '🇨🇦', au: '🇦🇺', ie: '🇮🇪',
@@ -31,7 +31,7 @@ export default function HubPage() {
             Financial calculators that use your country&apos;s actual rules
           </h1>
           <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 64px', maxWidth: '60ch', color: '#2f2f2f' }}>
-            Most calculators run one formula and change the currency symbol. Ours apply each country&apos;s real repayment conventions, current reference rates and local costs — so the number you see is the one you&apos;d actually pay.
+            Most calculators run one formula and change the currency symbol. Ours apply each country&apos;s real repayment conventions, current reference rates and local costs. The number you see is the one you&apos;d actually pay.
           </p>
 
           <h2 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 8px' }}>Choose your country</h2>

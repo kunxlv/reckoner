@@ -1,5 +1,5 @@
-import { Header } from '../../src/components/Header.js';
-import { Footer } from '../../src/components/Footer.js';
+import { Header } from '../../src/components/Header';
+import { Footer } from '../../src/components/Footer';
 import { getAllCountries } from '@reckoner/finance-data';
 
 export const metadata = { title: 'Contact | Reckoner' };

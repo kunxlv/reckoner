@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { calculate } from '../src/engine.js';
-import { canadianSemiAnnual } from '../src/conventions/canadianSemiAnnual.js';
-import { TEST_VECTORS } from '../vectors/index.js';
+import { calculate } from '../src/engine';
+import { canadianSemiAnnual } from '../src/conventions/canadianSemiAnnual';
+import { TEST_VECTORS } from '../vectors/index';
 
 describe('canadianSemiAnnual — Bank of Canada vector', () => {
   const { input, expected, tolerance } = TEST_VECTORS.ca;

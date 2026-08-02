@@ -10,11 +10,15 @@
     "deposit": 240000,
     "rate": 0.038,
     "termYears": 25,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 100000,
+    "priceMax": 10000000,
+    "priceStep": 10000,
+    "depositStep": 10000
   },
   "ltvLimit": {
     "value": 0.75,
-    "source": "Monetary Authority of Singapore — LTV limits for residential property",
+    "source": "Monetary Authority of Singapore LTV limits for residential property",
     "sourceUrl": "https://www.mas.gov.sg/regulation/explainers/housing-loan-measures",
     "lastReviewed": "2026-07-01"
   }

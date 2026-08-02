@@ -58,7 +58,7 @@ export default function CrossoverChartInner({
           />
           <Tooltip
             formatter={(v) => (typeof v === 'number' ? fmt(v) : String(v))}
-            contentStyle={{ border: '1px solid #dddddd', borderRadius: 0, boxShadow: '0 24px 64px -12px rgba(0,0,0,0.24)', fontSize: 13 }}
+            contentStyle={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, boxShadow: '0 24px 64px -12px rgba(0,0,0,0.24)', fontSize: 13, color: 'var(--color-ink)' }}
           />
           <Area
             type="monotone"
@@ -86,7 +86,7 @@ export default function CrossoverChartInner({
               stroke="#000000"
               strokeWidth={1}
               label={{
-                value: `Year ${crossoverYear} — from here you pay more principal than interest`,
+                value: `Year ${crossoverYear}: from here you pay more principal than interest`,
                 position: crossoverYear > (yearly.length / 2) ? 'insideTopLeft' : 'insideTopRight',
                 fontSize: 13,
                 fontStyle: 'italic',

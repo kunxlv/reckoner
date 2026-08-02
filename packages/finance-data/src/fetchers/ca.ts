@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 const SERIES = 'V80691335';  // Conventional mortgage - 5-year term
 const SOURCE = 'Bank of Canada — Posted conventional mortgage rates (Valet API)';

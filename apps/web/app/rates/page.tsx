@@ -1,5 +1,5 @@
-import { Header } from '../../src/components/Header.js';
-import { Footer } from '../../src/components/Footer.js';
+import { Header } from '../../src/components/Header';
+import { Footer } from '../../src/components/Footer';
 import { getAllCountries } from '@reckoner/finance-data';
 
 export const metadata = {
@@ -12,7 +12,7 @@ const RATE_SOURCES = [
   { cc: 'UK', source: 'Bank of England IADB', url: 'https://www.bankofengland.co.uk/statistics', cadence: 'Monthly', notes: '2yr fixed 75% LTV series (IUMBV42).' },
   { cc: 'CA', source: 'Bank of Canada Valet API', url: 'https://www.bankofcanada.ca/valet/', cadence: 'Weekly', notes: 'Posted conventional mortgage rates. No API key required.' },
   { cc: 'AU', source: 'Reserve Bank of Australia Table F6', url: 'https://www.rba.gov.au/statistics/tables/', cadence: 'Monthly', notes: 'Housing lending rates.' },
-  { cc: 'IE / DE / NL / FR / ES', source: 'ECB Data Portal — MIR statistics', url: 'https://data.ecb.europa.eu/data/datasets/MIR', cadence: 'Monthly', notes: 'MFI interest rates, new house purchase loans.' },
+  { cc: 'IE / DE / NL / FR / ES', source: 'ECB Data Portal: MIR statistics', url: 'https://data.ecb.europa.eu/data/datasets/MIR', cadence: 'Monthly', notes: 'MFI interest rates, new house purchase loans.' },
   { cc: 'NZ / SG / IN', source: 'Manually curated', url: '', cadence: 'Quarterly review', notes: 'Sourced from RBNZ, MAS, and RBI respectively.' },
 ];
 
@@ -24,7 +24,7 @@ export default function RatesPage() {
       <main id="main">
         <div style={{ maxWidth: 860, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', margin: '0 0 16px' }}>How we source rates</h1>
-          <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Every rate is prefilled from an official source — a central bank or national statistics body. The table below shows exactly where each comes from, how often it updates, and any usage requirements.</p>
+          <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Every rate is prefilled from an official source: a central bank or national statistics body. The table below shows exactly where each comes from, how often it updates, and any usage requirements.</p>
 
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
             <thead>

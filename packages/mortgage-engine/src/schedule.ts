@@ -1,4 +1,4 @@
-import type { AmortizationRow, LoanInput, ScheduleResult } from './types.js';
+import type { AmortizationRow, LoanInput, ScheduleResult } from './types';
 
 /**
  * Builds an amortization schedule given a pre-computed periodic rate.

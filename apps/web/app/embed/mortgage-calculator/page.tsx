@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getCountry, COUNTRY_CODES, fetchRate, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
-import { Calculator } from '../../../src/components/Calculator/index.js';
+import { Calculator } from '../../../src/components/Calculator/index';
 
 export const revalidate = 86400;
 

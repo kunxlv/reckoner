@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 // IUMBV42 = 2yr fixed 75% LTV mortgage rate (effective rate, monthly data)
 const SERIES = 'IUMBV42';

@@ -1,4 +1,4 @@
-import type { FxResult } from '../types.js';
+import type { FxResult } from '../types';
 
 // In-process cache — survives across requests in the same Node.js instance.
 // Vercel's Fluid Compute reuses instances, so this acts as a warm cache.

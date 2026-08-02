@@ -42,23 +42,36 @@ export function Header({ currentCountry, allCountries }: HeaderProps) {
     : countries[0]!;
 
   return (
-    <header style={{ height: 56, borderBottom: '1px solid #dddddd', display: 'flex', alignItems: 'center', position: 'sticky', top: 0, background: '#ffffff', zIndex: 40 }}>
-      <a href="#main" className="skip-nav">
-        Skip to calculator
-      </a>
-      <div style={{ width: '100%', maxWidth: 1160, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <header style={{
+      height: 56,
+      borderBottom: '1px solid var(--color-hairline)',
+      display: 'flex',
+      alignItems: 'center',
+      position: 'sticky',
+      top: 0,
+      background: 'var(--color-canvas)',
+      zIndex: 40,
+      transition: 'background 200ms, border-color 200ms',
+    }}>
+      <a href="#main" className="skip-nav">Skip to calculator</a>
+      <div style={{
+        width: '100%', maxWidth: 1160, margin: '0 auto', padding: '0 24px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          <Link href="/" style={{ textDecoration: 'none', color: '#000000', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>
+          <Link href="/" style={{ textDecoration: 'none', color: 'var(--color-ink)', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>
             reckoner.
           </Link>
-          <span style={{ fontSize: 14, color: '#5a5a5a', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 14, color: 'var(--color-ink-mid)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             Tools
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-              <path d="M1 1l4 4 4-4" stroke="#5a5a5a" strokeWidth="1.5" />
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </span>
         </div>
-        <CountrySelector current={current} countries={countries} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <CountrySelector current={current} countries={countries} />
+        </div>
       </div>
     </header>
   );

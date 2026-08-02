@@ -25,44 +25,44 @@ export function CurrencyToggle({ convertedAmount, targetCurrency, rateDate, rate
 
   if (convertedAmount === null) {
     return (
-      <div style={{ fontSize: 13, color: '#5a5a5a' }}>
+      <div style={{ fontSize: 13, color: 'var(--color-ink-mid)' }}>
         Conversion is unavailable right now.
       </div>
     );
   }
 
   return (
-    <div style={{ fontSize: 13, color: '#5a5a5a', position: 'relative' }}>
+    <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', position: 'relative' }}>
       <span>
-        ≈{' '}
+        {'≈ '}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           style={{
             fontSize: 13, background: 'none', border: 'none', cursor: 'pointer',
             padding: 0, display: 'inline-flex', alignItems: 'center', gap: 3,
-            borderBottom: '1px dotted #5a5a5a', color: '#5a5a5a',
+            borderBottom: '1px dotted var(--color-ink-mid)', color: 'var(--color-ink-mid)',
           }}
           aria-label="Show the payment in another currency"
           aria-expanded={open}
         >
           {convertedAmount}
           <svg width="8" height="5" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d={open ? 'M1 5l4-4 4 4' : 'M1 1l4 4 4-4'} stroke="#5a5a5a" strokeWidth="1.5" />
+            <path d={open ? 'M1 5l4-4 4 4' : 'M1 1l4 4 4-4'} stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </button>
-        {' '}· European Central Bank reference rate
+        {' · European Central Bank reference rate'}
         {rateStale ? ` from ${rateDate}. We refresh once each business day.` : `, ${rateDate}`}
       </span>
 
       {open && (
         <div style={{
           position: 'absolute', left: 0, top: 'calc(100% + 6px)',
-          background: '#ffffff', border: '1px solid #000000', borderRadius: 0,
+          background: 'var(--color-canvas)', border: '1px solid var(--color-ink)', borderRadius: 0,
           boxShadow: '0 24px 64px -12px rgba(0,0,0,0.24)',
           width: 240, padding: '8px 0', zIndex: 20,
         }}>
-          <div style={{ fontSize: 13, color: '#5a5a5a', padding: '6px 14px' }}>Also show in</div>
+          <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', padding: '6px 14px' }}>Also show in</div>
           {CURRENCIES.map((c) => (
             <button
               key={c.code}
@@ -72,14 +72,15 @@ export function CurrencyToggle({ convertedAmount, targetCurrency, rateDate, rate
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 width: '100%', fontSize: 14, padding: '9px 14px',
                 background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const,
-                outline: c.code === targetCurrency ? '1px solid #000000' : 'none',
+                color: 'var(--color-ink)',
+                outline: c.code === targetCurrency ? '1px solid var(--color-ink)' : 'none',
                 outlineOffset: -1,
               }}
             >
               <span>{c.label}</span>
               {c.code === targetCurrency && (
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8.5l3.5 3.5L13 5" stroke="#000000" strokeWidth="1.8" />
+                  <path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.8" />
                 </svg>
               )}
             </button>

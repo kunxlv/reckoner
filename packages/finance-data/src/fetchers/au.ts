@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 const CSV_URL = 'https://www.rba.gov.au/statistics/tables/xls-hist/f06hist.xls';
 // Fallback: use the most recent known rate as a constant if CSV fetch fails

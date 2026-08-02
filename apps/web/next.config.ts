@@ -1,15 +1,18 @@
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
-  typedRoutes: false,
   webpack(webpackConfig) {
-    // Allow importing .tsx files as .js (TypeScript ESM convention)
     webpackConfig.resolve = webpackConfig.resolve ?? {};
     webpackConfig.resolve.extensionAlias = {
       '.js': ['.tsx', '.ts', '.js'],
       '.jsx': ['.tsx', '.jsx'],
     };
     return webpackConfig;
+  },
+  experimental: {
+    turbo: {
+      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js'],
+    },
   },
   async headers() {
     return [

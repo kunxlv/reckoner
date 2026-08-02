@@ -1,5 +1,5 @@
-import type { LoanInput, MortgageConvention, PeriodsPerYear, ScheduleResult } from '../types.js';
-import { buildSchedule } from '../schedule.js';
+import type { LoanInput, MortgageConvention, PeriodsPerYear, ScheduleResult } from '../types';
+import { buildSchedule } from '../schedule';
 
 export const canadianSemiAnnual: MortgageConvention = {
   periodicRate(annualNominal: number, periodsPerYear: PeriodsPerYear): number {

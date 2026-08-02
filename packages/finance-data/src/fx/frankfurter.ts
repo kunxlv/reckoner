@@ -1,4 +1,4 @@
-import type { FxResult } from '../types.js';
+import type { FxResult } from '../types';
 
 const BASE_URL = 'https://api.frankfurter.dev/v1/latest';
 

@@ -3,6 +3,7 @@
 @theme {
   /* Surface */
   --color-canvas: #ffffff;
+  --color-surface: #f8f8f8;
   --color-canvas-inverse: #000000;
   --color-surface-mute: #2f2f2f;
 
@@ -11,6 +12,11 @@
   --color-ink-deep: #2f2f2f;
   --color-ink-mid: #5a5a5a;
   --color-ink-mute: #898989;
+
+  /* Hairlines */
+  --color-hairline: #dddddd;
+  --color-hairline-subtle: #eeeeee;
+  --color-hairline-strong: #000000;
 
   /* Data / brand */
   --color-principal: #0f7a4d;
@@ -24,10 +30,8 @@
   --color-positive: #0f7a4d;
   --color-negative: #c2321f;
   --color-focus: #0072f0;
-  --color-hairline: #dddddd;
-  --color-hairline-strong: #000000;
 
-  /* Radius — 0 everywhere except pills */
+  /* Radius */
   --radius: 0;
   --radius-pill: 100px;
 
@@ -42,6 +46,7 @@
   --duration-slow: 400ms;
 }
 
+/* ─── Base ───────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -50,8 +55,8 @@
 }
 
 body {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
   font-family: var(--font-sans);
 }
 
@@ -61,7 +66,7 @@ a {
   text-underline-offset: 3px;
 }
 a:hover {
-  color: #000000;
+  color: var(--color-ink);
 }
 
 :focus-visible {
@@ -69,7 +74,6 @@ a:hover {
   outline-offset: 2px;
 }
 
-/* Skip navigation link — visible only on keyboard focus */
 .skip-nav {
   position: absolute;
   left: -9999px;
@@ -77,7 +81,7 @@ a:hover {
   width: 1px;
   height: 1px;
   overflow: hidden;
-  color: #000000;
+  color: var(--color-ink);
   text-decoration: none;
   z-index: 9999;
 }

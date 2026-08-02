@@ -28,7 +28,7 @@ export function SegmentedControl<T extends string | number>({
         aria-label={label}
         style={{
           display: 'inline-flex',
-          border: '1px solid #dddddd',
+          border: '1px solid var(--color-hairline)',
           borderRadius: 0,
           padding: 3,
           gap: 2,
@@ -53,8 +53,8 @@ export function SegmentedControl<T extends string | number>({
                 fontSize: 14, fontWeight: 500,
                 padding: '7px 16px',
                 borderRadius: 0,
-                background: selected ? '#000000' : 'transparent',
-                color: selected ? '#ffffff' : '#5a5a5a',
+                background: selected ? 'var(--color-ink)' : 'transparent',
+                color: selected ? 'var(--color-canvas)' : 'var(--color-ink-mid)',
                 userSelect: 'none' as const,
                 transition: 'background 160ms cubic-bezier(0.2,0,0,1), color 160ms cubic-bezier(0.2,0,0,1)',
               }}>

@@ -8,11 +8,10 @@ interface SliderInputProps {
   max: number;
   step?: number;
   onChange: (value: number) => void;
-  prefix?: string;   // e.g. '$', '£', '€'
-  suffix?: string;   // e.g. '%', 'yr'
+  prefix?: string;
+  suffix?: string;
   helper?: React.ReactNode;
   error?: string;
-  /** Second field alongside main (for down payment % toggle) */
   secondaryField?: React.ReactNode;
   id?: string;
 }
@@ -39,7 +38,7 @@ export function SliderInput({
     onChange(Number(e.target.value));
   }
 
-  const borderColor = error ? '#c2321f' : '#dddddd';
+  const borderColor = error ? 'var(--color-negative)' : 'var(--color-hairline)';
 
   return (
     <div>
@@ -48,13 +47,13 @@ export function SliderInput({
           {label}
         </label>
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          {/* Main numeric field */}
           <span style={{
             display: 'inline-flex', alignItems: 'center',
             border: `1px solid ${borderColor}`, borderRadius: 0,
             padding: '8px 12px', minWidth: 110,
+            background: 'var(--color-canvas)',
           }}>
-            {prefix && <span style={{ color: '#5a5a5a', marginRight: 4 }}>{prefix}</span>}
+            {prefix && <span style={{ color: 'var(--color-ink-mid)', marginRight: 4 }}>{prefix}</span>}
             <input
               id={id}
               type="text"
@@ -66,32 +65,28 @@ export function SliderInput({
                 border: 'none', outline: 'none', background: 'transparent',
                 fontSize: 16, width: '100%', textAlign: 'right',
                 fontVariantNumeric: 'tabular-nums lining-nums slashed-zero',
+                color: 'var(--color-ink)',
               }}
               aria-label={label}
             />
-            {suffix && <span style={{ color: '#5a5a5a', marginLeft: 4 }}>{suffix}</span>}
+            {suffix && <span style={{ color: 'var(--color-ink-mid)', marginLeft: 4 }}>{suffix}</span>}
           </span>
           {secondaryField}
         </div>
       </div>
 
-      {/* Slider track */}
       <div style={{ position: 'relative', height: 24, display: 'flex', alignItems: 'center' }}>
-        {/* Track background */}
-        <div style={{ height: 2, width: '100%', background: '#dddddd', borderRadius: 100 }} />
-        {/* Filled portion */}
+        <div style={{ height: 2, width: '100%', background: 'var(--color-hairline)', borderRadius: 100 }} />
         <div style={{
           position: 'absolute', left: 0, height: 2,
-          width: `${pct}%`, background: '#000000', borderRadius: 100,
+          width: `${pct}%`, background: 'var(--color-ink)', borderRadius: 100,
         }} />
-        {/* Thumb (visual) */}
         <div style={{
           position: 'absolute', left: `${pct}%`,
           width: 24, height: 24, marginLeft: -12,
-          background: '#ffffff', border: '2px solid #000000', borderRadius: '100px',
+          background: 'var(--color-canvas)', border: '2px solid var(--color-ink)', borderRadius: '100px',
           boxSizing: 'border-box' as const, pointerEvents: 'none',
         }} />
-        {/* Actual range input — sits over everything, transparent */}
         <input
           type="range"
           min={min} max={max} step={step} value={value}
@@ -110,15 +105,15 @@ export function SliderInput({
       {error && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
           <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-            <circle cx="8" cy="8" r="7" fill="none" stroke="#c2321f" strokeWidth="1.5" />
-            <line x1="8" y1="4.5" x2="8" y2="9" stroke="#c2321f" strokeWidth="1.5" />
-            <circle cx="8" cy="11.5" r="1" fill="#c2321f" />
+            <circle cx="8" cy="8" r="7" fill="none" stroke="var(--color-negative)" strokeWidth="1.5" />
+            <line x1="8" y1="4.5" x2="8" y2="9" stroke="var(--color-negative)" strokeWidth="1.5" />
+            <circle cx="8" cy="11.5" r="1" fill="var(--color-negative)" />
           </svg>
-          <span style={{ fontSize: 13, color: '#c2321f' }}>{error}</span>
+          <span style={{ fontSize: 13, color: 'var(--color-negative)' }}>{error}</span>
         </div>
       )}
       {!error && helper && (
-        <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 8, lineHeight: 1.45 }}>{helper}</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8, lineHeight: 1.45 }}>{helper}</div>
       )}
     </div>
   );

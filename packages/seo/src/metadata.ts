@@ -1,20 +1,20 @@
 import type { Metadata } from 'next';
-import type { CountryCode } from './types.js';
-import { getMortgageHreflang, getCanonical } from './hreflang.js';
+import type { CountryCode } from './types';
+import { getMortgageHreflang, getCanonical } from './hreflang';
 
 const TITLES: Record<CountryCode, string> = {
   us: 'Mortgage Calculator with Amortization Schedule | Reckoner',
-  uk: 'Mortgage Calculator UK — Monthly Repayments & Overpayments | Reckoner',
-  ca: 'Canadian Mortgage Calculator — Semi-Annual Compounding | Reckoner',
+  uk: 'Mortgage Calculator UK:Monthly Repayments & Overpayments | Reckoner',
+  ca: 'Canadian Mortgage Calculator:Semi-Annual Compounding | Reckoner',
   au: 'Home Loan Repayment Calculator Australia | Reckoner',
-  ie: 'Mortgage Calculator Ireland — Repayments & LTV Limits | Reckoner',
-  de: 'Baufinanzierung Calculator — Rate, Tilgung & Restschuld | Reckoner',
-  nl: 'Dutch Mortgage Calculator — Annuïteiten vs Lineair | Reckoner',
-  nz: 'Home Loan Calculator NZ — Weekly, Fortnightly, Monthly | Reckoner',
-  fr: 'French Mortgage Calculator — Mensualité and Coût Total | Reckoner',
-  es: 'Spanish Mortgage Calculator — Resident and Non-Resident | Reckoner',
-  sg: 'Home Loan Calculator Singapore — TDSR and Monthly Instalment | Reckoner',
-  in: 'Home Loan EMI Calculator — Schedule and Prepayment Savings | Reckoner',
+  ie: 'Mortgage Calculator Ireland:Repayments & LTV Limits | Reckoner',
+  de: 'Baufinanzierung Calculator:Rate, Tilgung & Restschuld | Reckoner',
+  nl: 'Dutch Mortgage Calculator:Annuïteiten vs Lineair | Reckoner',
+  nz: 'Home Loan Calculator NZ:Weekly, Fortnightly, Monthly | Reckoner',
+  fr: 'French Mortgage Calculator:Mensualité and Coût Total | Reckoner',
+  es: 'Spanish Mortgage Calculator:Resident and Non-Resident | Reckoner',
+  sg: 'Home Loan Calculator Singapore:TDSR and Monthly Instalment | Reckoner',
+  in: 'Home Loan EMI Calculator:Schedule and Prepayment Savings | Reckoner',
 };
 
 const DESCRIPTIONS: Record<CountryCode, string> = {

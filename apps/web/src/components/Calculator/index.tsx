@@ -4,9 +4,9 @@ import { SliderInput, SegmentedControl, Disclosure, ResultCard, CurrencyToggle, 
 import type { CountryData } from '@reckoner/finance-data';
 import type { RateResult, FxResult } from '@reckoner/finance-data';
 import { track } from '@reckoner/analytics';
-import { useCalculator } from './useCalculator.js';
-import { usePermalink, decodeState } from './usePermalink.js';
-import { formatCurrency, formatDate, formatRate } from '../../lib/format.js';
+import { useCalculator } from './useCalculator';
+import { usePermalink, decodeState } from './usePermalink';
+import { formatCurrency, formatDate, formatRate } from '../../lib/format';
 
 interface CalculatorProps {
   country: CountryData;
@@ -53,13 +53,13 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
   // For result card
   const displayPayment = result
     ? formatCurrency(result.payment + (state.periodsPerYear === 12 ? monthlyAddOns : 0), country.currency, country.locale)
-    : '—';
+    : '-';
 
   const paymentLabel = monthlyAddOns > 0 ? 'Principal, interest, tax and insurance' : 'Principal and interest';
 
-  const totalInterestDisplay = result ? formatCurrency(result.totalInterest, country.currency, country.locale) : '—';
-  const totalPaidDisplay = result ? formatCurrency(result.totalPaid + (monthlyAddOns > 0 ? monthlyAddOns * result.payoffPeriod : 0), country.currency, country.locale) : '—';
-  const payoffDisplay = result ? formatDate(result.payoffDate, country.locale) : '—';
+  const totalInterestDisplay = result ? formatCurrency(result.totalInterest, country.currency, country.locale) : '-';
+  const totalPaidDisplay = result ? formatCurrency(result.totalPaid + (monthlyAddOns > 0 ? monthlyAddOns * result.payoffPeriod : 0), country.currency, country.locale) : '-';
+  const payoffDisplay = result ? formatDate(result.payoffDate, country.locale) : '-';
 
   // FX conversion
   const fxRate = fxResult?.rates?.[fxCurrency];
@@ -87,16 +87,17 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
   const depositPctField = (
     <span style={{
       display: 'inline-flex', alignItems: 'center',
-      border: '1px solid #dddddd', borderRadius: 0,
+      border: '1px solid var(--color-hairline)', borderRadius: 0,
       padding: '8px 12px', width: 64,
+      background: 'var(--color-canvas)',
     }}>
       <span style={{
         fontSize: 16, width: '100%', textAlign: 'right',
         fontVariantNumeric: 'tabular-nums',
       }}>
-        {depositPct.toFixed(0)}
+        {Math.min(100, depositPct).toFixed(0)}
       </span>
-      <span style={{ color: '#5a5a5a', marginLeft: 4 }}>%</span>
+      <span style={{ color: 'var(--color-ink-mid)', marginLeft: 4 }}>%</span>
     </span>
   );
 
@@ -126,7 +127,7 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
             type="button"
             onClick={handleCopyLink}
             style={{
-              fontSize: 13, color: '#5a5a5a', background: 'none', border: 'none',
+              fontSize: 13, color: 'var(--color-ink-mid)', background: 'none', border: 'none',
               cursor: 'pointer', padding: 0, textDecoration: 'underline',
               textUnderlineOffset: 3,
             }}
@@ -138,7 +139,7 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
 
       {/* Rate provenance */}
       {rateResult && (
-        <p style={{ fontSize: 13, color: '#5a5a5a', margin: '8px 0 0', lineHeight: 1.45 }}>
+        <p style={{ fontSize: 13, color: 'var(--color-ink-mid)', margin: '8px 0 0', lineHeight: 1.45 }}>
           Prefilled with the {rateResult.source} of <strong style={{ fontWeight: 500 }}>{formatRate(rateResult.value)}%</strong>, {rateResult.asOf}.{' '}
           Your quoted rate depends on credit score, down payment, loan type and location.
         </p>
@@ -146,15 +147,15 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
 
       {/* Inputs */}
       <div style={{
-        background: '#ffffff', border: '1px solid #dddddd', borderRadius: 0,
+        background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0,
         padding: '28px 32px', marginTop: 24, display: 'grid', gap: 26,
       }}>
         <SliderInput
           label="Home price"
           value={state.price}
-          min={50_000}
-          max={5_000_000}
-          step={5_000}
+          min={country.defaults.priceMin}
+          max={country.defaults.priceMax}
+          step={country.defaults.priceStep}
           onChange={(v) => update('price', v)}
           prefix={country.currencySymbol}
           {...(errors.price ? { error: errors.price } : {})}
@@ -164,7 +165,7 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
           value={state.deposit}
           min={0}
           max={state.price}
-          step={1_000}
+          step={country.defaults.depositStep}
           onChange={(v) => update('deposit', v)}
           prefix={country.currencySymbol}
           {...(depositHelper ? { helper: depositHelper } : {})}
@@ -208,10 +209,10 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <span>
                   <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Property tax</label>
-                  <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 2 }}>National average. Your area may differ.</div>
+                  <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>National average. Your area may differ.</div>
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #dddddd', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0 }}>
-                  <span style={{ color: '#5a5a5a' }}>{country.currencySymbol}/yr</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                  <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/yr</span>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -224,8 +225,8 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
             )}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
               <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Home insurance</label>
-              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #dddddd', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0 }}>
-                <span style={{ color: '#5a5a5a' }}>{country.currencySymbol}/yr</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/yr</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -239,10 +240,10 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <span>
                   <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>PMI</label>
-                  <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 2 }}>Drops off automatically at 78% loan-to-value.</div>
+                  <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>Drops off automatically at 78% loan-to-value.</div>
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #dddddd', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0 }}>
-                  <span style={{ color: '#5a5a5a' }}>{country.currencySymbol}/mo</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                  <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/mo</span>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -256,10 +257,10 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
               <span>
                 <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Extra monthly payment</label>
-                <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 2 }}>See what even a small amount does to your total interest.</div>
+                <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>See what even a small amount does to your total interest.</div>
               </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #dddddd', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0 }}>
-                <span style={{ color: '#5a5a5a' }}>{country.currencySymbol}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}</span>
                 <input
                   type="text"
                   inputMode="numeric"

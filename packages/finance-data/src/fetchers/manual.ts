@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 interface ManualRate {
   value: number;

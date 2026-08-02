@@ -10,7 +10,11 @@
     "deposit": 52500,
     "rate": 0.039,
     "termYears": 30,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 25000,
+    "priceMax": 2000000,
+    "priceStep": 5000,
+    "depositStep": 5000
   },
   "ltvLimit": {
     "value": 0.90,
@@ -20,7 +24,7 @@
   },
   "ltiLimit": {
     "value": 4.0,
-    "source": "Central Bank of Ireland — loan-to-income limit for first-time buyers",
+    "source": "Central Bank of Ireland loan-to-income limit for first-time buyers",
     "sourceUrl": "https://www.centralbank.ie/financial-system/financial-stability/macro-prudential-policy/mortgage-measures",
     "lastReviewed": "2026-07-01"
   }

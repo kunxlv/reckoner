@@ -1,9 +1,9 @@
-export { getMortgageHreflang, getMortgagePath, getCanonical, COUNTRY_CODES } from './hreflang.js';
-export { getMortgageMetadata } from './metadata.js';
+export { getMortgageHreflang, getMortgagePath, getCanonical, COUNTRY_CODES } from './hreflang';
+export { getMortgageMetadata } from './metadata';
 export {
   webApplicationSchema, faqSchema, breadcrumbSchema,
   organizationSchema, datasetSchema, jsonLdScript,
-} from './jsonld.js';
-export { getMortgageSitemapEntries, getStaticSitemapEntries } from './sitemap.js';
-export type { CountryCode, HreflangEntry } from './types.js';
-export type { SitemapEntry } from './sitemap.js';
+} from './jsonld';
+export { getMortgageSitemapEntries, getStaticSitemapEntries } from './sitemap';
+export type { CountryCode, HreflangEntry } from './types';
+export type { SitemapEntry } from './sitemap';

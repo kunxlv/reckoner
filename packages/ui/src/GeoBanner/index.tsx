@@ -21,8 +21,8 @@ export function GeoBanner({ detectedCountry, targetCode, targetName, targetHref,
 
   return (
     <div style={{
-      background: '#ffffff',
-      border: '1px solid #dddddd',
+      background: 'var(--color-canvas)',
+      border: '1px solid var(--color-hairline)',
       borderRadius: 0,
       padding: '12px 16px',
       marginBottom: 16,
@@ -38,7 +38,7 @@ export function GeoBanner({ detectedCountry, targetCode, targetName, targetHref,
           href={targetHref}
           style={{
             fontSize: 14, fontWeight: 500,
-            background: '#000000', color: '#ffffff',
+            background: 'var(--color-ink)', color: 'var(--color-canvas)',
             borderRadius: 0, padding: '7px 14px',
             textDecoration: 'none', whiteSpace: 'nowrap' as const,
           }}
@@ -50,10 +50,11 @@ export function GeoBanner({ detectedCountry, targetCode, targetName, targetHref,
           onClick={dismiss}
           style={{
             fontSize: 14, fontWeight: 500,
-            border: '1px solid #000000',
+            border: '1px solid var(--color-ink)',
             borderRadius: 0, padding: '7px 14px',
             background: 'none', cursor: 'pointer',
             whiteSpace: 'nowrap' as const,
+            color: 'var(--color-ink)',
           }}
         >
           Stay on US

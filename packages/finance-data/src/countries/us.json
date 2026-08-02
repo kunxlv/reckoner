@@ -10,7 +10,11 @@
     "deposit": 80000,
     "rate": 0.065,
     "termYears": 30,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 50000,
+    "priceMax": 5000000,
+    "priceStep": 5000,
+    "depositStep": 5000
   },
   "propertyTax": {
     "value": 1.1,

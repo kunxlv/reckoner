@@ -10,13 +10,13 @@ export function AdSlot({ width, height, className }: AdSlotProps) {
       className={className}
       style={{
         width, height,
-        background: '#ffffff',
-        border: '1px solid #dddddd',
+        background: 'var(--color-canvas)',
+        border: '1px solid var(--color-hairline)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
       }}
     >
-      <span style={{ fontSize: 13, color: '#898989' }}>Advertisement · {width}×{height}</span>
+      <span style={{ fontSize: 13, color: 'var(--color-ink-mid)' }}>Advertisement · {width}×{height}</span>
     </div>
   );
 }

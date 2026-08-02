@@ -4,10 +4,11 @@ import { getCountry, getAllCountries, fetchRate, fetchFxRates, COUNTRY_CODES } f
 import type { CountryCode } from '@reckoner/finance-data';
 import { getMortgageMetadata, webApplicationSchema, faqSchema, breadcrumbSchema, jsonLdScript } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
-import { Header } from '../../../src/components/Header.js';
-import { Footer } from '../../../src/components/Footer.js';
-import { Calculator } from '../../../src/components/Calculator/index.js';
-import { CrossoverChart } from '../../../src/components/CrossoverChart.js';
+import { Header } from '../../../src/components/Header';
+import { Footer } from '../../../src/components/Footer';
+import { Calculator } from '../../../src/components/Calculator/index';
+import { CrossoverChart } from '../../../src/components/CrossoverChart';
+import { TrustDisclosures } from '../../../src/components/TrustDisclosures';
 import { calculate } from '@reckoner/mortgage-engine';
 
 export const revalidate = 86400;
@@ -43,7 +44,7 @@ const ANSWER_FIRST: Record<string, string> = {
   ca: 'A $500,000 mortgage at 5.0% over 25 years costs about $2,908 a month in Canada. Canadian fixed-rate mortgages compound semi-annually rather than monthly, which is why this is slightly lower than a US-style calculator would tell you.',
   au: 'A $600,000 home loan at 6.0% over 30 years costs about $3,597 a month. Switching to fortnightly repayments cuts roughly four years off the loan and saves around $150,000 in interest.',
   ie: 'A €350,000 mortgage at 3.9% over 30 years costs about €1,651 a month, with roughly €244,000 in total interest.',
-  de: 'A €400,000 mortgage at 3.6% over 25 years costs about €1,987 a month. This edition uses the standard annuity model — the full Annuitätendarlehen calculator with Zinsbindung and Restschuld is coming.',
+  de: 'A €400,000 mortgage at 3.6% over 25 years costs about €1,987 a month. This edition uses the standard annuity model. The full Annuitätendarlehen calculator with Zinsbindung and Restschuld is coming.',
   nl: 'A €400,000 mortgage at 3.8% over 30 years costs about €1,865 a month on an annuity repayment.',
   nz: 'A $750,000 home loan at 6.2% over 30 years costs about $4,584 a month. Most New Zealand lenders offer weekly and fortnightly repayments at no extra cost.',
   fr: "A €350,000 mortgage at 3.7% over 25 years costs about €1,785 a month. Borrower's insurance (assurance emprunteur) is required in practice and adds to your total cost.",
@@ -54,10 +55,10 @@ const ANSWER_FIRST: Record<string, string> = {
 
 const LOCAL_CALLOUT: Record<string, { heading: string; body: string } | null> = {
   us: null,
-  uk: { heading: 'Remember the revert rate', body: "Most UK mortgages are fixed for two or five years, then move to the lender's standard variable rate — often several points higher. This shows your payment during the fixed period. Budget for the jump, or plan to remortgage before it lands." },
-  ca: { heading: 'Why other calculators get Canada wrong', body: 'By law, Canadian fixed-rate mortgages compound semi-annually, not in advance. Most international calculators just divide the annual rate by twelve, which overstates your payment by a few dollars a month and thousands over the term. We convert the rate properly — the formula is on our methodology page.' },
-  au: { heading: 'Fortnightly repayments do more than they look like they should', body: "Paying half your monthly amount every fortnight means 26 half-payments a year — the equivalent of thirteen monthly payments instead of twelve. That extra month goes almost entirely to principal. Switch the frequency above to see it." },
-  ie: { heading: 'Loan-to-income limits', body: 'Central Bank rules cap most borrowing at four times gross income for first-time buyers and three and a half times for others, with loan-to-value limits on top. If your figures exceed those, a lender will need an exception — which is rationed.' },
+  uk: { heading: 'Remember the revert rate', body: "Most UK mortgages are fixed for two or five years, then move to the lender's standard variable rate, often several points higher. This shows your payment during the fixed period. Budget for the jump, or plan to remortgage before it lands." },
+  ca: { heading: 'Why other calculators get Canada wrong', body: 'By law, Canadian fixed-rate mortgages compound semi-annually, not in advance. Most international calculators just divide the annual rate by twelve, which overstates your payment by a few dollars a month and thousands over the term. We convert the rate properly. The formula is on our methodology page.' },
+  au: { heading: 'Fortnightly repayments do more than they look like they should', body: "Paying half your monthly amount every fortnight means 26 half-payments a year, the equivalent of thirteen monthly payments instead of twelve. That extra month goes almost entirely to principal. Switch the frequency above to see it." },
+  ie: { heading: 'Loan-to-income limits', body: 'Central Bank rules cap most borrowing at four times gross income for first-time buyers and three and a half times for others, with loan-to-value limits on top. If your figures exceed those, a lender will need an exception, which is rationed.' },
   de: { heading: "German mortgages don't end when the fixed period does", body: "You fix your rate for a set period, usually ten or fifteen years, but the loan isn't repaid by then. What's left is your Restschuld, and you refinance it at whatever rates exist at that point. The full Zinsbindung calculator is on the way." },
   nl: { heading: 'Annuïteiten or lineair', body: 'Annuity repayments stay flat; linear repayments start higher and fall every month. Linear costs less in total interest but demands more up front.' },
   nz: { heading: 'Weekly and fortnightly repayments', body: 'Most New Zealand lenders let you repay weekly or fortnightly at no extra cost, which shortens the term without you noticing the difference month to month.' },
@@ -70,9 +71,9 @@ const LOCAL_CALLOUT: Record<string, { heading: string; body: string } | null> = 
 const FAQS = [
   { question: 'Is this free?', answer: 'Yes. No account, no email, no quote request. The site is supported by advertising.' },
   { question: 'How accurate is it?', answer: "The maths is exact for the figures you enter. We test every formula against worked examples published by the relevant central bank or regulator, and those tests are on the methodology page. What we can't know is your lender's specific fees, so treat the result as principal and interest unless you've filled in the optional fields." },
-  { question: 'Where do the interest rates come from?', answer: 'Each country page prefills a reference rate from an official source — a central bank or national statistics body — and shows the source and publication date next to the field. These are averages, not offers.' },
+  { question: 'Where do the interest rates come from?', answer: 'Each country page prefills a reference rate from an official source (a central bank or national statistics body) and shows the source and publication date next to the field. These are averages, not offers.' },
   { question: "Why is this different from my bank's calculator?", answer: 'Usually the bank is including tax and insurance, adding its own fees, or using a different compounding convention. Ours is documented on the methodology page.' },
-  { question: 'Can I use this for a property in another country?', answer: "Yes. Choose the country the property is in, not where you live — the mortgage follows the property's rules and currency." },
+  { question: 'Can I use this for a property in another country?', answer: "Yes. Choose the country the property is in, not where you live. The mortgage follows the property's rules and currency." },
   { question: 'Can I put this calculator on my own site?', answer: 'Yes, free. The embed code is at the bottom of every country page and includes a link back to us.' },
 ];
 
@@ -108,7 +109,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
   const answerFirst = ANSWER_FIRST[cc] ?? '';
 
   const jsonLdData = [
-    webApplicationSchema(cc as CountryCode, h1, `${h1} — free, no signup.`),
+    webApplicationSchema(cc as CountryCode, h1, `${h1}: free, no signup.`),
     faqSchema(FAQS),
     breadcrumbSchema([
       { name: 'Home', href: '/' },
@@ -132,7 +133,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
               </p>
 
               {country.tier > 1 && (
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#5a5a5a', border: '1px solid #dddddd', borderRadius: 100, padding: '3px 10px', marginBottom: 16 }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--color-ink-mid)', border: '1px solid var(--color-hairline)', borderRadius: 100, padding: '3px 10px', marginBottom: 16 }}>
                   Standard model
                 </div>
               )}
@@ -152,9 +153,9 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
         {/* Chart section */}
         {prefillResult && (
           <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid #dddddd', borderRadius: 0, padding: '28px 32px' }}>
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '28px 32px' }}>
               <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>Where your money goes</div>
-              <div style={{ fontSize: 13, color: '#5a5a5a', marginBottom: 16 }}>Cumulative payments over the life of the loan</div>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>Cumulative payments over the life of the loan</div>
               <CrossoverChart
                 rows={prefillResult.rows}
                 crossoverPeriod={prefillResult.crossoverPeriod}
@@ -167,23 +168,14 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
             <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
 
             {/* Trust disclosures */}
-            <div style={{ background: '#ffffff', border: '1px solid #dddddd', borderRadius: 0 }}>
-              <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 10, fontSize: 16, fontWeight: 500, borderBottom: '1px solid #dddddd' }}>
-                <svg width="10" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true"><path d="M1.5 1l5 5-5 5" stroke="#000000" strokeWidth="1.5" /></svg>
-                How this is calculated
-              </div>
-              <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 10, fontSize: 16, fontWeight: 500 }}>
-                <svg width="10" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true"><path d="M1.5 1l5 5-5 5" stroke="#000000" strokeWidth="1.5" /></svg>
-                Where the rate comes from
-              </div>
-            </div>
+            <TrustDisclosures convention={country.convention} rateResult={rateResult} />
 
             {/* Prose */}
             <div style={{ maxWidth: '72ch', padding: '48px 0 0' }}>
               {callout && (
-                <div style={{ border: '1px solid #dddddd', borderRadius: 0, padding: '16px 20px', marginBottom: 32 }}>
+                <div style={{ border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '16px 20px', marginBottom: 32 }}>
                   <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 6px' }}>{callout.heading}</h2>
-                  <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0, color: '#2f2f2f' }}>{callout.body}</p>
+                  <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0, color: 'var(--color-ink-deep)' }}>{callout.body}</p>
                 </div>
               )}
 
@@ -191,14 +183,14 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
               <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Your payment is fixed so the loan reaches zero at the end of the term. Early payments are mostly interest because interest is charged on a bigger balance. As the balance falls, more of each payment goes to principal. The chart above shows exactly where that flips for your loan.</p>
 
               <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
-              <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This is principal and interest only unless you fill in the optional fields. Your actual monthly cost will also include property tax, homeowners insurance, and — if your down payment is under 20% — private mortgage insurance. All three vary by state and lender.</p>
+              <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This is principal and interest only unless you fill in the optional fields. Your actual monthly cost will also include property tax, homeowners insurance, and private mortgage insurance if your down payment is under 20%. All three vary by state and lender.</p>
 
               <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why our number may differ from your bank&apos;s</h2>
               <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Usually one of three things: your bank is bundling tax and insurance into the figure, it&apos;s adding its own fees, or it&apos;s using a different compounding convention. Ours is published on the methodology page, with worked examples you can check.</p>
 
               <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
               {FAQS.map(({ question, answer }) => (
-                <div key={question} style={{ borderTop: '1px solid #dddddd', padding: '16px 0' }}>
+                <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
                   <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
                   <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
                 </div>
@@ -207,18 +199,18 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
               {/* Embed section */}
               <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
               <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
-              <button type="button" style={{ fontSize: 14, fontWeight: 500, background: '#000000', color: '#ffffff', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
                 Copy embed code
               </button>
 
               {/* Author box */}
-              <div style={{ background: '#ffffff', border: '1px solid #dddddd', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
                 <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
-                <p style={{ fontSize: 14, lineHeight: 1.55, color: '#5a5a5a', margin: 0 }}>
+                <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
                   The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
                   Found an error? <a href="/contact">Contact us</a>
                 </p>
-                <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import type { CountryData, CountryCode } from './types.js';
+import type { CountryData, CountryCode } from './types';
 
 // Static imports — bundler resolves at build time
 import us from './countries/us.json' with { type: 'json' };

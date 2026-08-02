@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { calculate } from '../src/engine.js';
-import { TEST_VECTORS } from '../vectors/index.js';
+import { calculate } from '../src/engine';
+import { TEST_VECTORS } from '../vectors/index';
 
 describe('standardMonthly — US vector (FRED MORTGAGE30US)', () => {
   const { input, expected, tolerance } = TEST_VECTORS.us;
@@ -26,12 +26,11 @@ describe('standardMonthly — US vector (FRED MORTGAGE30US)', () => {
     expect(Math.abs(lastRow.balance)).toBeLessThanOrEqual(0.01);
   });
 
-  it('crossoverPeriod is around year 18 (period ~216)', () => {
+  it('crossoverPeriod is at period 233 (≈ year 19.4 for 6.5% 30yr)', () => {
+    // Derivation: crossover when balance = payment / (2i)
+    // t = n − ln(2) / ln(1+i) = 360 − ln(2)/ln(1.00541667) ≈ 231.7 → period 232/233 boundary
     const result = calculate(input);
-    expect(result.crossoverPeriod).not.toBeNull();
-    // For 6.5% 30yr, crossover is around period 214-220
-    expect(result.crossoverPeriod!).toBeGreaterThan(200);
-    expect(result.crossoverPeriod!).toBeLessThan(230);
+    expect(result.crossoverPeriod).toBe(233);
   });
 });
 
@@ -54,7 +53,7 @@ describe('standardMonthly — AU vector (RBA)', () => {
 });
 
 describe('standardMonthly — fortnightly frequency (AU/NZ)', () => {
-  it('26 fortnightly payments per year saves interest vs monthly', () => {
+  it('26 fortnightly payments per year pays slightly less total interest than monthly', () => {
     const monthly = calculate({
       principal: 600_000, annualRate: 0.06, termYears: 30,
       periodsPerYear: 12, convention: 'standardMonthly',
@@ -63,7 +62,10 @@ describe('standardMonthly — fortnightly frequency (AU/NZ)', () => {
       principal: 600_000, annualRate: 0.06, termYears: 30,
       periodsPerYear: 26, convention: 'standardMonthly',
     });
+    // Both terms are 30 years so payoffPeriod is the same duration,
+    // just expressed in different units (780 fortnights vs 360 months).
+    // The annuity sets payments to clear the loan in exactly the stated term.
     expect(fortnightly.totalInterest).toBeLessThan(monthly.totalInterest);
-    expect(fortnightly.payoffPeriod).toBeLessThan(monthly.payoffPeriod);
+    expect(fortnightly.payoffPeriod / 26).toBeCloseTo(monthly.payoffPeriod / 12, 1);
   });
 });

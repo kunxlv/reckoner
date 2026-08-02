@@ -1,4 +1,4 @@
-import type { CountryCode, HreflangEntry } from './types.js';
+import type { CountryCode, HreflangEntry } from './types';
 
 const BASE = 'https://reckoner.tools';
 

@@ -1,6 +1,6 @@
-export { calculate } from './engine.js';
-export { standardMonthly } from './conventions/standardMonthly.js';
-export { canadianSemiAnnual } from './conventions/canadianSemiAnnual.js';
+export { calculate } from './engine';
+export { standardMonthly } from './conventions/standardMonthly';
+export { canadianSemiAnnual } from './conventions/canadianSemiAnnual';
 export type {
   ConventionId,
   LoanInput,
@@ -8,5 +8,5 @@ export type {
   ScheduleResult,
   MortgageConvention,
   PeriodsPerYear,
-} from './types.js';
-export { TEST_VECTORS } from '../vectors/index.js';
+} from './types';
+export { TEST_VECTORS } from '../vectors/index';

@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 const SERIES = 'MORTGAGE30US';
 const SOURCE = 'Freddie Mac Primary Mortgage Market Survey via FRED';

@@ -1,4 +1,4 @@
-import type { CountryCode } from './types.js';
+import type { CountryCode } from './types';
 
 export interface RateHealth {
   cc: CountryCode;

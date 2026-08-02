@@ -1,4 +1,4 @@
-import type { RateResult } from '../types.js';
+import type { RateResult } from '../types';
 
 // ECB MIR series: new business, house purchase, floating & up to 1yr fixation
 // Format: MIR.M.{CC}.B.A2C.AM.R.A.2250.EUR.N

@@ -10,7 +10,11 @@
     "deposit": 150000,
     "rate": 0.06,
     "termYears": 30,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 50000,
+    "priceMax": 5000000,
+    "priceStep": 5000,
+    "depositStep": 5000
   },
   "ltvLimit": {
     "value": 0.95,

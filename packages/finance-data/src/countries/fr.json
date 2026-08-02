@@ -10,11 +10,15 @@
     "deposit": 70000,
     "rate": 0.037,
     "termYears": 25,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 25000,
+    "priceMax": 2000000,
+    "priceStep": 5000,
+    "depositStep": 5000
   },
   "ltvLimit": {
     "value": 0.85,
-    "source": "Haut Conseil de Stabilité Financière (HCSF) recommendation R-HCSF-2021-1",
+    "source": "Haut Conseil de Stabilite Financiere (HCSF) recommendation R-HCSF-2021-1",
     "sourceUrl": "https://www.economie.gouv.fr/hcsf",
     "lastReviewed": "2026-07-01"
   }

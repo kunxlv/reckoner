@@ -1,6 +1,6 @@
-import type { LoanInput, ScheduleResult } from './types.js';
-import { standardMonthly } from './conventions/standardMonthly.js';
-import { canadianSemiAnnual } from './conventions/canadianSemiAnnual.js';
+import type { LoanInput, ScheduleResult } from './types';
+import { standardMonthly } from './conventions/standardMonthly';
+import { canadianSemiAnnual } from './conventions/canadianSemiAnnual';
 
 const conventions = {
   standardMonthly,

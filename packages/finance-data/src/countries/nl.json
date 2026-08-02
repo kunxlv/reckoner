@@ -10,11 +10,15 @@
     "deposit": 0,
     "rate": 0.038,
     "termYears": 30,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 25000,
+    "priceMax": 2000000,
+    "priceStep": 5000,
+    "depositStep": 5000
   },
   "ltvLimit": {
     "value": 1.0,
-    "source": "Nibud — Financieringslastnormen 2024",
+    "source": "Nibud Financieringslastnormen 2024",
     "sourceUrl": "https://www.nibud.nl/",
     "lastReviewed": "2026-07-01"
   }

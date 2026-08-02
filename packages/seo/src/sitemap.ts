@@ -1,5 +1,5 @@
-import type { CountryCode } from './types.js';
-import { getMortgagePath, COUNTRY_CODES } from './hreflang.js';
+import type { CountryCode } from './types';
+import { getMortgagePath, COUNTRY_CODES } from './hreflang';
 
 const BASE = 'https://reckoner.tools';
 

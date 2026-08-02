@@ -10,12 +10,12 @@ interface FooterProps {
   countries: CountryData[];
 }
 
-const linkStyle = { fontSize: 14, color: '#5a5a5a', textDecoration: 'none' };
+const linkStyle = { fontSize: 14, color: 'var(--color-ink-mid)', textDecoration: 'none' };
 const headingStyle = { fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, marginBottom: 12 };
 
 export function Footer({ countries }: FooterProps) {
   return (
-    <footer style={{ borderTop: '1px solid #dddddd', marginTop: 16 }}>
+    <footer style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16 }}>
       <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 48 }}>
         <div>
           <div style={headingStyle}>Calculators</div>
@@ -44,12 +44,12 @@ export function Footer({ countries }: FooterProps) {
           </div>
         </div>
       </div>
-      <div style={{ maxWidth: 1160, margin: '0 auto', borderTop: '1px solid #dddddd', padding: '20px 24px 40px' }}>
-        <p style={{ fontSize: 13, lineHeight: 1.5, color: '#5a5a5a', margin: '0 0 8px', maxWidth: '88ch' }}>
-          <strong style={{ fontWeight: 500, color: '#5a5a5a' }}>This is an information tool, not financial advice.</strong>{' '}
+      <div style={{ maxWidth: 1160, margin: '0 auto', borderTop: '1px solid var(--color-hairline)', padding: '20px 24px 40px' }}>
+        <p style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--color-ink-mid)', margin: '0 0 8px', maxWidth: '88ch' }}>
+          <strong style={{ fontWeight: 500, color: 'var(--color-ink-mid)' }}>This is an information tool, not financial advice.</strong>{' '}
           The results are estimates based on the figures you enter and on published reference rates. They don&apos;t account for your circumstances, lender fees, taxes or insurance, and they aren&apos;t an offer of credit. Reference rates are averages and change frequently. Talk to a qualified mortgage adviser or your lender before borrowing.
         </p>
-        <div style={{ fontSize: 13, color: '#5a5a5a' }}>Information tool, not financial advice. Figures are estimates.</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)' }}>Information tool, not financial advice. Figures are estimates.</div>
       </div>
     </footer>
   );

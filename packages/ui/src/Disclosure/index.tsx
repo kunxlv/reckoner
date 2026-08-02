@@ -19,7 +19,7 @@ export function Disclosure({ trigger, helper, children, onOpen }: DisclosureProp
   }
 
   return (
-    <div style={{ borderTop: '1px solid #dddddd', paddingTop: 20 }}>
+    <div style={{ borderTop: '1px solid var(--color-hairline)', paddingTop: 20 }}>
       <button
         type="button"
         onClick={toggle}
@@ -28,7 +28,7 @@ export function Disclosure({ trigger, helper, children, onOpen }: DisclosureProp
           display: 'flex', alignItems: 'center', gap: 8,
           fontSize: 16, fontWeight: 500,
           background: 'none', border: 'none', padding: 0,
-          cursor: 'pointer', color: '#000000', width: '100%', textAlign: 'left' as const,
+          cursor: 'pointer', color: 'var(--color-ink)', width: '100%', textAlign: 'left' as const,
         }}
       >
         <svg
@@ -40,12 +40,12 @@ export function Disclosure({ trigger, helper, children, onOpen }: DisclosureProp
             flexShrink: 0,
           }}
         >
-          <path d="M1.5 1l5 5-5 5" stroke="#000000" strokeWidth="1.5" />
+          <path d="M1.5 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" />
         </svg>
         {trigger}
       </button>
       {helper && (
-        <div style={{ fontSize: 13, color: '#5a5a5a', marginTop: 4, marginLeft: 18 }}>{helper}</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 4, marginLeft: 18 }}>{helper}</div>
       )}
       <div
         ref={contentRef}

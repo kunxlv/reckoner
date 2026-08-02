@@ -1,6 +1,6 @@
-import type { FxResult } from '../types.js';
-import { fetchFrankfurter, getRateFor } from './frankfurter.js';
-import { getCachedFx, setCachedFx, isFxStale } from './cache.js';
+import type { FxResult } from '../types';
+import { fetchFrankfurter, getRateFor } from './frankfurter';
+import { getCachedFx, setCachedFx, isFxStale } from './cache';
 
 export type { FxResult };
 

@@ -22,6 +22,10 @@ export interface CountryData {
     rate: number;          // decimal: 0.065
     termYears: number;
     periodsPerYear: PeriodsPerYear;
+    priceMin: number;      // slider lower bound in native currency
+    priceMax: number;      // slider upper bound in native currency
+    priceStep: number;     // slider increment for home price
+    depositStep: number;   // slider increment for deposit
   };
   propertyTax?: DataPoint;
   ltvLimit?: DataPoint;

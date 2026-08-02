@@ -1,11 +1,11 @@
-import type { RateResult } from '../types.js';
-import type { CountryCode } from '../types.js';
-import { fetchUSRate } from './us.js';
-import { fetchCARate } from './ca.js';
-import { fetchUKRate } from './uk.js';
-import { fetchAURate } from './au.js';
-import { fetchECBRate } from './ecb.js';
-import { getManualRate } from './manual.js';
+import type { RateResult } from '../types';
+import type { CountryCode } from '../types';
+import { fetchUSRate } from './us';
+import { fetchCARate } from './ca';
+import { fetchUKRate } from './uk';
+import { fetchAURate } from './au';
+import { fetchECBRate } from './ecb';
+import { getManualRate } from './manual';
 
 export async function fetchRate(cc: CountryCode): Promise<RateResult> {
   switch (cc) {

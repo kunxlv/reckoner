@@ -1,4 +1,4 @@
-import type { AnalyticsEvent } from './events.js';
+import type { AnalyticsEvent } from './events';
 
 declare global {
   interface Window {

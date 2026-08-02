@@ -22,7 +22,7 @@ export const TEST_VECTORS = {
   },
   ca: {
     description: 'Bank of Canada — $500,000 @ 5.0% × 25yr monthly (semi-annual compounding)',
-    source: 'Bank of Canada mortgage calculator methodology, Interest Act RSC 1985',
+    source: 'Interest Act RSC 1985 c I-15; FCAC calculator cross-check at $100k gives $581.60 matching this formula',
     sourceUrl: 'https://www.bankofcanada.ca/rates/banking-and-financial-statistics/posted-conventional-mortgage-rates/',
     input: {
       principal: 500_000,
@@ -32,14 +32,16 @@ export const TEST_VECTORS = {
       convention: 'canadianSemiAnnual' as const,
     },
     expected: {
-      payment: 2907.59,   // Verified against TD and RBC mortgage calculators
-      totalInterest: 372_277.00,
+      // i = (1 + 0.05/2)^(2/12) - 1 = 0.0041239154651... per month
+      // payment = 500000 × i × (1+i)^300 / ((1+i)^300 - 1) = 2908.024925
+      payment: 2908.02,
+      totalInterest: 372_407.00,
     },
     tolerance: 0.01,
   },
   uk: {
     description: 'Bank of England — £300,000 @ 4.5% × 25yr monthly (standard annuity)',
-    source: 'Bank of England mortgage repayment guidance',
+    source: 'Standard annuity formula: i = 0.045/12 = 0.00375 per month',
     sourceUrl: 'https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate',
     input: {
       principal: 300_000,
@@ -49,8 +51,9 @@ export const TEST_VECTORS = {
       convention: 'standardMonthly' as const,
     },
     expected: {
-      payment: 1667.03,
-      totalInterest: 200_109.00,
+      // i = 0.045/12 = 0.00375; payment = 300000 × i × (1+i)^300 / ((1+i)^300 - 1) = 1667.497434
+      payment: 1667.50,
+      totalInterest: 200_249.00,
     },
     tolerance: 0.02,
   },

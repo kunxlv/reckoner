@@ -10,11 +10,15 @@
     "deposit": 1600000,
     "rate": 0.085,
     "termYears": 20,
-    "periodsPerYear": 12
+    "periodsPerYear": 12,
+    "priceMin": 500000,
+    "priceMax": 100000000,
+    "priceStep": 100000,
+    "depositStep": 100000
   },
   "ltvLimit": {
     "value": 0.80,
-    "source": "Reserve Bank of India — LTV ratio for individual housing loans",
+    "source": "Reserve Bank of India LTV ratio for individual housing loans",
     "sourceUrl": "https://www.rbi.org.in/",
     "lastReviewed": "2026-07-01"
   }

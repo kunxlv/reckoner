@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculate } from '../src/engine.js';
+import { calculate } from '../src/engine';
 
 const base = {
   principal: 400_000,
@@ -48,11 +48,12 @@ describe('edge cases', () => {
     }
   });
 
-  it('cumulative principal + cumulative interest = total paid for every row', () => {
+  it('cumulative principal + cumulative interest equals running sum of actual payments', () => {
     const result = calculate(base);
+    let runningPayments = 0;
     for (const row of result.rows) {
-      const expected = row.cumulativePrincipal + row.cumulativeInterest;
-      expect(Math.abs(row.cumulativePrincipal + row.cumulativeInterest - expected)).toBeLessThan(0.001);
+      runningPayments += row.payment;
+      expect(row.cumulativePrincipal + row.cumulativeInterest).toBeCloseTo(runningPayments, 4);
     }
   });
 });

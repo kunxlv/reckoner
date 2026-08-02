@@ -79,7 +79,7 @@ export function useCalculator(country: CountryData, defaultRate: number, urlStat
   const errors: Partial<Record<keyof CalcState, string>> = {};
   if (state.price <= 0) errors.price = 'Enter an amount above 0.';
   if (state.deposit >= state.price && state.price > 0)
-    errors.deposit = "Your down payment covers the full price — there's no mortgage to calculate.";
+    errors.deposit = "Your down payment covers the full price. There is no mortgage to calculate.";
   if (state.rate > 0.25) errors.rate = 'Rates above 25% are unusual. Check the figure.';
   if (state.termYears < 1 || state.termYears > 40) errors.termYears = 'Enter a term between 1 and 40 years.';
 

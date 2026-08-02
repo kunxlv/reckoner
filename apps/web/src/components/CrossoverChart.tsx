@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import type { AmortizationRow } from '@reckoner/mortgage-engine';
 
-const Inner = dynamic(() => import('./CrossoverChartInner.js'), { ssr: false });
+const Inner = dynamic(() => import('./CrossoverChartInner'), { ssr: false });
 
 interface CrossoverChartProps {
   rows: AmortizationRow[];
