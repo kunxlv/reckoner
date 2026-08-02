@@ -1,0 +1,19 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "DE",
+    "currency": "EUR",
+    "tier": 2,
+    "provenance": {
+      "source": "DNotI — Grunderwerbsteuersatze (weighted national average; see sub-pages for Bundesland rates)",
+      "sourceUrl": "https://www.dnotI.de/fachInfo/aktuelles/2026/grunderwerbsteuersaetze.html",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2021-07-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0.05 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

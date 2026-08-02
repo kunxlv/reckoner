@@ -1,0 +1,19 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "US",
+    "currency": "USD",
+    "tier": 2,
+    "provenance": {
+      "source": "No federal stamp duty; rates vary by state and county. This page shows the national context only.",
+      "sourceUrl": "https://www.irs.gov",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2000-01-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

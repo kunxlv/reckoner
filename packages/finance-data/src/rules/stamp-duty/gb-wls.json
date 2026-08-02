@@ -1,0 +1,25 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "GB-WLS",
+    "currency": "GBP",
+    "tier": 1,
+    "provenance": {
+      "source": "Welsh Revenue Authority — Land Transaction Tax rates",
+      "sourceUrl": "https://www.gov.wales/land-transaction-tax-guide",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2022-10-10"
+    },
+    "bands": [
+      { "upTo": 225000, "rate": 0 },
+      { "upTo": 400000, "rate": 0.06 },
+      { "upTo": 750000, "rate": 0.075 },
+      { "upTo": 1500000, "rate": 0.10 },
+      { "upTo": null, "rate": 0.12 }
+    ],
+    "surcharges": [
+      { "id": "additional_property", "kind": "flat_rate", "value": 0.04, "appliesWhen": "additional_property" }
+    ],
+    "reliefs": []
+  }
+]

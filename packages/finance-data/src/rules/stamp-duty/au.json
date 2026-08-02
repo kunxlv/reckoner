@@ -1,0 +1,34 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "AU",
+    "currency": "AUD",
+    "tier": 2,
+    "provenance": {
+      "source": "Revenue NSW — Transfer Duty (used as national representative; see state pages for exact rates)",
+      "sourceUrl": "https://www.revenue.nsw.gov.au/taxes-duties-levies-royalties/transfer-duty",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-07-01"
+    },
+    "bands": [
+      { "upTo": 17310, "rate": 0.0125 },
+      { "upTo": 36990, "rate": 0.015 },
+      { "upTo": 97790, "rate": 0.0175 },
+      { "upTo": 309000, "rate": 0.035 },
+      { "upTo": 1033000, "rate": 0.045 },
+      { "upTo": null, "rate": 0.055 }
+    ],
+    "surcharges": [
+      { "id": "foreign_purchaser", "kind": "flat_rate", "value": 0.09, "appliesWhen": "foreign_purchaser" }
+    ],
+    "reliefs": [
+      {
+        "id": "first_home_buyer",
+        "cap": 800000,
+        "bands": [
+          { "upTo": null, "rate": 0 }
+        ]
+      }
+    ]
+  }
+]

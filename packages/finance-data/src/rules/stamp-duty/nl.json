@@ -1,0 +1,29 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "NL",
+    "currency": "EUR",
+    "tier": 1,
+    "provenance": {
+      "source": "Belastingdienst — overdrachtsbelasting",
+      "sourceUrl": "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/woning/eigen_woning_kopen/overdrachtsbelasting",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0.02 }
+    ],
+    "surcharges": [
+      { "id": "investor", "kind": "flat_rate", "value": 0.084, "appliesWhen": "investor" }
+    ],
+    "reliefs": [
+      {
+        "id": "starter_vrijstelling",
+        "cap": 510000,
+        "bands": [
+          { "upTo": null, "rate": 0 }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "ES",
+    "currency": "EUR",
+    "tier": 2,
+    "provenance": {
+      "source": "Agencia Tributaria — Impuesto sobre Transmisiones Patrimoniales (national representative rate)",
+      "sourceUrl": "https://www.agenciatributaria.es/AEAT.internet/Inicio/Ayuda/Manuales__Folletos_y_Videos/Folletos_divulgativos/_Ayuda_Impuesto_sobre_Transmisiones_Patrimoniales_y_Actos_Juridicos_Documentados.shtml",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-01-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0.08 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

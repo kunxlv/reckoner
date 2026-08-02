@@ -8,6 +8,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@reckoner/rules-core": "workspace:*"
+  },
   "devDependencies": {
     "@reckoner/config": "workspace:*",
     "@types/node": "^22.20.1",

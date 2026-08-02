@@ -1,0 +1,31 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "CA",
+    "currency": "CAD",
+    "tier": 2,
+    "provenance": {
+      "source": "Ontario Ministry of Finance — Land Transfer Tax (used as national representative; see provincial pages for exact rates)",
+      "sourceUrl": "https://www.ontario.ca/page/land-transfer-tax",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2017-01-01"
+    },
+    "bands": [
+      { "upTo": 55000, "rate": 0.005 },
+      { "upTo": 250000, "rate": 0.01 },
+      { "upTo": 400000, "rate": 0.015 },
+      { "upTo": 2000000, "rate": 0.02 },
+      { "upTo": null, "rate": 0.025 }
+    ],
+    "surcharges": [],
+    "reliefs": [
+      {
+        "id": "first_time_buyer",
+        "cap": 368000,
+        "bands": [
+          { "upTo": null, "rate": 0 }
+        ]
+      }
+    ]
+  }
+]

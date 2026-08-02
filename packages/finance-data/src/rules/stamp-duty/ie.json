@@ -1,0 +1,20 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "IE",
+    "currency": "EUR",
+    "tier": 1,
+    "provenance": {
+      "source": "Irish Revenue — Stamp Duty on residential property",
+      "sourceUrl": "https://www.revenue.ie/en/property/stamp-duty/what-is-stamp-duty/index.aspx",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2024-01-01"
+    },
+    "bands": [
+      { "upTo": 1000000, "rate": 0.01 },
+      { "upTo": null, "rate": 0.02 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

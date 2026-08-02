@@ -1,0 +1,19 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "IN",
+    "currency": "INR",
+    "tier": 3,
+    "provenance": {
+      "source": "Government of India — stamp duty rates are set by state governments and vary widely (typically 3-8%). This is an indicative rate for Maharashtra.",
+      "sourceUrl": "https://igr.maharashtra.gov.in/",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-04-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0.05 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

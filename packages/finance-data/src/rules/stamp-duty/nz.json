@@ -1,0 +1,19 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "NZ",
+    "currency": "NZD",
+    "tier": 1,
+    "provenance": {
+      "source": "New Zealand Inland Revenue — no stamp duty or transfer tax on residential property",
+      "sourceUrl": "https://www.ird.govt.nz/property",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "1999-01-01"
+    },
+    "bands": [
+      { "upTo": null, "rate": 0 }
+    ],
+    "surcharges": [],
+    "reliefs": []
+  }
+]

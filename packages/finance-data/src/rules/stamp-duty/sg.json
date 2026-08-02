@@ -1,0 +1,30 @@
+[
+  {
+    "calculator": "transfer-tax",
+    "jurisdiction": "SG",
+    "currency": "SGD",
+    "tier": 1,
+    "provenance": {
+      "source": "IRAS — Buyer's Stamp Duty",
+      "sourceUrl": "https://www.iras.gov.sg/taxes/stamp-duty/for-property/buying-or-acquiring-property/buyer-s-stamp-duty-(bsd)",
+      "lastReviewed": "2026-08-01",
+      "effectiveFrom": "2023-02-15"
+    },
+    "bands": [
+      { "upTo": 180000, "rate": 0.01 },
+      { "upTo": 360000, "rate": 0.02 },
+      { "upTo": 1000000, "rate": 0.03 },
+      { "upTo": 1500000, "rate": 0.04 },
+      { "upTo": 3000000, "rate": 0.05 },
+      { "upTo": null, "rate": 0.06 }
+    ],
+    "surcharges": [
+      { "id": "foreign_buyer", "kind": "flat_rate", "value": 0.60, "appliesWhen": "foreign_buyer" },
+      { "id": "sc_second_property", "kind": "flat_rate", "value": 0.20, "appliesWhen": "sc_second_property" },
+      { "id": "sc_third_plus", "kind": "flat_rate", "value": 0.30, "appliesWhen": "sc_third_plus" },
+      { "id": "pr_first_property", "kind": "flat_rate", "value": 0.05, "appliesWhen": "pr_first_property" },
+      { "id": "pr_second_plus", "kind": "flat_rate", "value": 0.30, "appliesWhen": "pr_second_plus" }
+    ],
+    "reliefs": []
+  }
+]
