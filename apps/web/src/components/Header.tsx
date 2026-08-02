@@ -2,6 +2,7 @@ import type { CountryData } from '@reckoner/finance-data';
 import { CountrySelector } from '@reckoner/ui';
 import type { Country } from '@reckoner/ui';
 import Link from 'next/link';
+import { PropertyNav } from './PropertyNav';
 
 const FLAG_MAP: Record<string, string> = {
   us: '🇺🇸', uk: '🇬🇧', ca: '🇨🇦', au: '🇦🇺', ie: '🇮🇪',
@@ -62,12 +63,7 @@ export function Header({ currentCountry, allCountries }: HeaderProps) {
           <Link href="/" style={{ textDecoration: 'none', color: 'var(--color-ink)', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>
             reckoner.
           </Link>
-          <span style={{ fontSize: 14, color: 'var(--color-ink-mid)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            Tools
-            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-          </span>
+          <PropertyNav currentCc={current.code} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <CountrySelector current={current} countries={countries} />
