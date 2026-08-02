@@ -68,7 +68,7 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
                 </h2>
                 <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0, color: 'var(--color-ink-deep)' }}>
                   Refinancing at the end of a fixed-rate period typically carries no early repayment charge.
-                  Breaking a fixed term early usually does -- often one to five percent of the outstanding balance.
+                  Breaking a fixed term early usually does. Often one to five percent of the outstanding balance.
                   Add any early repayment charge to the refinancing costs field to see the true break-even.
                 </p>
               </div>

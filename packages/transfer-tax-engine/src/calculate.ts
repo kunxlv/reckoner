@@ -52,7 +52,7 @@ export function calculateTransferTax(
 
   const baseTax = Math.round(applyBands(input.price, activeBands) * 100) / 100;
   const breakdown: { label: string; amount: number }[] = [
-    { label: reliefLost ? 'Stamp duty (standard rates — over relief cap)' : 'Stamp duty', amount: baseTax },
+    { label: reliefLost ? 'Stamp duty (standard rates, relief not applied: over price cap)' : 'Stamp duty', amount: baseTax },
   ];
 
   let totalTax = baseTax;

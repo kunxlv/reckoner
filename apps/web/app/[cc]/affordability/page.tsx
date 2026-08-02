@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ cc: strin
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
   return {
-    title: `Affordability Calculator — How Much Can I Borrow? | Reckoner`,
+    title: `Affordability Calculator: How Much Can I Borrow? | Reckoner`,
     description: `Find out how much you can borrow based on your income and the official lending rules in ${cc.toUpperCase()}. Free, no signup.`,
     robots: { index: true, follow: true },
   };

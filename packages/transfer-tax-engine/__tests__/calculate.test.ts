@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { calculateTransferTax } from '../src/calculate';
-import { calculateTransferTax as calculateFromIndex, TEST_VECTORS } from '../src/index';
+import { calculateTransferTax as calculateFromIndex } from '../src/index';
+import { TEST_VECTORS } from '../vectors/index';
 
 describe('progressiveTax', () => {
   it('HMRC £500k standard — £15,000', () => {
@@ -103,7 +104,7 @@ describe('progressiveTax', () => {
   it('FTB £550k breakdown shows over-cap label', () => {
     const v = TEST_VECTORS.sdlt_ftb_550k;
     const result = calculateTransferTax(v.input, v.ruleset);
-    expect(result.breakdown[0]?.label).toBe('Stamp duty (standard rates — over relief cap)');
+    expect(result.breakdown[0]?.label).toBe('Stamp duty (standard rates, relief not applied: over price cap)');
   });
 
   it('re-export from src/index matches direct import', () => {
