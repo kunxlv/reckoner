@@ -1,0 +1,198 @@
+'use client';
+import { useState } from 'react';
+import type { CountryData } from '@reckoner/finance-data';
+import { formatCurrency } from '../../lib/format';
+
+interface RentVsBuyCalculatorProps {
+  country: CountryData;
+  defaultRate: number;
+}
+
+function monthlyPayment(principal: number, annualRate: number, termYears: number): number {
+  if (principal <= 0 || termYears <= 0) return 0;
+  const i = annualRate / 12;
+  const n = termYears * 12;
+  if (i === 0) return principal / n;
+  return (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+}
+
+export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculatorProps) {
+  const [propertyPrice, setPropertyPrice] = useState(country.defaults.price);
+  const [deposit, setDeposit] = useState(country.defaults.deposit);
+  const [annualRate, setAnnualRate] = useState(defaultRate);
+  const [termYears, setTermYears] = useState(country.defaults.termYears);
+  const [monthlyRent, setMonthlyRent] = useState(Math.round(country.defaults.price * 0.004));
+  const [annualAppreciation, setAnnualAppreciation] = useState(0.04);
+  const [annualInvestmentReturn, setAnnualInvestmentReturn] = useState(0.07);
+
+  const loanAmount = propertyPrice - deposit;
+  const mortgagePayment = monthlyPayment(loanAmount, annualRate, termYears);
+
+  // Opportunity cost: what the deposit would earn if invested instead
+  const monthlyOpportunityCost = deposit * (annualInvestmentReturn / 12);
+
+  // Effective monthly cost of buying (mortgage + opportunity cost on deposit)
+  const effectiveBuyCost = mortgagePayment + monthlyOpportunityCost;
+
+  // Property value after 10 years
+  const yearsToProject = 10;
+  const futureValue = propertyPrice * Math.pow(1 + annualAppreciation, yearsToProject);
+  const equity = futureValue - loanAmount; // simplified (ignores principal paydown)
+  const rentTotal = monthlyRent * yearsToProject * 12;
+  const buyTotal = effectiveBuyCost * yearsToProject * 12;
+  const netBuyAdvantage = rentTotal - buyTotal + (equity - deposit);
+
+  const inputStyle = {
+    fontSize: 18,
+    fontWeight: 400,
+    border: 'none',
+    borderBottom: '1px solid var(--color-ink)',
+    background: 'transparent',
+    outline: 'none',
+    width: '100%',
+    color: 'var(--color-ink)',
+    padding: '4px 0',
+  } as const;
+
+  const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 } as const;
+
+  return (
+    <div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+        <div>
+          <label style={labelStyle}>Property price ({country.currencySymbol})</label>
+          <input
+            type="number"
+            value={propertyPrice}
+            min={0}
+            step={country.defaults.priceStep}
+            onChange={(e) => setPropertyPrice(Number(e.target.value))}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Deposit ({country.currencySymbol})</label>
+          <input
+            type="number"
+            value={deposit}
+            min={0}
+            step={country.defaults.depositStep}
+            onChange={(e) => setDeposit(Number(e.target.value))}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Mortgage rate (%)</label>
+          <input
+            type="number"
+            value={(annualRate * 100).toFixed(2)}
+            min={0}
+            max={20}
+            step={0.1}
+            onChange={(e) => setAnnualRate(Number(e.target.value) / 100)}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Mortgage term (years)</label>
+          <input
+            type="number"
+            value={termYears}
+            min={1}
+            max={40}
+            step={1}
+            onChange={(e) => setTermYears(Number(e.target.value))}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Monthly rent ({country.currencySymbol})</label>
+          <input
+            type="number"
+            value={monthlyRent}
+            min={0}
+            step={100}
+            onChange={(e) => setMonthlyRent(Number(e.target.value))}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Annual property appreciation (%)</label>
+          <input
+            type="number"
+            value={(annualAppreciation * 100).toFixed(1)}
+            min={-10}
+            max={20}
+            step={0.5}
+            onChange={(e) => setAnnualAppreciation(Number(e.target.value) / 100)}
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Deposit investment return (%)</label>
+          <input
+            type="number"
+            value={(annualInvestmentReturn * 100).toFixed(1)}
+            min={0}
+            max={20}
+            step={0.5}
+            onChange={(e) => setAnnualInvestmentReturn(Number(e.target.value) / 100)}
+            style={inputStyle}
+          />
+        </div>
+      </div>
+
+      <div style={{ background: 'var(--color-surface)', padding: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 20 }}>
+          <div>
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>Monthly mortgage payment</div>
+            <div style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' }}>
+              {formatCurrency(mortgagePayment, country.currency, country.locale)}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
+              Effective monthly cost (incl. deposit opportunity cost)
+            </div>
+            <div style={{ fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' }}>
+              {formatCurrency(effectiveBuyCost, country.currency, country.locale)}
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop: '1px solid var(--color-hairline)', paddingTop: 16 }}>
+          <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
+            Net financial advantage of buying over renting (10-year horizon)
+          </div>
+          <div
+            style={{
+              fontSize: 32,
+              fontWeight: 300,
+              letterSpacing: '-0.03em',
+              color: netBuyAdvantage >= 0 ? 'var(--color-ink)' : 'var(--color-ink-mid)',
+            }}
+          >
+            {netBuyAdvantage >= 0 ? '+' : ''}{formatCurrency(netBuyAdvantage, country.currency, country.locale)}
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 4 }}>
+            {netBuyAdvantage >= 0
+              ? 'Buying is ahead over 10 years with these assumptions.'
+              : 'Renting is ahead over 10 years with these assumptions.'}
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: '1px solid var(--color-hairline)',
+            fontSize: 13,
+            lineHeight: 1.55,
+            color: 'var(--color-ink-mid)',
+          }}
+        >
+          Excludes maintenance, insurance, transaction costs, and tax effects. This is illustrative only.
+        </div>
+      </div>
+    </div>
+  );
+}
