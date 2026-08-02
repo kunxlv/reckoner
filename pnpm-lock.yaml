@@ -14,6 +14,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@reckoner/affordability-engine':
+        specifier: workspace:*
+        version: link:../../packages/affordability-engine
       '@reckoner/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
@@ -23,9 +26,15 @@ importers:
       '@reckoner/mortgage-engine':
         specifier: workspace:*
         version: link:../../packages/mortgage-engine
+      '@reckoner/rules-core':
+        specifier: workspace:*
+        version: link:../../packages/rules-core
       '@reckoner/seo':
         specifier: workspace:*
         version: link:../../packages/seo
+      '@reckoner/transfer-tax-engine':
+        specifier: workspace:*
+        version: link:../../packages/transfer-tax-engine
       '@reckoner/ui':
         specifier: workspace:*
         version: link:../../packages/ui

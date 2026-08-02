@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@reckoner/analytics": "workspace:*",
+    "@reckoner/affordability-engine": "workspace:*",
     "@reckoner/finance-data": "workspace:*",
     "@reckoner/mortgage-engine": "workspace:*",
+    "@reckoner/rules-core": "workspace:*",
     "@reckoner/seo": "workspace:*",
+    "@reckoner/transfer-tax-engine": "workspace:*",
     "@reckoner/ui": "workspace:*",
     "next": "^15",
     "react": "^19",
