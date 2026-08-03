@@ -45,13 +45,13 @@ interface HeaderProps {
   currentTool?: string;
 }
 
-export function Header({ currentCountry, allCountries, currentTool = 'property/mortgage-calculator' }: HeaderProps) {
+export function Header({ currentCountry, allCountries, currentTool = '' }: HeaderProps) {
   const countries: Country[] = allCountries.map((c) => ({
     code: c.code,
     name: NAME_MAP[c.code] ?? c.code.toUpperCase(),
     currency: c.currency,
     flag: FLAG_MAP[c.code] ?? '🌍',
-    href: `/${c.code}/${currentTool}`,
+    href: currentTool ? `/${c.code}/${currentTool}` : `/${c.code}`,
     tier: c.tier,
   }));
 
@@ -61,7 +61,9 @@ export function Header({ currentCountry, allCountries, currentTool = 'property/m
         name: NAME_MAP[currentCountry.code] ?? currentCountry.code.toUpperCase(),
         currency: currentCountry.currency,
         flag: FLAG_MAP[currentCountry.code] ?? '🌍',
-        href: `/${currentCountry.code}/${currentTool}`,
+        href: currentTool
+          ? `/${currentCountry.code}/${currentTool}`
+          : `/${currentCountry.code}`,
         tier: currentCountry.tier,
       }
     : countries[0]!;
