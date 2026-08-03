@@ -22,18 +22,18 @@ export function Footer({ countries, currentCc }: FooterProps) {
         <div>
           <div style={headingStyle}>Calculators</div>
           <div style={{ display: 'grid', gap: 8 }}>
-            <a href={`/${cc}/mortgage-calculator`} style={linkStyle}>Mortgage calculator</a>
-            <a href={`/${cc}/stamp-duty`} style={linkStyle}>Stamp duty calculator</a>
-            <a href={`/${cc}/affordability`} style={linkStyle}>Affordability calculator</a>
-            <a href={`/${cc}/refinance`} style={linkStyle}>Refinance calculator</a>
-            <a href={`/${cc}/rent-vs-buy`} style={linkStyle}>Rent vs buy calculator</a>
+            <a href={`/${cc}/property/mortgage-calculator`} style={linkStyle}>Mortgage calculator</a>
+            <a href={`/${cc}/property/stamp-duty`} style={linkStyle}>Stamp duty calculator</a>
+            <a href={`/${cc}/property/affordability`} style={linkStyle}>Affordability calculator</a>
+            <a href={`/${cc}/property/refinance`} style={linkStyle}>Refinance calculator</a>
+            <a href={`/${cc}/property/rent-vs-buy`} style={linkStyle}>Rent vs buy calculator</a>
           </div>
         </div>
         <div>
           <div style={headingStyle}>Countries</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 24px' }}>
             {countries.map((c) => (
-              <a key={c.code} href={`/${c.code}/mortgage-calculator`} style={linkStyle}>
+              <a key={c.code} href={`/${c.code}/property/mortgage-calculator`} style={linkStyle}>
                 {NAME_MAP[c.code] ?? c.code.toUpperCase()}
               </a>
             ))}
