@@ -29,6 +29,16 @@ const TOOLS: Array<{ slug: string; label: string; description: string }> = [
     label: 'Auto Loan Calculator',
     description: 'Finance amount after down payment, trade-in, and sales tax. Monthly payment, APR, and total out-of-pocket cost.',
   },
+  {
+    slug: 'credit-card-payoff',
+    label: 'Credit Card Payoff Calculator',
+    description: 'How long minimum payments take to clear your balance, and how much you save by paying extra each month.',
+  },
+  {
+    slug: 'debt-strategy',
+    label: 'Debt Strategy Calculator',
+    description: 'Compare snowball, avalanche, and minimum-payment strategies across up to 5 debts. Total interest and months to payoff for each.',
+  },
 ];
 
 export async function generateMetadata({
@@ -41,7 +51,7 @@ export async function generateMetadata({
   const countryName = NAME_MAP[cc] ?? cc.toUpperCase();
   return {
     title: `Loan Calculators for ${countryName} | Reckoner`,
-    description: `Personal loan and auto loan calculators for ${countryName}. Monthly payments, total interest, APR, and full repayment schedules. Free, no signup.`,
+    description: `Loan and debt calculators for ${countryName}: personal loan, auto loan, credit card payoff, and debt strategy comparison. Free, no signup.`,
     alternates: { canonical: `https://reckoner.tools/${cc}/loans` },
     robots: { index: true, follow: true },
   };

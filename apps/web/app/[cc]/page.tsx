@@ -57,8 +57,8 @@ const PROPERTY_TOOLS: Tool[] = [
 const LOANS_TOOLS: Tool[] = [
   { slug: 'personal-loan', label: 'Personal Loan', description: 'Monthly payment, amortisation schedule, and true APR.' },
   { slug: 'auto-loan', label: 'Auto Loan', description: 'Financed amount, monthly payment, and total interest with tax and fees.' },
-  { slug: 'credit-card-payoff', label: 'Credit Card Payoff', description: 'Time to pay off your balance, total interest, and savings from extra payments.', comingSoon: true },
-  { slug: 'debt-strategy', label: 'Debt Strategy', description: 'Compare snowball, avalanche, and minimum-payment strategies side by side.', comingSoon: true },
+  { slug: 'credit-card-payoff', label: 'Credit Card Payoff', description: 'Time to pay off your balance, total interest, and savings from extra payments.' },
+  { slug: 'debt-strategy', label: 'Debt Strategy', description: 'Compare snowball, avalanche, and minimum-payment strategies side by side.' },
 ];
 
 const SAVINGS_TOOLS: Tool[] = [

@@ -85,8 +85,8 @@ describe('getPropertySitemapEntries', () => {
 });
 
 describe('getLoanSitemapEntries', () => {
-  it('returns 24 entries (2 slugs × 12 countries)', () => {
-    expect(getLoanSitemapEntries()).toHaveLength(24);
+  it('returns 48 entries (4 slugs × 12 countries)', () => {
+    expect(getLoanSitemapEntries()).toHaveLength(48);
   });
   it('all URLs contain /loans/', () => {
     for (const entry of getLoanSitemapEntries()) {
@@ -97,6 +97,11 @@ describe('getLoanSitemapEntries', () => {
     for (const entry of getLoanSitemapEntries()) {
       expect(entry.priority).toBe(0.8);
     }
+  });
+  it('includes credit-card-payoff and debt-strategy URLs', () => {
+    const entries = getLoanSitemapEntries();
+    expect(entries.some((e) => e.url.includes('credit-card-payoff'))).toBe(true);
+    expect(entries.some((e) => e.url.includes('debt-strategy'))).toBe(true);
   });
 });
 

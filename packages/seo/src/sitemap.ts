@@ -51,7 +51,7 @@ export function getPropertySitemapEntries(): SitemapEntry[] {
   return entries;
 }
 
-const LOAN_SLUGS = ['personal-loan', 'auto-loan'] as const;
+const LOAN_SLUGS = ['personal-loan', 'auto-loan', 'credit-card-payoff', 'debt-strategy'] as const;
 
 export function getLoanSitemapEntries(): SitemapEntry[] {
   const entries: SitemapEntry[] = [];
