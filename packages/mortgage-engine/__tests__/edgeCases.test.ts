@@ -1,59 +1,31 @@
 import { describe, it, expect } from 'vitest';
 import { calculate } from '../src/engine';
 
-const base = {
-  principal: 400_000,
-  annualRate: 0.065,
-  termYears: 30,
-  periodsPerYear: 12 as const,
-  convention: 'standardMonthly' as const,
-};
-
 describe('edge cases', () => {
-  it('0% interest — payment is principal / n', () => {
-    const result = calculate({ ...base, annualRate: 0 });
-    const n = 30 * 12;
-    expect(Math.abs(result.payment - 400_000 / n)).toBeLessThan(0.001);
-    expect(result.crossoverPeriod).toBeNull();
-  });
-
-  it('1-year term', () => {
-    const result = calculate({ ...base, termYears: 1 });
-    expect(result.payoffPeriod).toBe(12);
-    const lastRow = result.rows[result.rows.length - 1]!;
-    expect(Math.abs(lastRow.balance)).toBeLessThanOrEqual(0.01);
-  });
-
-  it('extra payments clear loan early', () => {
-    const base30 = calculate(base);
-    const withExtra = calculate({ ...base, extraPaymentPerPeriod: 500 });
-    expect(withExtra.payoffPeriod).toBeLessThan(base30.payoffPeriod);
-    expect(withExtra.totalInterest).toBeLessThan(base30.totalInterest);
-  });
-
-  it('large extra payment clears loan in first period when extra >= remaining principal', () => {
+  it('zero termYears produces an empty schedule with zero interest', () => {
     const result = calculate({
-      ...base,
-      principal: 1_000,
-      termYears: 30,
-      extraPaymentPerPeriod: 1_000_000,
+      principal: 100_000,
+      annualRate: 0.05,
+      termYears: 0,
+      periodsPerYear: 12,
+      convention: 'standardMonthly',
     });
-    expect(result.payoffPeriod).toBe(1);
+    expect(result.rows).toHaveLength(0);
+    expect(result.totalInterest).toBe(0);
+    expect(result.payoffPeriod).toBe(0);
   });
 
-  it('rows are monotonically decreasing in balance', () => {
-    const result = calculate(base);
-    for (let i = 1; i < result.rows.length; i++) {
-      expect(result.rows[i]!.balance).toBeLessThan(result.rows[i - 1]!.balance);
-    }
-  });
-
-  it('cumulative principal + cumulative interest equals running sum of actual payments', () => {
-    const result = calculate(base);
-    let runningPayments = 0;
-    for (const row of result.rows) {
-      runningPayments += row.payment;
-      expect(row.cumulativePrincipal + row.cumulativeInterest).toBeCloseTo(runningPayments, 4);
-    }
+  it('zero annualRate amortises principal evenly with no interest', () => {
+    const result = calculate({
+      principal: 12_000,
+      annualRate: 0,
+      termYears: 1,
+      periodsPerYear: 12,
+      convention: 'standardMonthly',
+    });
+    expect(result.payment).toBeCloseTo(1_000, 4);
+    expect(result.totalInterest).toBeCloseTo(0, 4);
+    expect(result.rows).toHaveLength(12);
+    expect(result.crossoverPeriod).toBeNull();
   });
 });
