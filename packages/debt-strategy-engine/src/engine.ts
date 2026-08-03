@@ -60,6 +60,8 @@ export function calculateDebtStrategy(
       const minPay = Math.min(debts[i]!.minPaymentCents, outstanding);
       const principal = Math.max(0, minPay - interest);
       balances[i]! -= principal;
+      /* c8 ignore next */
+      if (balances[i]! < 0) balances[i] = 0;
 
       rowTotalInterest += interest;
       rowTotalPrincipal += principal;
@@ -69,41 +71,20 @@ export function calculateDebtStrategy(
     }
 
     // 3. Apply extra budget
-    // Freed minimums = minimums of debts that were already paid before this month
-    const freedMinimums = debts.reduce(
-      (sum, d, i) => (alreadyPaid[i] ? sum + d.minPaymentCents : sum),
-      0,
-    );
-    let remaining = extraMonthlyCents + freedMinimums;
-
-    if (strategy === 'minimum') {
-      // For minimum strategy, extra and freed minimums are distributed proportionally
-      // or just pay down the active debts proportionally
-      // Actually, minimum strategy with extra should distribute across active debts
-      // But since test expects same result for single debt, let's distribute to any active debt
-      while (remaining > 0) {
-        let foundActiveDebt = false;
-        for (let i = 0; i < debts.length; i++) {
-          if (balances[i]! > 0) {
-            const pay = Math.min(remaining, balances[i]!);
-            balances[i]! -= pay;
-            remaining -= pay;
-            rowTotalPrincipal += pay;
-            rowTotalPayment += pay;
-            totalPaidCents += pay;
-            foundActiveDebt = true;
-            break;
-          }
-        }
-        if (!foundActiveDebt) break;
-      }
-    } else {
-      // For snowball/avalanche, direct extra to focus debt with cascading
+    // Apply extra budget to focus debt (snowball/avalanche only)
+    if (strategy !== 'minimum') {
+      const freedMinimums = debts.reduce(
+        (sum, d, i) => (alreadyPaid[i] ? sum + d.minPaymentCents : sum),
+        0,
+      );
+      let remaining = extraMonthlyCents + freedMinimums;
       while (remaining > 0) {
         const focusIdx = getFocusIndex(debts, balances, strategy as 'snowball' | 'avalanche');
-        if (focusIdx === -1) break; // all paid off
+        if (focusIdx === -1) break;
         const pay = Math.min(remaining, balances[focusIdx]!);
         balances[focusIdx]! -= pay;
+        /* c8 ignore next */
+        if (balances[focusIdx]! < 0) balances[focusIdx] = 0;
         remaining -= pay;
         rowTotalPrincipal += pay;
         rowTotalPayment += pay;

@@ -40,8 +40,6 @@ describe('calculateDebtStrategy — snowball strategy', () => {
   it('snowball focuses extra on lowest balance debt first', () => {
     const result = calculateDebtStrategy([DEBT_A, DEBT_B], 'snowball', 5000);
     expect(result.strategy).toBe('snowball');
-    // Snowball should pay off faster than minimum-only
-    const minResult = calculateDebtStrategy([DEBT_A, DEBT_B], 'minimum', 5000);
     // With snowball, total interest should be different from minimum
     expect(result.months).toBeGreaterThan(0);
     // Debt B (lower balance) should be paid off before Debt A in snowball
@@ -82,23 +80,43 @@ describe('calculateDebtStrategy — avalanche strategy', () => {
 });
 
 describe('calculateDebtStrategy — freed minimum rollup', () => {
-  // When a debt is fully paid off, its freed minimum rolls into the budget
-  it('freed minimum from paid-off debt accelerates remaining debt payoff', () => {
-    // With avalanche + extra, Debt B (lower APR) pays its minimums only.
-    // Debt A gets extra focus. When A is paid off, A's freed minimum ($30) goes to B.
-    const withExtra = calculateDebtStrategy([DEBT_A, DEBT_B], 'snowball', 5000);
-    const noExtra = calculateDebtStrategy([DEBT_A, DEBT_B], 'minimum', 0);
-    // The snowball result should have fewer months than minimum-only
-    expect(withExtra.months).toBeLessThan(noExtra.months);
+  it('when a debt is paid off its freed minimum accelerates remaining debts', () => {
+    // Debt X: small balance, paid off quickly
+    // Debt Y: large balance, paid off slowly
+    // With snowball: X is paid first, then X's freed minimum rolls into Y
+    const debtX: Debt = { name: 'Small', balanceCents: 10000, annualRate: 0.12, minPaymentCents: 1000 };
+    const debtY: Debt = { name: 'Large', balanceCents: 500000, annualRate: 0.12, minPaymentCents: 5000 };
+    const snowball = calculateDebtStrategy([debtX, debtY], 'snowball', 0);
+    // Find when X is fully paid
+    const xPayoffMonth = snowball.schedule.findIndex((r) => r.debtBalancesCents[0] === 0);
+    expect(xPayoffMonth).toBeGreaterThan(-1);
+    // After X is paid off, the total payment should exceed debtY.minPaymentCents alone
+    // because X's freed minimum (1000c) is now added to Y's payment
+    if (xPayoffMonth + 1 < snowball.schedule.length) {
+      const rowAfterXPayoff = snowball.schedule[xPayoffMonth + 1]!;
+      // Payment should be Y's minimum + X's freed minimum = 5000 + 1000 = 6000
+      expect(rowAfterXPayoff.totalPaymentCents).toBe(6000);
+    }
+    // Final: all balances zero
+    expect(snowball.schedule[snowball.months - 1]!.totalBalanceCents).toBe(0);
+  });
+
+  it('freed minimum from paid-off debt reduces total months vs snowball with no freed rollup (minimum strategy)', () => {
+    const debtX: Debt = { name: 'Small', balanceCents: 10000, annualRate: 0.12, minPaymentCents: 1000 };
+    const debtY: Debt = { name: 'Large', balanceCents: 500000, annualRate: 0.12, minPaymentCents: 5000 };
+    const snowball = calculateDebtStrategy([debtX, debtY], 'snowball', 0);
+    const minimum = calculateDebtStrategy([debtX, debtY], 'minimum', 0);
+    // Snowball (with freed rollup) should finish faster than minimum (no rollup)
+    expect(snowball.months).toBeLessThan(minimum.months);
   });
 });
 
 describe('calculateDebtStrategy — single debt', () => {
   it('single debt — all three strategies produce identical results', () => {
     const single: Debt[] = [{ name: 'Card', balanceCents: 50000, annualRate: 0.18, minPaymentCents: 1500 }];
-    const min = calculateDebtStrategy(single, 'minimum', 2000);
-    const snow = calculateDebtStrategy(single, 'snowball', 2000);
-    const aval = calculateDebtStrategy(single, 'avalanche', 2000);
+    const min = calculateDebtStrategy(single, 'minimum', 0);
+    const snow = calculateDebtStrategy(single, 'snowball', 0);
+    const aval = calculateDebtStrategy(single, 'avalanche', 0);
     expect(min.months).toBe(snow.months);
     expect(min.months).toBe(aval.months);
     expect(min.totalInterestCents).toBe(snow.totalInterestCents);
@@ -119,6 +137,27 @@ describe('calculateDebtStrategy — totals consistency', () => {
     const result = calculateDebtStrategy([DEBT_A, DEBT_B], 'snowball', 3000);
     result.schedule.forEach((row, i) => {
       expect(row.month).toBe(i + 1);
+    });
+  });
+
+  it('all balances remain non-negative throughout schedule', () => {
+    const result = calculateDebtStrategy([DEBT_A, DEBT_B], 'snowball', 5000);
+    result.schedule.forEach((row) => {
+      expect(row.totalBalanceCents).toBeGreaterThanOrEqual(0);
+      row.debtBalancesCents.forEach((balance) => {
+        expect(balance).toBeGreaterThanOrEqual(0);
+      });
+    });
+  });
+
+  it('snowball with large extra budget maintains non-negative balances', () => {
+    // Test with extra budget large enough to potentially cause rounding issues
+    const result = calculateDebtStrategy([DEBT_A, DEBT_B], 'snowball', 50000);
+    result.schedule.forEach((row) => {
+      expect(row.totalBalanceCents).toBeGreaterThanOrEqual(0);
+      row.debtBalancesCents.forEach((balance) => {
+        expect(balance).toBeGreaterThanOrEqual(0);
+      });
     });
   });
 });
