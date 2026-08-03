@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@reckoner/analytics": "workspace:*",
+    "@reckoner/loan-engine": "workspace:*",
     "@reckoner/affordability-engine": "workspace:*",
     "@reckoner/finance-data": "workspace:*",
     "@reckoner/mortgage-engine": "workspace:*",
