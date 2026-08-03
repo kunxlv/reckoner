@@ -1,5 +1,13 @@
 import type { NextConfig } from 'next';
 
+const PROPERTY_SLUGS = [
+  'mortgage-calculator',
+  'stamp-duty',
+  'affordability',
+  'refinance',
+  'rent-vs-buy',
+] as const;
+
 const config: NextConfig = {
   webpack(webpackConfig) {
     webpackConfig.resolve = webpackConfig.resolve ?? {};
@@ -13,6 +21,13 @@ const config: NextConfig = {
     turbo: {
       resolveExtensions: ['.tsx', '.ts', '.jsx', '.js'],
     },
+  },
+  async redirects() {
+    return PROPERTY_SLUGS.map((slug) => ({
+      source: `/:cc/${slug}`,
+      destination: `/:cc/property/${slug}`,
+      permanent: true,
+    }));
   },
   async headers() {
     return [
