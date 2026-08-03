@@ -52,8 +52,8 @@ describe('getMortgageHreflang', () => {
 describe('getMortgageMetadata', () => {
   it('returns metadata with title and description for us', () => {
     const meta = getMortgageMetadata('us');
-    expect(meta.title).toBeDefined();
-    expect(meta.description).toBeDefined();
+    expect(meta.title).toBe('Mortgage Calculator with Amortization Schedule | Reckoner');
+    expect(meta.description).toBe('Work out your monthly mortgage payment, total interest and full amortization schedule. Prefilled with this week\'s Freddie Mac 30-year average. Free, no signup.');
   });
   it('sets canonical for us', () => {
     const meta = getMortgageMetadata('us');

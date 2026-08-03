@@ -39,7 +39,7 @@ export function getToolCanonical(cc: CountryCode, category: string, slug: string
 }
 
 export function getToolHreflang(
-  current: CountryCode,
+  _cc: CountryCode,
   category: string,
   slug: string,
 ): HreflangEntry[] {
