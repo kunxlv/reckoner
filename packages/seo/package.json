@@ -5,11 +5,15 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@reckoner/config": "workspace:*",
+    "@vitest/coverage-v8": "^2",
     "next": "^15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2"
   }
 }

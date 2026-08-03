@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CountryCode } from './types';
-import { getMortgageHreflang, getCanonical } from './hreflang';
+import { getMortgageHreflang, getCanonical, getToolCanonical, getToolHreflang } from './hreflang';
 
 const TITLES: Record<CountryCode, string> = {
   us: 'Mortgage Calculator with Amortization Schedule | Reckoner',
@@ -41,6 +41,27 @@ export function getMortgageMetadata(cc: CountryCode): Metadata {
       canonical: getCanonical(cc),
       languages: Object.fromEntries(
         hreflang.map(({ hrefLang, href }) => [hrefLang, href])
+      ),
+    },
+    robots: { index: true, follow: true },
+  };
+}
+
+export function getToolMetadata(
+  cc: CountryCode,
+  category: string,
+  slug: string,
+  title: string,
+  description: string,
+): Metadata {
+  const hreflang = getToolHreflang(cc, category, slug);
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: getToolCanonical(cc, category, slug),
+      languages: Object.fromEntries(
+        hreflang.map(({ hrefLang, href }) => [hrefLang, href]),
       ),
     },
     robots: { index: true, follow: true },

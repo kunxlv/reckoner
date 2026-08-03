@@ -28,3 +28,25 @@ export function getStaticSitemapEntries(): SitemapEntry[] {
     { url: `${BASE}/contact`, changeFrequency: 'monthly', priority: 0.3 },
   ];
 }
+
+const PROPERTY_SLUGS = [
+  'mortgage-calculator',
+  'stamp-duty',
+  'affordability',
+  'refinance',
+  'rent-vs-buy',
+] as const;
+
+export function getPropertySitemapEntries(): SitemapEntry[] {
+  const entries: SitemapEntry[] = [];
+  for (const cc of COUNTRY_CODES) {
+    for (const slug of PROPERTY_SLUGS) {
+      entries.push({
+        url: `${BASE}/${cc}/property/${slug}`,
+        changeFrequency: 'weekly',
+        priority: cc === 'us' && slug === 'mortgage-calculator' ? 1.0 : 0.9,
+      });
+    }
+  }
+  return entries;
+}

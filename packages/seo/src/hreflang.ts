@@ -29,3 +29,24 @@ export function getMortgageHreflang(current: CountryCode): HreflangEntry[] {
 export function getCanonical(cc: CountryCode): string {
   return `${BASE}${getMortgagePath(cc)}`;
 }
+
+export function getToolPath(cc: CountryCode, category: string, slug: string): string {
+  return `/${cc}/${category}/${slug}`;
+}
+
+export function getToolCanonical(cc: CountryCode, category: string, slug: string): string {
+  return `${BASE}${getToolPath(cc, category, slug)}`;
+}
+
+export function getToolHreflang(
+  current: CountryCode,
+  category: string,
+  slug: string,
+): HreflangEntry[] {
+  const entries: HreflangEntry[] = COUNTRY_CODES.map((cc) => ({
+    hrefLang: LOCALE_MAP[cc],
+    href: `${BASE}${getToolPath(cc, category, slug)}`,
+  }));
+  entries.push({ hrefLang: 'x-default', href: `${BASE}${getToolPath('us', category, slug)}` });
+  return entries;
+}
