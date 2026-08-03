@@ -92,7 +92,7 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <Header currentCountry={country} allCountries={allCountries} />
+      <Header currentCountry={country} allCountries={allCountries} currentTool="affordability" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
@@ -118,7 +118,7 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
 
         <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
-          <TrustDisclosures convention={country.convention} rateResult={rateResult} />
+          <TrustDisclosures context={{ type: 'affordability', method: ruleset.method }} rateResult={rateResult} />
           <div style={{ maxWidth: '72ch', padding: '48px 0 32px' }}>
             {callout && (
               <div style={{ border: '1px solid var(--color-hairline)', padding: '16px 20px', marginBottom: 32 }}>
@@ -132,7 +132,7 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} />
+      <Footer countries={allCountries} currentCc={cc} />
     </>
   );
 }

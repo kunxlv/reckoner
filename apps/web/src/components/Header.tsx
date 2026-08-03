@@ -19,15 +19,16 @@ const NAME_MAP: Record<string, string> = {
 interface HeaderProps {
   currentCountry?: CountryData;
   allCountries: CountryData[];
+  currentTool?: string;
 }
 
-export function Header({ currentCountry, allCountries }: HeaderProps) {
+export function Header({ currentCountry, allCountries, currentTool = 'mortgage-calculator' }: HeaderProps) {
   const countries: Country[] = allCountries.map((c) => ({
     code: c.code,
     name: NAME_MAP[c.code] ?? c.code.toUpperCase(),
     currency: c.currency,
     flag: FLAG_MAP[c.code] ?? '🌍',
-    href: `/${c.code}/mortgage-calculator`,
+    href: `/${c.code}/${currentTool}`,
     tier: c.tier,
   }));
 
@@ -37,7 +38,7 @@ export function Header({ currentCountry, allCountries }: HeaderProps) {
         name: NAME_MAP[currentCountry.code] ?? currentCountry.code.toUpperCase(),
         currency: currentCountry.currency,
         flag: FLAG_MAP[currentCountry.code] ?? '🌍',
-        href: `/${currentCountry.code}/mortgage-calculator`,
+        href: `/${currentCountry.code}/${currentTool}`,
         tier: currentCountry.tier,
       }
     : countries[0]!;

@@ -89,7 +89,7 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
 
   return (
     <>
-      <Header currentCountry={country} allCountries={allCountries} />
+      <Header currentCountry={country} allCountries={allCountries} currentTool="rent-vs-buy" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
@@ -121,7 +121,7 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
 
         <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
-          <TrustDisclosures convention={country.convention} rateResult={rateResult} />
+          <TrustDisclosures context={{ type: 'rent-vs-buy' }} rateResult={rateResult} />
           <div style={{ maxWidth: '72ch', padding: '48px 0 32px' }}>
             <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--color-ink-mid)', margin: 0 }}>
               Reference rate sourced from official central bank or national statistics body data where available.
@@ -131,7 +131,7 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} />
+      <Footer countries={allCountries} currentCc={cc} />
     </>
   );
 }

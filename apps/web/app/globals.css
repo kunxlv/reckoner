@@ -36,7 +36,7 @@
   --radius-pill: 100px;
 
   /* Font families */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: "Lato", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
 
   /* Motion */
@@ -58,6 +58,14 @@ body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
 }
 
 a {

@@ -168,7 +168,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
             <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
 
             {/* Trust disclosures */}
-            <TrustDisclosures convention={country.convention} rateResult={rateResult} />
+            <TrustDisclosures context={{ type: 'mortgage', convention: country.convention }} rateResult={rateResult} />
 
             {/* Prose */}
             <div style={{ maxWidth: '72ch', padding: '48px 0 0' }}>
@@ -216,7 +216,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
           </div>
         )}
       </main>
-      <Footer countries={allCountries} />
+      <Footer countries={allCountries} currentCc={cc} />
     </>
   );
 }

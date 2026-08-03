@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter, Instrument_Serif } from 'next/font/google';
+import { Lato, Instrument_Serif } from 'next/font/google';
 import { AnalyticsScripts } from '@reckoner/analytics';
 import './globals.css';
 
-const inter = Inter({
+const lato = Lato({
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '500'],
-  variable: '--font-inter',
+  weight: ['300', '400', '700'],
+  variable: '--font-lato',
 });
 
 const instrumentSerif = Instrument_Serif({
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${instrumentSerif.variable}`}>
+    <html lang="en" className={`${lato.variable} ${instrumentSerif.variable}`}>
       <head>
         <AnalyticsScripts
           {...(process.env.NEXT_PUBLIC_GA4_ID ? { ga4Id: process.env.NEXT_PUBLIC_GA4_ID } : {})}
