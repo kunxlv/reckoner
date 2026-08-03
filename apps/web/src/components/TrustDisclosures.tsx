@@ -12,7 +12,9 @@ export type CalculatorContext =
   | { type: 'refinance' }
   | { type: 'rent-vs-buy' }
   | { type: 'personal-loan' }
-  | { type: 'auto-loan' };
+  | { type: 'auto-loan' }
+  | { type: 'credit-card-payoff' }
+  | { type: 'debt-strategy' };
 
 interface ItemProps {
   label: string;
@@ -310,13 +312,64 @@ function AutoLoanFormula() {
   );
 }
 
+function CreditCardPayoffFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Each month, interest accrues on the outstanding balance, then your payment reduces the principal:
+      </p>
+      {pre(`monthly interest = balance × (APR ÷ 12)
+
+minimum payment (% rule) = max(balance × percent, floor amount)
+minimum payment (fixed)  = fixed amount
+
+payment applied: interest first, remainder to principal
+
+balance next month = balance − (payment − monthly interest)`)}
+      <p style={{ margin: 0 }}>
+        <strong style={{ fontWeight: 500 }}>With an extra monthly payment:</strong>{' '}
+        The extra amount goes entirely to principal every month, shortening the payoff timeline and reducing total interest proportionally.
+      </p>
+      <p style={{ margin: 0 }}>
+        All arithmetic uses integer cent values to avoid floating-point drift over many months.
+      </p>
+    </div>
+  );
+}
+
+function DebtStrategyFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Each month, interest accrues on every debt, then minimums are paid on all debts. Any extra budget is directed to the focus debt:
+      </p>
+      {pre(`interest per debt = balance × (APR ÷ 12)  [floored to cents]
+
+Minimum-only:  pay each debt's minimum — no extra budget applied.
+
+Snowball:      extra budget → debt with the lowest remaining balance.
+               When a debt reaches zero, add its minimum to the budget.
+
+Avalanche:     extra budget → debt with the highest APR.
+               When a debt reaches zero, add its minimum to the budget.`)}
+      <p style={{ margin: 0 }}>
+        Avalanche minimises total interest paid. Snowball pays off individual debts faster, which some people find more motivating.
+      </p>
+    </div>
+  );
+}
+
 interface TrustDisclosuresProps {
   context: CalculatorContext;
   rateResult?: RateResult | null;
 }
 
 export function TrustDisclosures({ context, rateResult = null }: TrustDisclosuresProps) {
-  const showRateSection = context.type !== 'stamp-duty' && context.type !== 'personal-loan' && context.type !== 'auto-loan';
+  const showRateSection = context.type !== 'stamp-duty'
+    && context.type !== 'personal-loan'
+    && context.type !== 'auto-loan'
+    && context.type !== 'credit-card-payoff'
+    && context.type !== 'debt-strategy';
 
   return (
     <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)' }}>
@@ -328,6 +381,8 @@ export function TrustDisclosures({ context, rateResult = null }: TrustDisclosure
         {context.type === 'rent-vs-buy' && <RentVsBuyFormula />}
         {context.type === 'personal-loan' && <PersonalLoanFormula />}
         {context.type === 'auto-loan' && <AutoLoanFormula />}
+        {context.type === 'credit-card-payoff' && <CreditCardPayoffFormula />}
+        {context.type === 'debt-strategy' && <DebtStrategyFormula />}
       </AccordionItem>
 
       {showRateSection && (
