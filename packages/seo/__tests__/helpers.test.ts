@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   getToolPath, getToolCanonical, getToolHreflang, getToolMetadata,
-  getPropertySitemapEntries,
+  getPropertySitemapEntries, getLoanSitemapEntries,
 } from '../src/index';
 
 describe('getToolPath', () => {
@@ -79,6 +79,22 @@ describe('getPropertySitemapEntries', () => {
     for (const slug of PROPERTY_SLUGS) {
       expect(urls.some((u) => u.includes(`/us/property/${slug}`))).toBe(true);
       expect(urls.some((u) => u.includes(`/uk/property/${slug}`))).toBe(true);
+    }
+  });
+});
+
+describe('getLoanSitemapEntries', () => {
+  it('returns 24 entries (2 slugs × 12 countries)', () => {
+    expect(getLoanSitemapEntries()).toHaveLength(24);
+  });
+  it('all URLs contain /loans/', () => {
+    for (const entry of getLoanSitemapEntries()) {
+      expect(entry.url).toMatch(/\/loans\//);
+    }
+  });
+  it('priority is 0.8 for all entries', () => {
+    for (const entry of getLoanSitemapEntries()) {
+      expect(entry.priority).toBe(0.8);
     }
   });
 });

@@ -25,8 +25,8 @@ const PROPERTY_TOOLS = [
 ];
 
 const LOANS_TOOLS = [
-  { slug: 'personal-loan', label: 'Personal Loan', comingSoon: true },
-  { slug: 'auto-loan', label: 'Auto Loan', comingSoon: true },
+  { slug: 'personal-loan', label: 'Personal Loan' },
+  { slug: 'auto-loan', label: 'Auto Loan' },
   { slug: 'credit-card-payoff', label: 'Credit Card Payoff', comingSoon: true },
   { slug: 'debt-strategy', label: 'Debt Strategy', comingSoon: true },
 ];

@@ -50,3 +50,19 @@ export function getPropertySitemapEntries(): SitemapEntry[] {
   }
   return entries;
 }
+
+const LOAN_SLUGS = ['personal-loan', 'auto-loan'] as const;
+
+export function getLoanSitemapEntries(): SitemapEntry[] {
+  const entries: SitemapEntry[] = [];
+  for (const cc of COUNTRY_CODES) {
+    for (const slug of LOAN_SLUGS) {
+      entries.push({
+        url: `${BASE}/${cc}/loans/${slug}`,
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      });
+    }
+  }
+  return entries;
+}

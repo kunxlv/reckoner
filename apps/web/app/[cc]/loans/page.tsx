@@ -20,29 +20,14 @@ const NAME_MAP: Record<string, string> = {
 
 const TOOLS: Array<{ slug: string; label: string; description: string }> = [
   {
-    slug: 'mortgage-calculator',
-    label: 'Mortgage Calculator',
-    description: 'Monthly payment, full amortisation schedule, and total interest. Uses your country\'s official compounding convention.',
+    slug: 'personal-loan',
+    label: 'Personal Loan Calculator',
+    description: 'Monthly payment, total interest, and full repayment schedule. Enter an origination fee to see how it raises your APR.',
   },
   {
-    slug: 'stamp-duty',
-    label: 'Stamp Duty / Transfer Tax',
-    description: 'Progressive banding calculation using official government rates. Includes first-time buyer relief and surcharges where applicable.',
-  },
-  {
-    slug: 'affordability',
-    label: 'Affordability Calculator',
-    description: 'Maximum borrowing under your country\'s regulatory limits — income multiples, LTV caps, or debt servicing ratios.',
-  },
-  {
-    slug: 'refinance',
-    label: 'Refinance Break-Even',
-    description: 'How many months until a lower rate recovers your closing costs. Shows cumulative saving over the remaining term.',
-  },
-  {
-    slug: 'rent-vs-buy',
-    label: 'Rent vs Buy',
-    description: 'Ten-year projection of the financial outcome of each option, accounting for equity build-up and deposit opportunity cost.',
+    slug: 'auto-loan',
+    label: 'Auto Loan Calculator',
+    description: 'Finance amount after down payment, trade-in, and sales tax. Monthly payment, APR, and total out-of-pocket cost.',
   },
 ];
 
@@ -55,14 +40,14 @@ export async function generateMetadata({
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
   const countryName = NAME_MAP[cc] ?? cc.toUpperCase();
   return {
-    title: `Property Calculators for ${countryName} | Reckoner`,
-    description: `Mortgage, stamp duty, affordability, refinance, and rent vs buy calculators for ${countryName}, each using official local rules. Free, no signup.`,
-    alternates: { canonical: `https://reckoner.tools/${cc}/property` },
+    title: `Loan Calculators for ${countryName} | Reckoner`,
+    description: `Personal loan and auto loan calculators for ${countryName}. Monthly payments, total interest, APR, and full repayment schedules. Free, no signup.`,
+    alternates: { canonical: `https://reckoner.tools/${cc}/loans` },
     robots: { index: true, follow: true },
   };
 }
 
-export default async function PropertyHubPage({
+export default async function LoansHubPage({
   params,
 }: {
   params: Promise<{ cc: string }>;
@@ -76,7 +61,7 @@ export default async function PropertyHubPage({
 
   return (
     <>
-      <Header currentCountry={country} allCountries={allCountries} currentTool="property" />
+      <Header currentCountry={country} allCountries={allCountries} currentTool="loans" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
           <h1
@@ -88,7 +73,7 @@ export default async function PropertyHubPage({
               margin: '0 0 12px',
             }}
           >
-            Property calculators for {countryName}
+            Loan calculators for {countryName}
           </h1>
           <p
             style={{
@@ -99,21 +84,26 @@ export default async function PropertyHubPage({
               color: 'var(--color-ink-deep)',
             }}
           >
-            Each calculator applies {countryName}&apos;s actual rules — the compounding convention,
-            regulatory limits, and official tax bands in force today.
+            Monthly payments, total interest, and APR — calculated with exact annuity maths, not rule-of-thumb estimates.
           </p>
 
           <div style={{ display: 'grid', gap: 2 }}>
             {TOOLS.map((tool) => (
               <a
                 key={tool.slug}
-                href={`/${cc}/property/${tool.slug}`}
+                href={`/${cc}/loans/${tool.slug}`}
                 className="hub-tool-link"
               >
                 <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
                   {tool.label}
                 </div>
-                <div style={{ fontSize: 14, color: 'var(--color-ink-mid)', lineHeight: 1.5 }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: 'var(--color-ink-mid)',
+                    lineHeight: 1.5,
+                  }}
+                >
                   {tool.description}
                 </div>
               </a>
