@@ -43,7 +43,7 @@ export default function HubPage() {
             {countries.map((c) => (
               <a
                 key={c.code}
-                href={`/${c.code}/mortgage-calculator`}
+                href={`/${c.code}/property/mortgage-calculator`}
                 style={{
                   display: 'block', textDecoration: 'none', color: '#000000',
                   border: '1px solid #dddddd', padding: '16px 20px',
