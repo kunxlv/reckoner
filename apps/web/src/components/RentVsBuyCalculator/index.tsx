@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
 import { calcRentVsBuy } from '../../lib/rentVsBuy';
+import { ComparisonChart } from './ComparisonChart';
 
 interface RentVsBuyCalculatorProps {
   country: CountryData;
@@ -171,6 +172,17 @@ export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculato
         >
           Excludes maintenance, insurance, transaction costs, and tax effects. This is illustrative only.
         </div>
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>10-year cumulative cost comparison</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>Effective cost of buying (including deposit opportunity cost) versus rent payments. Equity value is shown in the result above.</div>
+        <ComparisonChart
+          buyMonthly={effectiveBuyCost}
+          rentMonthly={monthlyRent}
+          currency={country.currency}
+          locale={country.locale}
+        />
       </div>
     </div>
   );

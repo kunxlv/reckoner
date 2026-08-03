@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
 import { calcRefinance } from '../../lib/refinance';
+import { BreakEvenChart } from './BreakEvenChart';
 
 interface RefinanceCalculatorProps {
   country: CountryData;
@@ -138,6 +139,19 @@ export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculato
           This covers principal and interest only. If you are breaking a fixed-rate term early, check your
           lender&apos;s early repayment charge first. It may exceed the saving.
         </div>
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>Cumulative saving over time</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>When your monthly saving recovers the upfront refinancing cost</div>
+        <BreakEvenChart
+          monthlySavings={monthlySavings}
+          closingCosts={closingCosts}
+          breakEvenMonths={breakEvenMonths}
+          totalMonths={remainingYears * 12}
+          currency={country.currency}
+          locale={country.locale}
+        />
       </div>
     </div>
   );

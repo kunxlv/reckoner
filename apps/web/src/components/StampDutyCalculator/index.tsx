@@ -4,6 +4,7 @@ import type { CountryData } from '@reckoner/finance-data';
 import type { TransferTaxRuleSet } from '@reckoner/rules-core';
 import { calculateTransferTax } from '@reckoner/transfer-tax-engine';
 import { formatCurrency } from '../../lib/format';
+import { TaxCurveChart } from './TaxCurveChart';
 
 interface StampDutyCalculatorProps {
   country: CountryData;
@@ -154,6 +155,19 @@ export function StampDutyCalculator({ country, ruleset }: StampDutyCalculatorPro
             ))}
           </div>
         )}
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>How stamp duty scales with price</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>Tax amount and effective rate across the price range</div>
+        <TaxCurveChart
+          ruleset={ruleset}
+          surcharges={activeSurcharges}
+          relief={activeRelief}
+          currentPrice={price}
+          currency={ruleset.currency}
+          locale={country.locale}
+        />
       </div>
     </div>
   );

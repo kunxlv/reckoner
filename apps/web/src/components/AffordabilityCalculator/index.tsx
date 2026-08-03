@@ -1,9 +1,10 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import type { AffordabilityRuleSet } from '@reckoner/rules-core';
 import { calculateAffordability } from '@reckoner/affordability-engine';
 import { formatCurrency } from '../../lib/format';
+import { BorrowingChart } from './BorrowingChart';
 
 interface AffordabilityCalculatorProps {
   country: CountryData;
@@ -23,6 +24,19 @@ export function AffordabilityCalculator({ country, ruleset, defaultRate }: Affor
     { grossAnnualIncome: grossIncome, monthlyDebts, propertyPrice, annualRate, termYears, buyerType },
     ruleset,
   );
+
+  const chartData = useMemo(() => {
+    const maxIncome = Math.max(grossIncome * 2.5, 200_000);
+    const step = maxIncome / 50;
+    return Array.from({ length: 51 }, (_, i) => {
+      const income = i * step;
+      const r = calculateAffordability(
+        { grossAnnualIncome: income, monthlyDebts, propertyPrice, annualRate, termYears, buyerType },
+        ruleset,
+      );
+      return { income, maxBorrow: r.maxBorrow };
+    });
+  }, [grossIncome, monthlyDebts, propertyPrice, annualRate, termYears, buyerType, ruleset]);
 
   const inputStyle = {
     fontSize: 18,
@@ -135,6 +149,12 @@ export function AffordabilityCalculator({ country, ruleset, defaultRate }: Affor
         <div style={{ marginTop: 12, fontSize: 12, color: 'var(--color-ink-mid)', borderTop: '1px solid var(--color-hairline)', paddingTop: 12 }}>
           This is an estimate. Lenders also consider credit history, outgoings, and their own criteria.
         </div>
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>Borrowing capacity by income</div>
+        <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>How your maximum loan changes with gross income</div>
+        <BorrowingChart data={chartData} currentIncome={grossIncome} currency={country.currency} locale={country.locale} />
       </div>
     </div>
   );
