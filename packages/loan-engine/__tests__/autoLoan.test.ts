@@ -37,6 +37,7 @@ describe('calculateAutoLoan', () => {
     expect(result.financedAmount).toBe(0);
     expect(result.monthlyPayment).toBe(0);
     expect(result.schedule).toHaveLength(0);
+    expect(result.totalCost).toBe(15000 + 10000); // downPayment + tradeInValue
   });
 
   it('APR equals annualRate when no doc fee', () => {

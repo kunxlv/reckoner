@@ -24,7 +24,7 @@ export function calculateAutoLoan(input: AutoLoanInput): AutoLoanResult {
       financedAmount: 0,
       monthlyPayment: 0,
       totalInterest: 0,
-      totalCost: vehiclePrice + salesTaxAmount,
+      totalCost: downPayment + tradeInValue,
       apr: annualRate,
       schedule: [],
     };
