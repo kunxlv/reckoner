@@ -56,6 +56,34 @@ export function organizationSchema() {
   };
 }
 
+export function softwareApplicationSchema(url: string, name: string, description: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name,
+    description,
+    url,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    provider: organizationSchema(),
+  };
+}
+
+export function websiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Reckoner',
+    url: 'https://reckoner.tools',
+    description: "Financial calculators that use your country's actual rules.",
+  };
+}
+
 export function datasetSchema() {
   return {
     '@context': 'https://schema.org',

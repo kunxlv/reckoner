@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, fetchRate, fetchFxRates, COUNTRY_CODES } f
 import type { CountryCode } from '@reckoner/finance-data';
 import { webApplicationSchema, faqSchema, breadcrumbSchema, jsonLdScript, getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
+import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { Calculator } from '../../../../src/components/Calculator/index';
@@ -159,6 +160,11 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLdData) }} />
+      <CalculatorSchema
+        name={h1}
+        description={`${h1}: free mortgage calculator, no signup.`}
+        url={`https://reckoner.tools/${cc}/property/mortgage-calculator`}
+      />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/mortgage-calculator" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>

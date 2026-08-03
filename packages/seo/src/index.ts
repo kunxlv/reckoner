@@ -5,6 +5,7 @@ export { getToolMetadata } from './metadata';
 export {
   webApplicationSchema, faqSchema, breadcrumbSchema,
   organizationSchema, datasetSchema, jsonLdScript,
+  softwareApplicationSchema, websiteSchema,
 } from './jsonld';
 export { getMortgageSitemapEntries, getStaticSitemapEntries } from './sitemap';
 export { getPropertySitemapEntries, getLoanSitemapEntries } from './sitemap';

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   getToolPath, getToolCanonical, getToolHreflang, getToolMetadata,
   getPropertySitemapEntries, getLoanSitemapEntries,
+  softwareApplicationSchema, websiteSchema,
 } from '../src/index';
 
 describe('getToolPath', () => {
@@ -96,5 +97,45 @@ describe('getLoanSitemapEntries', () => {
     for (const entry of getLoanSitemapEntries()) {
       expect(entry.priority).toBe(0.8);
     }
+  });
+});
+
+describe('softwareApplicationSchema', () => {
+  it('has @type SoftwareApplication', () => {
+    const s = softwareApplicationSchema(
+      'https://reckoner.tools/us/property/mortgage-calculator',
+      'Mortgage Calculator',
+      'Monthly payment and amortisation schedule.',
+    );
+    expect(s['@type']).toBe('SoftwareApplication');
+  });
+  it('uses the provided url', () => {
+    const url = 'https://reckoner.tools/uk/loans/personal-loan';
+    const s = softwareApplicationSchema(url, 'Personal Loan', 'Desc');
+    expect(s.url).toBe(url);
+  });
+  it('sets applicationCategory to FinanceApplication', () => {
+    const s = softwareApplicationSchema(
+      'https://reckoner.tools/us/savings/compound-interest',
+      'Compound Interest',
+      'Desc',
+    );
+    expect(s.applicationCategory).toBe('FinanceApplication');
+  });
+  it('has a free Offer', () => {
+    const s = softwareApplicationSchema('https://reckoner.tools/us/property/refinance', 'Refinance', 'Desc');
+    expect((s.offers as Record<string, unknown>).price).toBe('0');
+  });
+});
+
+describe('websiteSchema', () => {
+  it('has @type WebSite', () => {
+    expect(websiteSchema()['@type']).toBe('WebSite');
+  });
+  it('url is the base URL', () => {
+    expect(websiteSchema().url).toBe('https://reckoner.tools');
+  });
+  it('name is Reckoner', () => {
+    expect(websiteSchema().name).toBe('Reckoner');
   });
 });

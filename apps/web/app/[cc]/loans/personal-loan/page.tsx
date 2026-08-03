@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-da
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
+import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { PersonalLoanCalculator } from '../../../../src/components/PersonalLoanCalculator';
@@ -94,6 +95,11 @@ export default async function PersonalLoanPage({
 
   return (
     <>
+      <CalculatorSchema
+        name="Personal Loan Calculator"
+        description="Calculate monthly payment, total interest, and true APR on a personal loan."
+        url={`https://reckoner.tools/${cc}/loans/personal-loan`}
+      />
       <Header
         currentCountry={country}
         allCountries={allCountries}

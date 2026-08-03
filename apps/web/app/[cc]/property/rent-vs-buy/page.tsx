@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate } from '@reckoner
 import type { CountryCode } from '@reckoner/finance-data';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
+import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { RentVsBuyCalculator } from '../../../../src/components/RentVsBuyCalculator';
@@ -92,6 +93,11 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
 
   return (
     <>
+      <CalculatorSchema
+        name="Rent vs Buy Calculator"
+        description="Compare the ten-year financial outcome of renting versus buying a home."
+        url={`https://reckoner.tools/${cc}/property/rent-vs-buy`}
+      />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/rent-vs-buy" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>

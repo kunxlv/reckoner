@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-da
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
+import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { AutoLoanCalculator } from '../../../../src/components/AutoLoanCalculator';
@@ -95,6 +96,11 @@ export default async function AutoLoanPage({
 
   return (
     <>
+      <CalculatorSchema
+        name="Auto Loan Calculator"
+        description="Calculate your financed amount, monthly payment, and total interest on a vehicle loan."
+        url={`https://reckoner.tools/${cc}/loans/auto-loan`}
+      />
       <Header
         currentCountry={country}
         allCountries={allCountries}
