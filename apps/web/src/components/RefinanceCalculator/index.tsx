@@ -2,18 +2,11 @@
 import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
+import { calcRefinance } from '../../lib/refinance';
 
 interface RefinanceCalculatorProps {
   country: CountryData;
   defaultRate: number;
-}
-
-function monthlyPayment(principal: number, annualRate: number, termYears: number): number {
-  if (principal <= 0 || termYears <= 0) return 0;
-  const i = annualRate / 12;
-  const n = termYears * 12;
-  if (i === 0) return principal / n;
-  return (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
 
 export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculatorProps) {
@@ -23,11 +16,8 @@ export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculato
   const [remainingYears, setRemainingYears] = useState(25);
   const [closingCosts, setClosingCosts] = useState(3000);
 
-  const currentPayment = monthlyPayment(balance, currentRate, remainingYears);
-  const newPayment = monthlyPayment(balance, newRate, remainingYears);
-  const monthlySavings = currentPayment - newPayment;
-  const breakEvenMonths = monthlySavings > 0 ? Math.ceil(closingCosts / monthlySavings) : null;
-  const totalSavingOverTerm = monthlySavings * remainingYears * 12 - closingCosts;
+  const result = calcRefinance({ balance, currentRate, newRate, remainingYears, closingCosts });
+  const { monthlySavings, breakEvenMonths, totalSavingOverTerm } = result;
 
   const inputStyle = {
     fontSize: 18,

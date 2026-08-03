@@ -2,18 +2,11 @@
 import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
+import { calcRentVsBuy } from '../../lib/rentVsBuy';
 
 interface RentVsBuyCalculatorProps {
   country: CountryData;
   defaultRate: number;
-}
-
-function monthlyPayment(principal: number, annualRate: number, termYears: number): number {
-  if (principal <= 0 || termYears <= 0) return 0;
-  const i = annualRate / 12;
-  const n = termYears * 12;
-  if (i === 0) return principal / n;
-  return (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
 
 export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculatorProps) {
@@ -25,22 +18,8 @@ export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculato
   const [annualAppreciation, setAnnualAppreciation] = useState(0.04);
   const [annualInvestmentReturn, setAnnualInvestmentReturn] = useState(0.07);
 
-  const loanAmount = propertyPrice - deposit;
-  const mortgagePayment = monthlyPayment(loanAmount, annualRate, termYears);
-
-  // Opportunity cost: what the deposit would earn if invested instead
-  const monthlyOpportunityCost = deposit * (annualInvestmentReturn / 12);
-
-  // Effective monthly cost of buying (mortgage + opportunity cost on deposit)
-  const effectiveBuyCost = mortgagePayment + monthlyOpportunityCost;
-
-  // Property value after 10 years
-  const yearsToProject = 10;
-  const futureValue = propertyPrice * Math.pow(1 + annualAppreciation, yearsToProject);
-  const equity = futureValue - loanAmount; // simplified (ignores principal paydown)
-  const rentTotal = monthlyRent * yearsToProject * 12;
-  const buyTotal = effectiveBuyCost * yearsToProject * 12;
-  const netBuyAdvantage = rentTotal - buyTotal + (equity - deposit);
+  const result = calcRentVsBuy({ propertyPrice, deposit, annualRate, termYears, monthlyRent, annualAppreciation, annualInvestmentReturn });
+  const { mortgagePayment, effectiveBuyCost, netBuyAdvantage } = result;
 
   const inputStyle = {
     fontSize: 18,
