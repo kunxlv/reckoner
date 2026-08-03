@@ -10,7 +10,9 @@ export type CalculatorContext =
   | { type: 'stamp-duty' }
   | { type: 'affordability'; method: AffordabilityMethod }
   | { type: 'refinance' }
-  | { type: 'rent-vs-buy' };
+  | { type: 'rent-vs-buy' }
+  | { type: 'personal-loan' }
+  | { type: 'auto-loan' };
 
 interface ItemProps {
   label: string;
@@ -258,13 +260,63 @@ Net buy advantage = rent total − (effective buy cost × 120) + (equity − dep
   );
 }
 
+function PersonalLoanFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Your payment is fixed so the loan reaches exactly zero at the end of the term (standard annuity):
+      </p>
+      {pre(`M = P × [ i(1+i)^n ] / [ (1+i)^n − 1 ]
+
+  P  loan principal
+  n  term in months
+  i  annual rate ÷ 12`)}
+      <p style={{ margin: 0 }}>
+        <strong style={{ fontWeight: 500 }}>APR (when an origination fee is charged):</strong>{' '}
+        The APR is the annual rate {code('r')} that makes the present value of all payments equal
+        to the net amount you actually receive ({code('principal − fee')}). It is solved numerically:
+      </p>
+      {pre(`principal − fee = M × [ (1+r)^n − 1 ] / [ r(1+r)^n ]`)}
+      <p style={{ margin: 0 }}>
+        When there is no fee, APR equals the nominal rate. The APR is always higher than the
+        nominal rate when a fee is deducted before disbursement.
+      </p>
+    </div>
+  );
+}
+
+function AutoLoanFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        The amount financed is the vehicle price plus sales tax, minus your down payment and trade-in value, plus any dealer documentation fee:
+      </p>
+      {pre(`financed = vehicle price × (1 + tax rate) − down payment − trade-in + doc fee`)}
+      <p style={{ margin: 0 }}>
+        The monthly payment is then the standard annuity on the financed amount:
+      </p>
+      {pre(`M = F × [ i(1+i)^n ] / [ (1+i)^n − 1 ]
+
+  F  financed amount
+  n  term in months
+  i  annual rate ÷ 12`)}
+      <p style={{ margin: 0 }}>
+        <strong style={{ fontWeight: 500 }}>APR (when a doc fee is charged):</strong>{' '}
+        The doc fee is rolled into the loan but is not part of the net proceeds you receive.
+        APR is the rate that equates your net proceeds ({code('financed − doc fee')}) to the
+        present value of all payments.
+      </p>
+    </div>
+  );
+}
+
 interface TrustDisclosuresProps {
   context: CalculatorContext;
   rateResult?: RateResult | null;
 }
 
 export function TrustDisclosures({ context, rateResult = null }: TrustDisclosuresProps) {
-  const showRateSection = context.type !== 'stamp-duty';
+  const showRateSection = context.type !== 'stamp-duty' && context.type !== 'personal-loan' && context.type !== 'auto-loan';
 
   return (
     <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)' }}>
@@ -274,6 +326,8 @@ export function TrustDisclosures({ context, rateResult = null }: TrustDisclosure
         {context.type === 'affordability' && <AffordabilityFormula method={context.method} />}
         {context.type === 'refinance' && <RefinanceFormula />}
         {context.type === 'rent-vs-buy' && <RentVsBuyFormula />}
+        {context.type === 'personal-loan' && <PersonalLoanFormula />}
+        {context.type === 'auto-loan' && <AutoLoanFormula />}
       </AccordionItem>
 
       {showRateSection && (
