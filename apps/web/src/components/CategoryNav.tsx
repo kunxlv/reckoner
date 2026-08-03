@@ -57,7 +57,8 @@ export function CategoryNav({ label, categoryPath, tools, currentCc }: CategoryN
           style={{
             position: 'absolute',
             top: '100%',
-            left: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
             marginTop: 8,
             minWidth: 220,
             background: 'var(--color-canvas)',

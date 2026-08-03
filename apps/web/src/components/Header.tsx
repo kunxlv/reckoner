@@ -106,19 +106,19 @@ export function Header({ currentCountry, allCountries, currentTool = 'property/m
             reckoner.
           </Link>
           <CategoryNav
-            label="Property"
+            label="Mortgages & Property"
             categoryPath="property"
             tools={PROPERTY_TOOLS}
             currentCc={current.code}
           />
           <CategoryNav
-            label="Loans"
+            label="Loans & Debt"
             categoryPath="loans"
             tools={LOANS_TOOLS}
             currentCc={current.code}
           />
           <CategoryNav
-            label="Savings"
+            label="Savings & Investing"
             categoryPath="savings"
             tools={SAVINGS_TOOLS}
             currentCc={current.code}
