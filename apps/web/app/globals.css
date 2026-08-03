@@ -114,3 +114,7 @@ a:hover {
   background: var(--color-surface);
   color: var(--color-ink);
 }
+
+details summary::-webkit-details-marker {
+  display: none;
+}
