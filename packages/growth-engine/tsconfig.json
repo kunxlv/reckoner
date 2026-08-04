@@ -1,0 +1,4 @@
+{
+  "extends": "@reckoner/config/tsconfig",
+  "include": ["src/**/*", "__tests__/**/*"]
+}
