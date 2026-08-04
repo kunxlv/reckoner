@@ -3,6 +3,7 @@ import {
   getStaticSitemapEntries,
   getPropertySitemapEntries,
   getLoanSitemapEntries,
+  getSavingsSitemapEntries,
 } from '@reckoner/seo';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -10,5 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...getStaticSitemapEntries(),
     ...getPropertySitemapEntries(),
     ...getLoanSitemapEntries(),
+    ...getSavingsSitemapEntries(),
   ];
 }

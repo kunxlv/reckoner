@@ -66,3 +66,25 @@ export function getLoanSitemapEntries(): SitemapEntry[] {
   }
   return entries;
 }
+
+const SAVINGS_SLUGS = [
+  'compound-interest',
+  'retirement',
+  'savings-goal',
+  'fire-number',
+  'investment-return',
+] as const;
+
+export function getSavingsSitemapEntries(): SitemapEntry[] {
+  const entries: SitemapEntry[] = [];
+  for (const cc of COUNTRY_CODES) {
+    for (const slug of SAVINGS_SLUGS) {
+      entries.push({
+        url: `${BASE}/${cc}/savings/${slug}`,
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      });
+    }
+  }
+  return entries;
+}

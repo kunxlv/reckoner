@@ -38,11 +38,11 @@ const LOANS_TOOLS: LandingTool[] = [
 ];
 
 const SAVINGS_TOOLS: LandingTool[] = [
-  { slug: 'compound-interest', label: 'Compound Interest', description: 'Final balance, total contributions, and interest earned over time.', comingSoon: true },
-  { slug: 'retirement', label: 'Retirement Projection', description: 'How long your savings last in retirement, with inflation adjustment.', comingSoon: true },
-  { slug: 'savings-goal', label: 'Savings Goal', description: 'How long to reach a target amount with regular contributions.', comingSoon: true },
-  { slug: 'fire-number', label: 'FIRE Number', description: "The portfolio size you need to retire early, and when you'll reach it.", comingSoon: true },
-  { slug: 'investment-return', label: 'Investment Return / CAGR', description: 'Compound annual growth rate between any two values.', comingSoon: true },
+  { slug: 'compound-interest', label: 'Compound Interest', description: 'Final balance, total contributions, and interest earned over time.' },
+  { slug: 'retirement', label: 'Retirement Projection', description: 'How long your savings last in retirement, with inflation adjustment.' },
+  { slug: 'savings-goal', label: 'Savings Goal', description: 'How long to reach a target amount with regular contributions.' },
+  { slug: 'fire-number', label: 'FIRE Number', description: "The portfolio size you need to retire early, and when you'll reach it." },
+  { slug: 'investment-return', label: 'Investment Return / CAGR', description: 'Compound annual growth rate between any two values.' },
 ];
 
 const CATEGORIES = [

@@ -8,6 +8,6 @@ export {
   softwareApplicationSchema, websiteSchema,
 } from './jsonld';
 export { getMortgageSitemapEntries, getStaticSitemapEntries } from './sitemap';
-export { getPropertySitemapEntries, getLoanSitemapEntries } from './sitemap';
+export { getPropertySitemapEntries, getLoanSitemapEntries, getSavingsSitemapEntries } from './sitemap';
 export type { CountryCode, HreflangEntry } from './types';
 export type { SitemapEntry } from './sitemap';

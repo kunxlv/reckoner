@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   getToolPath, getToolCanonical, getToolHreflang, getToolMetadata,
-  getPropertySitemapEntries, getLoanSitemapEntries,
+  getPropertySitemapEntries, getLoanSitemapEntries, getSavingsSitemapEntries,
   softwareApplicationSchema, websiteSchema,
 } from '../src/index';
 
@@ -102,6 +102,27 @@ describe('getLoanSitemapEntries', () => {
     const entries = getLoanSitemapEntries();
     expect(entries.some((e) => e.url.includes('credit-card-payoff'))).toBe(true);
     expect(entries.some((e) => e.url.includes('debt-strategy'))).toBe(true);
+  });
+});
+
+describe('getSavingsSitemapEntries', () => {
+  it('returns 60 entries (5 slugs × 12 countries)', () => {
+    expect(getSavingsSitemapEntries()).toHaveLength(60);
+  });
+  it('all URLs contain /savings/', () => {
+    for (const entry of getSavingsSitemapEntries()) {
+      expect(entry.url).toMatch(/\/savings\//);
+    }
+  });
+  it('priority is 0.8 for all entries', () => {
+    for (const entry of getSavingsSitemapEntries()) {
+      expect(entry.priority).toBe(0.8);
+    }
+  });
+  it('includes compound-interest and fire-number URLs', () => {
+    const entries = getSavingsSitemapEntries();
+    expect(entries.some((e) => e.url.includes('compound-interest'))).toBe(true);
+    expect(entries.some((e) => e.url.includes('fire-number'))).toBe(true);
   });
 });
 

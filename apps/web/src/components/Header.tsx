@@ -32,11 +32,11 @@ const LOANS_TOOLS = [
 ];
 
 const SAVINGS_TOOLS = [
-  { slug: 'compound-interest', label: 'Compound Interest', comingSoon: true },
-  { slug: 'retirement', label: 'Retirement Projection', comingSoon: true },
-  { slug: 'savings-goal', label: 'Savings Goal', comingSoon: true },
-  { slug: 'fire-number', label: 'FIRE Number', comingSoon: true },
-  { slug: 'investment-return', label: 'Investment Return / CAGR', comingSoon: true },
+  { slug: 'compound-interest', label: 'Compound Interest' },
+  { slug: 'retirement', label: 'Retirement Projection' },
+  { slug: 'savings-goal', label: 'Savings Goal' },
+  { slug: 'fire-number', label: 'FIRE Number' },
+  { slug: 'investment-return', label: 'Investment Return / CAGR' },
 ];
 
 interface HeaderProps {
