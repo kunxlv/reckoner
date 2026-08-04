@@ -63,7 +63,7 @@ describe('calculateAccumulation', () => {
       years: 1,
     });
     expect(result.totalContributed).toBe(1200);
-    expect(result.finalBalance).toBeGreaterThan(1200);
+    expect(result.finalBalance).toBeCloseTo(1200, 4);
   });
 
   it('continuous compounding, no contributions', () => {

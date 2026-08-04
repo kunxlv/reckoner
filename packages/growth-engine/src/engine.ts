@@ -23,11 +23,9 @@ export function calculateAccumulation(input: AccumulationInput): AccumulationRes
         balance = balance * (1 + quarterlyRate) + monthlyContribution * 3;
       }
     } else if (compoundingFrequency === 'annually') {
-      // Annual compounding: principal compounds annually, contributions accumulate with interest
-      // Formula: P*(1+r) + PMT*12 * (1 + r/2)
-      // This assumes contributions spread throughout the year and earn interest on average
+      // Annual compounding: principal compounds annually, contributions added as lump sum
       const annualContrib = monthlyContribution * 12;
-      balance = balance * (1 + annualRate) + annualContrib * (1 + annualRate / 2);
+      balance = balance * (1 + annualRate) + annualContrib;
     } else {
       // continuous: FV = P*e^r + PMT_annual*(e^r - 1)/r
       const er = Math.exp(annualRate);
