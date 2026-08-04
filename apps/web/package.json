@@ -21,6 +21,7 @@
     "@reckoner/rules-core": "workspace:*",
     "@reckoner/seo": "workspace:*",
     "@reckoner/debt-strategy-engine": "workspace:*",
+    "@reckoner/growth-engine": "workspace:*",
     "@reckoner/transfer-tax-engine": "workspace:*",
     "@reckoner/ui": "workspace:*",
     "next": "^15",

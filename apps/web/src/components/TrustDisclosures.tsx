@@ -14,7 +14,12 @@ export type CalculatorContext =
   | { type: 'personal-loan' }
   | { type: 'auto-loan' }
   | { type: 'credit-card-payoff' }
-  | { type: 'debt-strategy' };
+  | { type: 'debt-strategy' }
+  | { type: 'compound-interest' }
+  | { type: 'retirement' }
+  | { type: 'savings-goal' }
+  | { type: 'fire-number' }
+  | { type: 'investment-return' };
 
 interface ItemProps {
   label: string;
@@ -359,6 +364,87 @@ Avalanche:     extra budget → debt with the highest APR.
   );
 }
 
+function CompoundInterestFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Balance after <em>t</em> years depends on how often interest is added to principal:
+      </p>
+      {pre(`Monthly:    A = P × (1 + r/12)^(12t)  + contributions added monthly
+Quarterly:  A = P × (1 + r/4)^(4t)   + contributions added quarterly
+Annually:   A = P × (1 + r)^t         + contributions added annually
+Continuous: A = P × e^(r×t)           + contributions as continuous flow`)}
+      <p style={{ margin: 0 }}>
+        <strong style={{ fontWeight: 500 }}>P</strong> = starting principal,{' '}
+        <strong style={{ fontWeight: 500 }}>r</strong> = annual rate as decimal,{' '}
+        <strong style={{ fontWeight: 500 }}>t</strong> = years.
+        Real balance adjusts for inflation: divide each year&apos;s nominal balance by (1 + inflation)^t.
+      </p>
+    </div>
+  );
+}
+
+function RetirementFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Two phases: accumulation (saving) then drawdown (spending).
+      </p>
+      {pre(`Accumulation: balance grows with monthly contributions and compounding
+Drawdown:     each year, withdraw → apply growth → reduce withdrawal if inflation set`)}
+      <p style={{ margin: 0 }}>
+        The drawdown phase runs until the portfolio reaches zero or the cap of 100 years, whichever
+        comes first. If the annual return exceeds the withdrawal rate, the portfolio is sustainable indefinitely.
+      </p>
+    </div>
+  );
+}
+
+function SavingsGoalFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        Projects balance year by year using monthly compounding until the goal is reached:
+      </p>
+      {pre(`Each month: balance = balance × (1 + r/12) + monthly_contribution`)}
+      <p style={{ margin: 0 }}>
+        The calculator scans the annual schedule for the first year where balance ≥ goal,
+        and reports that as the years-to-goal.
+      </p>
+    </div>
+  );
+}
+
+function FireNumberFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        The FIRE number is the portfolio size that, at your chosen withdrawal rate, funds your annual expenses indefinitely:
+      </p>
+      {pre(`FIRE number = annual expenses ÷ withdrawal rate`)}
+      <p style={{ margin: 0 }}>
+        For example, £40,000 annual expenses at a 4% withdrawal rate requires a £1,000,000 portfolio.
+        The calculator then projects your savings growth month by month to find the year you cross that threshold.
+      </p>
+    </div>
+  );
+}
+
+function InvestmentReturnFormula() {
+  return (
+    <div style={{ fontSize: 15, lineHeight: 1.65, color: 'var(--color-ink-deep)', display: 'grid', gap: 12 }}>
+      <p style={{ margin: 0 }}>
+        CAGR (Compound Annual Growth Rate) is the annualised rate that converts an initial value to a final value over <em>n</em> years:
+      </p>
+      {pre(`CAGR = (Final Value / Initial Value)^(1 / years) − 1`)}
+      <p style={{ margin: 0 }}>
+        Projection mode reverses this: given a starting value, CAGR, and years, it projects the future value
+        using monthly compounding: {code('A = P × (1 + CAGR/12)^(12×years)')}.
+      </p>
+    </div>
+  );
+}
+
 interface TrustDisclosuresProps {
   context: CalculatorContext;
   rateResult?: RateResult | null;
@@ -369,7 +455,12 @@ export function TrustDisclosures({ context, rateResult = null }: TrustDisclosure
     && context.type !== 'personal-loan'
     && context.type !== 'auto-loan'
     && context.type !== 'credit-card-payoff'
-    && context.type !== 'debt-strategy';
+    && context.type !== 'debt-strategy'
+    && context.type !== 'compound-interest'
+    && context.type !== 'retirement'
+    && context.type !== 'savings-goal'
+    && context.type !== 'fire-number'
+    && context.type !== 'investment-return';
 
   return (
     <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)' }}>
@@ -383,6 +474,11 @@ export function TrustDisclosures({ context, rateResult = null }: TrustDisclosure
         {context.type === 'auto-loan' && <AutoLoanFormula />}
         {context.type === 'credit-card-payoff' && <CreditCardPayoffFormula />}
         {context.type === 'debt-strategy' && <DebtStrategyFormula />}
+        {context.type === 'compound-interest' && <CompoundInterestFormula />}
+        {context.type === 'retirement' && <RetirementFormula />}
+        {context.type === 'savings-goal' && <SavingsGoalFormula />}
+        {context.type === 'fire-number' && <FireNumberFormula />}
+        {context.type === 'investment-return' && <InvestmentReturnFormula />}
       </AccordionItem>
 
       {showRateSection && (
