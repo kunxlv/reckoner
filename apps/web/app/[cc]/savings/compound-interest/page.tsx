@@ -5,6 +5,8 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { CompoundInterestCalculator } from '../../../../src/components/CompoundInterestCalculator';
@@ -62,6 +64,25 @@ const DEFAULTS: Record<string, { principal: number; annualRate: number }> = {
   in: { principal: 100000, annualRate: 0.07 },
 };
 
+const COMPOUND_INTEREST_FAQS = [
+  {
+    question: 'How does compounding frequency affect returns?',
+    answer: 'More frequent compounding produces slightly higher returns because interest starts earning interest sooner. Monthly compounding at 6% produces an effective annual rate of about 6.17%, versus exactly 6% for annual compounding. Over long periods this difference compounds into a meaningful amount.',
+  },
+  {
+    question: 'What is the difference between real and nominal returns?',
+    answer: 'A nominal return is the stated rate before adjusting for inflation. A real return subtracts inflation, showing actual purchasing-power growth. At 6% nominal and 3% inflation, your real return is roughly 3% — your money grows in quantity but less in what it can buy.',
+  },
+  {
+    question: 'Do regular monthly contributions matter much?',
+    answer: 'Dramatically. Each monthly contribution immediately starts earning compound interest for the rest of the investment horizon. Over 30 years at 7%, contributing £500/$500 a month on top of an initial lump sum can generate far more from the contributions alone than from the starting principal.',
+  },
+  {
+    question: 'What is the Rule of 72?',
+    answer: 'Divide 72 by the annual interest rate to estimate how many years it takes to double your money. At 6% per year, your money doubles in approximately 72 ÷ 6 = 12 years. It is a useful mental shortcut, though the calculator gives exact figures for any inputs.',
+  },
+];
+
 export async function generateMetadata({ params }: { params: Promise<{ cc: string }> }): Promise<Metadata> {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
@@ -85,6 +106,12 @@ export default async function CompoundInterestPage({ params }: { params: Promise
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Savings', href: `/${cc}/savings` },
+        { name: h1, href: `/${cc}/savings/compound-interest` },
+      ]} />
+      <FAQSchema faqs={COMPOUND_INTEREST_FAQS} />
       <CalculatorSchema
         name="Compound Interest Calculator"
         description="Project savings growth with compound interest across four compounding frequencies, with optional monthly contributions and inflation adjustment."

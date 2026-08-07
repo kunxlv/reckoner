@@ -5,6 +5,7 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { SavingsGoalCalculator } from '../../../../src/components/SavingsGoalCalculator';
@@ -85,6 +86,11 @@ export default async function SavingsGoalPage({ params }: { params: Promise<{ cc
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Savings', href: `/${cc}/savings` },
+        { name: h1, href: `/${cc}/savings/savings-goal` },
+      ]} />
       <CalculatorSchema
         name="Savings Goal Calculator"
         description="Calculate how long it will take to reach your savings goal with compound interest and regular monthly contributions."

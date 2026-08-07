@@ -5,6 +5,7 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { FireNumberCalculator } from '../../../../src/components/FireNumberCalculator';
@@ -85,6 +86,11 @@ export default async function FireNumberPage({ params }: { params: Promise<{ cc:
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Savings', href: `/${cc}/savings` },
+        { name: h1, href: `/${cc}/savings/fire-number` },
+      ]} />
       <CalculatorSchema
         name="FIRE Number Calculator"
         description="Calculate the portfolio size needed to retire early and achieve financial independence. Uses the 4% rule and customisable withdrawal rates."

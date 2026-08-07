@@ -5,6 +5,7 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { InvestmentReturnCalculator } from '../../../../src/components/InvestmentReturnCalculator';
@@ -85,6 +86,11 @@ export default async function InvestmentReturnPage({ params }: { params: Promise
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Savings', href: `/${cc}/savings` },
+        { name: h1, href: `/${cc}/savings/investment-return` },
+      ]} />
       <CalculatorSchema
         name="Investment Return Calculator"
         description="Calculate CAGR or project investment growth. Find the annualised return between two values, or forecast a future portfolio value from a starting amount and rate."

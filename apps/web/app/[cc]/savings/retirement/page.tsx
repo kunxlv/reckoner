@@ -5,6 +5,8 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { RetirementCalculator } from '../../../../src/components/RetirementCalculator';
@@ -62,6 +64,25 @@ const DEFAULTS: Record<string, { savings: number; annualRate: number }> = {
   in: { savings: 500000, annualRate: 0.10 },
 };
 
+const RETIREMENT_FAQS = [
+  {
+    question: 'What withdrawal rate is sustainable in retirement?',
+    answer: "The 4% rule — withdraw 4% of your initial portfolio in year one, then adjust for inflation annually — has historically sustained a 30-year US retirement in most market scenarios. 3.5% is more conservative for longer retirements or non-US portfolios. Use the drawdown phase of this calculator to model your specific horizon.",
+  },
+  {
+    question: 'How does inflation affect a retirement portfolio?',
+    answer: 'At 3% annual inflation, purchasing power halves in roughly 24 years. If you withdraw a fixed nominal amount, inflation silently erodes what it can buy. Toggle the real balance view to see your portfolio in today\'s purchasing power — a more honest picture of retirement security.',
+  },
+  {
+    question: 'What is sequence-of-returns risk?',
+    answer: 'If markets fall sharply in your early retirement years, you sell more units to fund withdrawals — permanently reducing the portfolio\'s ability to recover in better years. The same average return over 30 years produces very different outcomes depending on whether the bad years come first or last. This is why holding some cash or bonds in early retirement is often recommended.',
+  },
+  {
+    question: 'Should I include pension or Social Security income in this calculator?',
+    answer: 'Yes — subtract any guaranteed annual income (pension, Social Security, annuity) from your planned annual expenses to find how much your investment portfolio needs to supply. A £15,000/year pension on £30,000 annual expenses means your portfolio only needs to fund £15,000 per year.',
+  },
+];
+
 export async function generateMetadata({ params }: { params: Promise<{ cc: string }> }): Promise<Metadata> {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
@@ -85,6 +106,12 @@ export default async function RetirementPage({ params }: { params: Promise<{ cc:
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Savings', href: `/${cc}/savings` },
+        { name: h1, href: `/${cc}/savings/retirement` },
+      ]} />
+      <FAQSchema faqs={RETIREMENT_FAQS} />
       <CalculatorSchema
         name="Retirement Projection Calculator"
         description="Project retirement savings through accumulation and drawdown phases, with inflation adjustment and real vs nominal balance comparison."
