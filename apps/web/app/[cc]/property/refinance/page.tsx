@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate } from '@reckoner
 import type { CountryCode } from '@reckoner/finance-data';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -94,6 +95,11 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Property', href: `/${cc}/property` },
+        { name: h1, href: `/${cc}/property/refinance` },
+      ]} />
       <CalculatorSchema
         name="Refinance Break-Even Calculator"
         description="Calculate how many months until a lower interest rate recovers your closing costs."

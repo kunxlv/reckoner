@@ -5,6 +5,7 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { asOf } from '@reckoner/rules-core';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -93,6 +94,11 @@ export default async function StampDutyPage({ params }: { params: Promise<{ cc: 
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Property', href: `/${cc}/property` },
+        { name: h1, href: `/${cc}/property/stamp-duty` },
+      ]} />
       <CalculatorSchema
         name="Stamp Duty Calculator"
         description="Calculate stamp duty and property transfer tax using official government rates."

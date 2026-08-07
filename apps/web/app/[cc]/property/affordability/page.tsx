@@ -5,6 +5,7 @@ import type { CountryCode } from '@reckoner/finance-data';
 import { asOf } from '@reckoner/rules-core';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -98,6 +99,11 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Property', href: `/${cc}/property` },
+        { name: h1, href: `/${cc}/property/affordability` },
+      ]} />
       <CalculatorSchema
         name="Affordability Calculator"
         description="Calculate your maximum mortgage borrowing under your country's regulatory limits."
