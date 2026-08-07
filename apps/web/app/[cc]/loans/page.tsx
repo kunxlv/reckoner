@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
+import { getHubMetadata, breadcrumbSchema, faqSchema, jsonLdScript } from '@reckoner/seo';
 import { Header } from '../../../src/components/Header';
 import { Footer } from '../../../src/components/Footer';
 
@@ -41,6 +42,25 @@ const TOOLS: Array<{ slug: string; label: string; description: string }> = [
   },
 ];
 
+const LOANS_FAQS = [
+  {
+    question: 'What is APR?',
+    answer: 'Annual Percentage Rate (APR) is the total yearly cost of borrowing, expressed as a percentage. Unlike the headline interest rate, APR includes fees such as origination charges, so it is a more accurate measure of what you will actually pay.',
+  },
+  {
+    question: 'What is the difference between a personal loan and a credit card?',
+    answer: 'Personal loans have a fixed loan amount, fixed repayment schedule, and typically lower interest rates. Credit cards are revolving credit: you can borrow repeatedly up to a limit, but if you do not clear the balance monthly you pay high interest on the outstanding amount.',
+  },
+  {
+    question: 'What is the debt avalanche strategy?',
+    answer: 'Pay the minimum on all debts, then direct every extra pound or dollar toward the debt with the highest interest rate first. Once that is cleared, move to the next highest rate. This approach minimises total interest paid compared to any other ordering.',
+  },
+  {
+    question: 'Does paying off a loan early save money?',
+    answer: 'Yes — you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee (sometimes one to two months of interest). Check your loan agreement before making a lump-sum payment to confirm the net saving.',
+  },
+];
+
 export async function generateMetadata({
   params,
 }: {
@@ -49,12 +69,12 @@ export async function generateMetadata({
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
   const countryName = NAME_MAP[cc] ?? cc.toUpperCase();
-  return {
-    title: `Loan Calculators for ${countryName} | Reckoner`,
-    description: `Loan and debt calculators for ${countryName}: personal loan, auto loan, credit card payoff, and debt strategy comparison. Free, no signup.`,
-    alternates: { canonical: `https://reckoner.tools/${cc}/loans` },
-    robots: { index: true, follow: true },
-  };
+  return getHubMetadata(
+    cc as CountryCode,
+    'loans',
+    `Loan Calculators for ${countryName} | Reckoner`,
+    `Loan and debt calculators for ${countryName}: personal loan, auto loan, credit card payoff, and debt strategy comparison. Free, no signup.`,
+  );
 }
 
 export default async function LoansHubPage({
@@ -71,6 +91,18 @@ export default async function LoansHubPage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', href: '/' },
+              { name: 'Loans', href: `/${cc}/loans` },
+            ]),
+            faqSchema(LOANS_FAQS),
+          ]),
+        }}
+      />
       <Header currentCountry={country} allCountries={allCountries} currentTool="loans" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>

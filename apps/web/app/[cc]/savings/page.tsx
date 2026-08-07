@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
+import { getHubMetadata, breadcrumbSchema, faqSchema, jsonLdScript } from '@reckoner/seo';
 import { Header } from '../../../src/components/Header';
 import { Footer } from '../../../src/components/Footer';
 
@@ -46,16 +47,39 @@ const TOOLS: Array<{ slug: string; label: string; description: string }> = [
   },
 ];
 
-export async function generateMetadata({ params }: { params: Promise<{ cc: string }> }): Promise<Metadata> {
+const SAVINGS_FAQS = [
+  {
+    question: 'What is compound interest?',
+    answer: 'Compound interest is interest calculated on both the original principal and all previously earned interest. Because each period\'s interest earns interest in subsequent periods, growth accelerates over time — the longer the horizon, the more dramatic the effect.',
+  },
+  {
+    question: 'What is a safe withdrawal rate in retirement?',
+    answer: 'The 4% rule — based on the Trinity Study of US market data — suggests withdrawing 4% of your portfolio in year one, then adjusting for inflation each year. Actual sustainability depends on asset allocation, market returns, and the length of your retirement. 3.5% is more conservative for longer retirements.',
+  },
+  {
+    question: 'What is a FIRE number?',
+    answer: 'The FIRE (Financial Independence, Retire Early) number is the portfolio size at which your investment returns can cover your annual expenses indefinitely. It is calculated as annual expenses ÷ withdrawal rate. At a 4% withdrawal rate, you need 25 times your annual expenses.',
+  },
+  {
+    question: 'What is CAGR?',
+    answer: 'Compound Annual Growth Rate (CAGR) is the smoothed annual rate at which an investment grew from its starting value to its ending value over a given period. It shows the equivalent steady growth rate, even if actual year-by-year returns varied significantly.',
+  },
+];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ cc: string }>;
+}): Promise<Metadata> {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
   const countryName = NAME_MAP[cc] ?? cc.toUpperCase();
-  return {
-    title: `Savings & Investing Calculators for ${countryName} | Reckoner`,
-    description: `Compound interest, retirement, savings goal, FIRE number, and investment return calculators for ${countryName}. Free, no signup.`,
-    alternates: { canonical: `https://reckoner.tools/${cc}/savings` },
-    robots: { index: true, follow: true },
-  };
+  return getHubMetadata(
+    cc as CountryCode,
+    'savings',
+    `Savings & Investing Calculators for ${countryName} | Reckoner`,
+    `Compound interest, retirement, savings goal, FIRE number, and investment return calculators for ${countryName}. Free, no signup.`,
+  );
 }
 
 export default async function SavingsHubPage({ params }: { params: Promise<{ cc: string }> }) {
@@ -68,6 +92,18 @@ export default async function SavingsHubPage({ params }: { params: Promise<{ cc:
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', href: '/' },
+              { name: 'Savings', href: `/${cc}/savings` },
+            ]),
+            faqSchema(SAVINGS_FAQS),
+          ]),
+        }}
+      />
       <Header currentCountry={country} allCountries={allCountries} currentTool="savings" />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>

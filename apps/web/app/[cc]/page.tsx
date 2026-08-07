@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
+import { getHubMetadata, breadcrumbSchema, jsonLdScript } from '@reckoner/seo';
 import { Header } from '../../src/components/Header';
 import { Footer } from '../../src/components/Footer';
 
@@ -83,12 +84,12 @@ export async function generateMetadata({
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) return {};
   const countryName = NAME_MAP[cc] ?? cc.toUpperCase();
-  return {
-    title: `Financial Calculators for ${countryName} | Reckoner`,
-    description: `Mortgage, loans, and savings calculators for ${countryName}, each using official local rules and current rates. Free, no signup.`,
-    alternates: { canonical: `https://reckoner.tools/${cc}` },
-    robots: { index: true, follow: true },
-  };
+  return getHubMetadata(
+    cc as CountryCode,
+    '',
+    `Financial Calculators for ${countryName} | Reckoner`,
+    `Mortgage, loans, and savings calculators for ${countryName}, each using official local rules and current rates. Free, no signup.`,
+  );
 }
 
 export default async function CountryHubPage({
@@ -107,6 +108,17 @@ export default async function CountryHubPage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbSchema([
+              { name: 'Home', href: '/' },
+              { name: countryName, href: `/${cc}` },
+            ]),
+          ),
+        }}
+      />
       <Header currentCountry={country} allCountries={allCountries} />
       <main id="main">
         <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
