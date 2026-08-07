@@ -4,6 +4,7 @@ import {
   getPropertySitemapEntries, getLoanSitemapEntries, getSavingsSitemapEntries,
   softwareApplicationSchema, websiteSchema,
   getHubCanonical, getHubHreflang, getHubMetadata,
+  getHubSitemapEntries,
 } from '../src/index';
 
 describe('getToolPath', () => {
@@ -234,5 +235,37 @@ describe('getHubMetadata', () => {
   it('hreflang languages object has 13 entries', () => {
     const meta = getHubMetadata('us', 'savings', 'Title', 'Desc');
     expect(Object.keys(meta.alternates?.languages ?? {})).toHaveLength(13);
+  });
+});
+
+describe('getHubSitemapEntries', () => {
+  it('returns 48 entries (4 hub types × 12 countries)', () => {
+    expect(getHubSitemapEntries()).toHaveLength(48);
+  });
+  it('includes country hub /us with no trailing slash', () => {
+    const entries = getHubSitemapEntries();
+    expect(entries.some((e) => e.url === 'https://reckoner.tools/us')).toBe(true);
+  });
+  it('includes category hubs for all three categories', () => {
+    const urls = getHubSitemapEntries().map((e) => e.url);
+    expect(urls.some((u) => u.includes('/us/property'))).toBe(true);
+    expect(urls.some((u) => u.includes('/us/loans'))).toBe(true);
+    expect(urls.some((u) => u.includes('/us/savings'))).toBe(true);
+  });
+  it('country hub has priority 0.9', () => {
+    const entry = getHubSitemapEntries().find((e) => e.url === 'https://reckoner.tools/us');
+    expect(entry?.priority).toBe(0.9);
+  });
+  it('category hub has priority 0.8', () => {
+    const entry = getHubSitemapEntries().find(
+      (e) => e.url === 'https://reckoner.tools/us/property',
+    );
+    expect(entry?.priority).toBe(0.8);
+  });
+  it('covers all 12 countries', () => {
+    const urls = getHubSitemapEntries().map((e) => e.url);
+    for (const cc of ['us', 'uk', 'ca', 'au', 'ie', 'de', 'nl', 'nz', 'fr', 'es', 'sg', 'in']) {
+      expect(urls.some((u) => u.includes(`/${cc}/property`))).toBe(true);
+    }
   });
 });

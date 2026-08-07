@@ -88,3 +88,20 @@ export function getSavingsSitemapEntries(): SitemapEntry[] {
   }
   return entries;
 }
+
+const HUB_CATEGORIES = ['', 'property', 'loans', 'savings'] as const;
+
+export function getHubSitemapEntries(): SitemapEntry[] {
+  const entries: SitemapEntry[] = [];
+  for (const cc of COUNTRY_CODES) {
+    for (const category of HUB_CATEGORIES) {
+      const path = category === '' ? `/${cc}` : `/${cc}/${category}`;
+      entries.push({
+        url: `${BASE}${path}`,
+        changeFrequency: 'weekly',
+        priority: category === '' ? 0.9 : 0.8,
+      });
+    }
+  }
+  return entries;
+}
