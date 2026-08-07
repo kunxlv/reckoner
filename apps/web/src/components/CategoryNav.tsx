@@ -5,6 +5,8 @@ import Link from 'next/link';
 export interface NavTool {
   slug: string;
   label: string;
+  description: string;
+  icon: React.ReactNode;
   comingSoon?: boolean;
 }
 
@@ -17,6 +19,7 @@ interface CategoryNavProps {
 
 export function CategoryNav({ label, categoryPath, tools, currentCc }: CategoryNavProps) {
   const [open, setOpen] = useState(false);
+  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,58 +63,78 @@ export function CategoryNav({ label, categoryPath, tools, currentCc }: CategoryN
             left: '50%',
             transform: 'translateX(-50%)',
             marginTop: 8,
-            minWidth: 220,
+            minWidth: 280,
+            width: 'max-content',
+            maxWidth: 'calc(100vw - 32px)',
             background: 'var(--color-canvas)',
             border: '1px solid var(--color-hairline)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.09)',
             zIndex: 50,
           }}
         >
           {tools.map((tool) =>
             tool.comingSoon ? (
-              <span
+              <div
                 key={tool.slug}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '10px 16px',
-                  fontSize: 14,
-                  color: 'var(--color-ink-mute)',
+                  gap: 14,
+                  padding: '10px 14px',
+                  borderBottom: '1px solid var(--color-hairline-subtle)',
+                  opacity: 0.4,
                   cursor: 'default',
                   userSelect: 'none',
                 }}
               >
-                {tool.label}
-                <span
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase',
-                    color: 'var(--color-ink-mute)',
-                  }}
-                >
-                  Soon
-                </span>
-              </span>
+                <div style={{
+                  width: 36, height: 36, flexShrink: 0,
+                  background: 'var(--color-ink-deep)',
+                  color: 'var(--color-canvas)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {tool.icon}
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--color-ink-mid)' }}>{tool.label}</span>
+                    <span style={{ fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-ink-mute)' }}>Soon</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--color-ink-mute)', marginTop: 2, lineHeight: 1.4 }}>{tool.description}</div>
+                </div>
+              </div>
             ) : (
               <Link
                 key={tool.slug}
                 href={`/${currentCc}/${categoryPath}/${tool.slug}`}
                 onClick={() => setOpen(false)}
+                onMouseEnter={() => setHoveredSlug(tool.slug)}
+                onMouseLeave={() => setHoveredSlug(null)}
                 style={{
-                  display: 'block',
-                  padding: '10px 16px',
-                  fontSize: 14,
-                  color: 'var(--color-ink)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  padding: '10px 14px',
                   textDecoration: 'none',
+                  borderBottom: '1px solid var(--color-hairline-subtle)',
+                  background: hoveredSlug === tool.slug ? 'var(--color-surface)' : 'transparent',
+                  transition: 'background 120ms',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-surface)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
-                {tool.label}
+                <div style={{
+                  width: 36, height: 36, flexShrink: 0,
+                  background: 'var(--color-ink-deep)',
+                  color: 'var(--color-canvas)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {tool.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--color-ink)', lineHeight: 1.3 }}>{tool.label}</div>
+                  <div style={{ fontSize: 12, color: 'var(--color-ink-mute)', marginTop: 2, lineHeight: 1.4 }}>{tool.description}</div>
+                </div>
               </Link>
-            ),
+            )
           )}
         </div>
       )}

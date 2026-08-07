@@ -1,27 +1,28 @@
 'use client';
 import { useState } from 'react';
-import type { CountryData } from '@reckoner/finance-data';
+import type { CountryData, FxResult } from '@reckoner/finance-data';
 import { calculateCAGR, calculateAccumulation } from '@reckoner/growth-engine';
+import { SliderInput, SegmentedControl, CurrencyToggle } from '@reckoner/ui';
 import { formatCurrency } from '../../lib/format';
-import { FieldLabel } from '../ui/FieldLabel';
-import { CurrencyInput } from '../ui/CurrencyInput';
 import { ReturnChart } from './ReturnChart';
 
 interface Props {
   country: CountryData;
   defaultInitialValue: number;
   defaultAnnualRate: number;
+  fxResult?: (FxResult & { rates: Record<string, number> }) | null;
 }
 
 type Mode = 'find-cagr' | 'project';
 
-const inputStyle = {
-  fontSize: 18, fontWeight: 400, border: 'none', borderBottom: '1px solid var(--color-ink)',
-  background: 'transparent', outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
-} as const;
+const MODE_OPTIONS = [
+  { label: 'Find CAGR', value: 'find-cagr' as Mode },
+  { label: 'Project growth', value: 'project' as Mode },
+];
 
-export function InvestmentReturnCalculator({ country, defaultInitialValue, defaultAnnualRate }: Props) {
+export function InvestmentReturnCalculator({ country, defaultInitialValue, defaultAnnualRate, fxResult }: Props) {
   const [mode, setMode] = useState<Mode>('find-cagr');
+  const [fxCurrency, setFxCurrency] = useState('EUR');
 
   // Find CAGR mode state
   const [initialValue, setInitialValue] = useState(defaultInitialValue);
@@ -47,14 +48,30 @@ export function InvestmentReturnCalculator({ country, defaultInitialValue, defau
   });
 
   const fmt = (v: number) => formatCurrency(v, country.currency, country.locale);
-  const metricLabel = { fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 } as const;
-  const metricValue = { fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' } as const;
 
-  const tabStyle = (active: boolean) => ({
-    padding: '8px 20px', fontSize: 14, fontWeight: 500, cursor: 'pointer',
-    border: '1px solid var(--color-hairline)', background: active ? 'var(--color-ink)' : 'transparent',
-    color: active ? 'var(--color-canvas)' : 'var(--color-ink)',
-  } as const);
+  const fxRate = fxResult?.rates?.[fxCurrency];
+  const convertedProjBalance = fxResult && fxRate && mode === 'project' && projResult.finalBalance > 0
+    ? formatCurrency(projResult.finalBalance * fxRate, fxCurrency, 'en-US') + ' ' + fxCurrency
+    : null;
+
+  const initialValueMax = Math.max(100000, defaultInitialValue * 5);
+  const initialValueStep = defaultInitialValue >= 100000 ? 5000 : 1000;
+  const finalValueMax = Math.max(1000000, defaultInitialValue * 20);
+  const finalValueStep = defaultInitialValue >= 100000 ? 10000 : 1000;
+
+  const findCagrSecondaries = [
+    { label: 'Total return', value: (cagrResult.totalReturnPercent * 100).toFixed(1) + '%' },
+    { label: 'Absolute gain', value: fmt(cagrResult.absoluteGain) },
+    { label: 'Period', value: cagrYears + ' yrs' },
+  ];
+
+  const projectSecondaries = [
+    { label: 'Total gain', value: fmt(projResult.totalInterest) },
+    { label: 'Multiplier', value: projectInitial > 0 ? (projResult.finalBalance / projectInitial).toFixed(2) + '×' : ' - ' },
+    { label: 'Period', value: projectYears + ' yrs' },
+  ];
+
+  const secondaries = mode === 'find-cagr' ? findCagrSecondaries : projectSecondaries;
 
   const chartData = mode === 'find-cagr'
     ? Array.from({ length: Math.max(1, Math.round(cagrYears)) + 1 }, (_, i) => ({
@@ -64,108 +81,108 @@ export function InvestmentReturnCalculator({ country, defaultInitialValue, defau
     : [{ year: 0, value: projectInitial }, ...projResult.schedule.map((r) => ({ year: r.year, value: r.balance }))];
 
   return (
-    <div style={{ display: 'grid', gap: 32 }}>
-      <div style={{ display: 'flex', gap: 0 }}>
-        <button type="button" style={tabStyle(mode === 'find-cagr')} onClick={() => setMode('find-cagr')}>
-          Find CAGR
-        </button>
-        <button type="button" style={tabStyle(mode === 'project')} onClick={() => setMode('project')}>
-          Project growth
-        </button>
+    <div style={{ display: 'grid', gap: 24 }}>
+      <SegmentedControl
+        label="Mode"
+        tooltip="Choose whether to calculate the return rate from known start/end values, or project growth at a given rate"
+        options={MODE_OPTIONS}
+        value={mode}
+        onChange={(v) => setMode(v as Mode)}
+      />
+
+      <div className="calc-panel-result" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px 24px' }}>
+        <div style={{ fontSize: 12, color: 'var(--color-ink-mid)', marginBottom: 8, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>
+          {mode === 'find-cagr' ? 'CAGR' : 'Projected value'}
+        </div>
+        <div style={{ fontSize: 56, fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+          {mode === 'find-cagr'
+            ? (cagrResult.cagr * 100).toFixed(2) + '%'
+            : fmt(projResult.finalBalance)}
+        </div>
+        {fxResult && mode === 'project' && (
+          <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16 }}>
+            <CurrencyToggle convertedAmount={convertedProjBalance} targetCurrency={fxCurrency} rateDate={fxResult.asOf} onCurrencyChange={(c) => setFxCurrency(c)} />
+          </div>
+        )}
+        <div className="result-stats" style={{ marginTop: 16 }}>
+          {secondaries.map((m, i) => (
+            <div key={m.label} className={i > 0 ? 'stat-sep' : ''}>
+              <div style={{ fontSize: 11, color: 'var(--color-ink-mid)', marginBottom: 6, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>{m.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 300, letterSpacing: '-0.02em' }}>{m.value}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {mode === 'find-cagr' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-          <div>
-            <FieldLabel tooltip="The value of the investment at the start of the period">
-              Initial value
-            </FieldLabel>
-            <CurrencyInput
-              currencySymbol={country.currencySymbol}
-              type="number" min={0.01} value={initialValue}
-              onChange={(e) => setInitialValue(parseFloat(e.target.value) || 1)}
+      <div className="calc-panel" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px', display: 'grid', gap: 26 }}>
+        {mode === 'find-cagr' ? (
+          <>
+            <SliderInput
+              label="Initial value"
+              tooltip="The value of the investment at the start of the period"
+              value={initialValue}
+              min={100}
+              max={initialValueMax}
+              step={initialValueStep}
+              onChange={(v) => setInitialValue(v)}
+              prefix={country.currencySymbol}
             />
-          </div>
-          <div>
-            <FieldLabel tooltip="The value of the investment at the end of the period">
-              Final value
-            </FieldLabel>
-            <CurrencyInput
-              currencySymbol={country.currencySymbol}
-              type="number" min={0.01} value={finalValue}
-              onChange={(e) => setFinalValue(parseFloat(e.target.value) || 1)}
+            <SliderInput
+              label="Final value"
+              tooltip="The value of the investment at the end of the period"
+              value={finalValue}
+              min={100}
+              max={finalValueMax}
+              step={finalValueStep}
+              onChange={(v) => setFinalValue(v)}
+              prefix={country.currencySymbol}
             />
-          </div>
-          <div>
-            <FieldLabel tooltip="The length of the investment period in years">
-              Years
-            </FieldLabel>
-            <input type="number" min={1} max={100} style={inputStyle} value={cagrYears}
-              onChange={(e) => setCagrYears(parseInt(e.target.value, 10) || 1)} />
-          </div>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-          <div>
-            <FieldLabel tooltip="The initial amount you invest">
-              Starting value
-            </FieldLabel>
-            <CurrencyInput
-              currencySymbol={country.currencySymbol}
-              type="number" min={0} value={projectInitial}
-              onChange={(e) => setProjectInitial(parseFloat(e.target.value) || 0)}
+            <SliderInput
+              label="Years"
+              tooltip="The length of the investment period in years"
+              value={cagrYears}
+              min={1}
+              max={50}
+              step={1}
+              onChange={(v) => setCagrYears(v)}
+              suffix=" yr"
             />
-          </div>
-          <div>
-            <FieldLabel tooltip="Compound Annual Growth Rate — the constant yearly return used to project future value">
-              CAGR (%)
-            </FieldLabel>
-            <input type="number" min={0} max={100} step={0.1} style={inputStyle} value={projectCagr}
-              onChange={(e) => setProjectCagr(parseFloat(e.target.value) || 0)} />
-          </div>
-          <div>
-            <FieldLabel tooltip="How many years into the future to project the investment">
-              Years
-            </FieldLabel>
-            <input type="number" min={1} max={100} style={inputStyle} value={projectYears}
-              onChange={(e) => setProjectYears(parseInt(e.target.value, 10) || 1)} />
-          </div>
-        </div>
-      )}
-
-      {mode === 'find-cagr' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-          <div>
-            <div style={metricLabel}>CAGR</div>
-            <div style={metricValue}>{(cagrResult.cagr * 100).toFixed(2)}%</div>
-          </div>
-          <div>
-            <div style={metricLabel}>Total return</div>
-            <div style={metricValue}>{(cagrResult.totalReturnPercent * 100).toFixed(1)}%</div>
-          </div>
-          <div>
-            <div style={metricLabel}>Absolute gain</div>
-            <div style={metricValue}>{fmt(cagrResult.absoluteGain)}</div>
-          </div>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-          <div>
-            <div style={metricLabel}>Projected final value</div>
-            <div style={metricValue}>{fmt(projResult.finalBalance)}</div>
-          </div>
-          <div>
-            <div style={metricLabel}>Total gain</div>
-            <div style={metricValue}>{fmt(projResult.totalInterest)}</div>
-          </div>
-          <div>
-            <div style={metricLabel}>Multiplier</div>
-            <div style={metricValue}>
-              {projectInitial > 0 ? `${(projResult.finalBalance / projectInitial).toFixed(2)}×` : '—'}
-            </div>
-          </div>
-        </div>
-      )}
+          </>
+        ) : (
+          <>
+            <SliderInput
+              label="Starting value"
+              tooltip="The initial amount you invest"
+              value={projectInitial}
+              min={100}
+              max={initialValueMax}
+              step={initialValueStep}
+              onChange={(v) => setProjectInitial(v)}
+              prefix={country.currencySymbol}
+            />
+            <SliderInput
+              label="CAGR"
+              tooltip="Compound Annual Growth Rate  -  the constant yearly return used to project future value"
+              value={projectCagr}
+              min={0}
+              max={30}
+              step={0.1}
+              onChange={(v) => setProjectCagr(v)}
+              suffix="%"
+            />
+            <SliderInput
+              label="Years"
+              tooltip="How many years into the future to project the investment"
+              value={projectYears}
+              min={1}
+              max={50}
+              step={1}
+              onChange={(v) => setProjectYears(v)}
+              suffix=" yr"
+            />
+          </>
+        )}
+      </div>
 
       <ReturnChart
         data={chartData}

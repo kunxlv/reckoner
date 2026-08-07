@@ -258,7 +258,7 @@ Renting
 
 Net buy advantage = rent total − (effective buy cost × 120) + (equity − deposit)`)}
       <p style={{ margin: 0 }}>
-        A positive net advantage means buying comes out ahead over 10 years with these assumptions. The result is highly sensitive to the appreciation and investment return inputs — small changes shift the outcome significantly.
+        A positive net advantage means buying comes out ahead over 10 years with these assumptions. The result is highly sensitive to the appreciation and investment return inputs  -  small changes shift the outcome significantly.
       </p>
       <p style={{ margin: 0 }}>
         The model does not account for principal paydown reducing the outstanding balance over time (equity is simplified to future value minus original loan). It also excludes maintenance, insurance, and transaction costs.
@@ -350,7 +350,7 @@ function DebtStrategyFormula() {
       </p>
       {pre(`interest per debt = balance × (APR ÷ 12)  [floored to cents]
 
-Minimum-only:  pay each debt's minimum — no extra budget applied.
+Minimum-only:  pay each debt's minimum  -  no extra budget applied.
 
 Snowball:      extra budget → debt with the lowest remaining balance.
                When a debt reaches zero, add its minimum to the budget.

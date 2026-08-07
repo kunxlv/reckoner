@@ -49,7 +49,7 @@ export default function RatesPage() {
           </table>
         </div>
       </main>
-      <Footer countries={countries} />
+      <Footer />
     </>
   );
 }

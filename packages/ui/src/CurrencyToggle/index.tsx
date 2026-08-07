@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface CurrencyToggleProps {
   convertedAmount: string | null;   // null = unavailable
@@ -10,18 +10,38 @@ interface CurrencyToggleProps {
 }
 
 const CURRENCIES = [
-  { code: 'EUR', label: 'Euro · EUR' },
-  { code: 'GBP', label: 'Pound sterling · GBP' },
-  { code: 'CAD', label: 'Canadian dollar · CAD' },
-  { code: 'AUD', label: 'Australian dollar · AUD' },
-  { code: 'NZD', label: 'New Zealand dollar · NZD' },
-  { code: 'SGD', label: 'Singapore dollar · SGD' },
-  { code: 'INR', label: 'Indian rupee · INR' },
-  { code: 'USD', label: 'US dollar · USD' },
+  { code: 'EUR', label: 'Euro' },
+  { code: 'GBP', label: 'Pound sterling' },
+  { code: 'CAD', label: 'Canadian dollar' },
+  { code: 'AUD', label: 'Australian dollar' },
+  { code: 'NZD', label: 'New Zealand dollar' },
+  { code: 'SGD', label: 'Singapore dollar' },
+  { code: 'INR', label: 'Indian rupee' },
+  { code: 'USD', label: 'US dollar' },
 ];
+
+const RATE_SOURCE: Record<string, string> = {
+  EUR: 'European Central Bank',
+  GBP: 'Bank of England',
+  USD: 'Federal Reserve',
+  CAD: 'Bank of Canada',
+  AUD: 'Reserve Bank of Australia',
+  NZD: 'Reserve Bank of New Zealand',
+  SGD: 'Monetary Authority of Singapore',
+  INR: 'Reserve Bank of India',
+};
 
 export function CurrencyToggle({ convertedAmount, targetCurrency, rateDate, rateStale, onCurrencyChange }: CurrencyToggleProps) {
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   if (convertedAmount === null) {
     return (
@@ -31,8 +51,10 @@ export function CurrencyToggle({ convertedAmount, targetCurrency, rateDate, rate
     );
   }
 
+  const rateSource = RATE_SOURCE[targetCurrency] ?? 'reference rate';
+
   return (
-    <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', position: 'relative' }}>
+    <div ref={ref} style={{ fontSize: 13, color: 'var(--color-ink-mid)', position: 'relative' }}>
       <span>
         {'≈ '}
         <button
@@ -41,50 +63,75 @@ export function CurrencyToggle({ convertedAmount, targetCurrency, rateDate, rate
           style={{
             fontSize: 13, background: 'none', border: 'none', cursor: 'pointer',
             padding: 0, display: 'inline-flex', alignItems: 'center', gap: 3,
-            borderBottom: '1px dotted var(--color-ink-mid)', color: 'var(--color-ink-mid)',
+            borderBottom: '1px dotted var(--color-ink-mid)',
+            color: 'var(--color-ink-mid)',
           }}
           aria-label="Show the payment in another currency"
           aria-expanded={open}
         >
           {convertedAmount}
-          <svg width="8" height="5" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d={open ? 'M1 5l4-4 4 4' : 'M1 1l4 4 4-4'} stroke="currentColor" strokeWidth="1.5" />
+          <svg
+            width="8" height="5" viewBox="0 0 10 6" fill="none" aria-hidden="true"
+            style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 160ms cubic-bezier(0.2,0,0,1)' }}
+          >
+            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         </button>
-        {' · European Central Bank reference rate'}
+        {` · ${rateSource} rate`}
         {rateStale ? ` from ${rateDate}. We refresh once each business day.` : `, ${rateDate}`}
       </span>
 
       {open && (
-        <div style={{
-          position: 'absolute', left: 0, top: 'calc(100% + 6px)',
-          background: 'var(--color-canvas)', border: '1px solid var(--color-ink)', borderRadius: 0,
-          boxShadow: '0 24px 64px -12px rgba(0,0,0,0.24)',
-          width: 240, padding: '8px 0', zIndex: 20,
-        }}>
-          <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', padding: '6px 14px' }}>Also show in</div>
-          {CURRENCIES.map((c) => (
-            <button
-              key={c.code}
-              type="button"
-              onClick={() => { onCurrencyChange?.(c.code); setOpen(false); }}
-              style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                width: '100%', fontSize: 14, padding: '9px 14px',
-                background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const,
-                color: 'var(--color-ink)',
-                outline: c.code === targetCurrency ? '1px solid var(--color-ink)' : 'none',
-                outlineOffset: -1,
-              }}
-            >
-              <span>{c.label}</span>
-              {c.code === targetCurrency && (
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" strokeWidth="1.8" />
-                </svg>
-              )}
-            </button>
-          ))}
+        <div
+          role="dialog"
+          aria-label="Choose currency to convert into"
+          className="currency-dropdown"
+        >
+          <div style={{ padding: '10px 14px 8px' }}>
+            <div style={{
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.1em',
+              textTransform: 'uppercase' as const, color: 'var(--color-ink-mid)',
+            }}>
+              Currency
+            </div>
+          </div>
+
+          <div style={{ borderTop: '1px solid var(--color-hairline)' }}>
+            {CURRENCIES.map((c) => {
+              const selected = c.code === targetCurrency;
+              return (
+                <button
+                  key={c.code}
+                  type="button"
+                  onClick={() => { onCurrencyChange?.(c.code); setOpen(false); }}
+                  style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    width: '100%', padding: '9px 14px',
+                    background: selected ? 'var(--color-surface)' : 'transparent',
+                    border: 'none', borderBottom: '1px solid var(--color-hairline)',
+                    cursor: 'pointer', textAlign: 'left' as const,
+                    transition: 'background 100ms',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selected) (e.currentTarget as HTMLElement).style.background = 'var(--color-surface)';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selected) (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  }}
+                >
+                  <span style={{
+                    fontSize: 13, fontWeight: selected ? 600 : 400,
+                    color: 'var(--color-ink)',
+                  }}>
+                    {c.label}
+                  </span>
+                  <span style={{ fontSize: 12, color: 'var(--color-ink-mid)', fontWeight: 500 }}>
+                    {c.code}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

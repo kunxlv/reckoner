@@ -64,7 +64,7 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
   // FX conversion
   const fxRate = fxResult?.rates?.[fxCurrency];
   const convertedPayment = result && fxRate && fxResult
-    ? `≈ ${formatCurrency(result.payment * fxRate, fxCurrency, 'en-US')} ${fxCurrency}`
+    ? `${formatCurrency(result.payment * fxRate, fxCurrency, 'en-US')} ${fxCurrency}`
     : null;
 
   // Overpayment callout
@@ -89,8 +89,8 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
       display: 'inline-flex', alignItems: 'center',
       border: '1px solid var(--color-hairline)', borderRadius: 0,
       padding: '8px 12px', width: 64,
-      background: 'var(--color-canvas)',
-    }}>
+      background: 'var(--color-canvas)', flexShrink: 0,
+    }} className="deposit-pct-badge">
       <span style={{
         fontSize: 16, width: '100%', textAlign: 'right',
         fontVariantNumeric: 'tabular-nums',
@@ -146,7 +146,7 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
       )}
 
       {/* Inputs */}
-      <div style={{
+      <div className="calc-panel" style={{
         background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0,
         padding: '28px 32px', marginTop: 24, display: 'grid', gap: 26,
       }}>
@@ -206,12 +206,12 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
         >
           <div style={{ display: 'grid', gap: 18 }}>
             {country.propertyTax && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              <div className="inline-field-row">
                 <span>
                   <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Property tax</label>
                   <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>National average. Your area may differ.</div>
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                <span className="inline-field-box" style={{ border: '1px solid var(--color-hairline)' }}>
                   <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/yr</span>
                   <input
                     type="text"
@@ -223,9 +223,9 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
                 </span>
               </div>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <div className="inline-field-row">
               <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Home insurance</label>
-              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+              <span className="inline-field-box" style={{ border: '1px solid var(--color-hairline)' }}>
                 <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/yr</span>
                 <input
                   type="text"
@@ -237,12 +237,12 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
               </span>
             </div>
             {isUS && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              <div className="inline-field-row">
                 <span>
                   <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>PMI</label>
                   <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>Drops off automatically at 78% loan-to-value.</div>
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+                <span className="inline-field-box" style={{ border: '1px solid var(--color-hairline)' }}>
                   <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}/mo</span>
                   <input
                     type="text"
@@ -254,12 +254,12 @@ export function Calculator({ country, rateResult, fxResult, urlSearch }: Calcula
                 </span>
               </div>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <div className="inline-field-row">
               <span>
                 <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>Extra monthly payment</label>
                 <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 2 }}>See what even a small amount does to your total interest.</div>
               </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '8px 12px', width: 120, justifyContent: 'space-between', flexShrink: 0, background: 'var(--color-canvas)' }}>
+              <span className="inline-field-box" style={{ border: '1px solid var(--color-hairline)' }}>
                 <span style={{ color: 'var(--color-ink-mid)' }}>{country.currencySymbol}</span>
                 <input
                   type="text"

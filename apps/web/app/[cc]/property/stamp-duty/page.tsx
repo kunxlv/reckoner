@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES, loadStampDutyRules } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, loadStampDutyRules, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { asOf } from '@reckoner/rules-core';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
 import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { StampDutyCalculator } from '../../../../src/components/StampDutyCalculator';
@@ -78,6 +79,29 @@ const LOCAL_CALLOUT: Record<string, { heading: string; body: string } | null> = 
   in: { heading: 'Women buyers get a concession in many states', body: "Several states charge lower stamp duty when the property is registered in a woman's name. Maharashtra charges 5% for women versus 6% for men. Delhi charges 4% for women versus 6% for men. Karnataka and UP also offer concessions. Registering in a woman's name can save several lakh rupees on a typical purchase." },
 };
 
+const FAQS = [
+  {
+    question: 'When is stamp duty paid?',
+    answer: 'In most countries, stamp duty or transfer tax must be paid at or before completion of the property purchase. In the UK, SDLT is due within 14 days of completion. In Australia, it is due within 30 days of settlement. Your solicitor or conveyancer will normally arrange payment on your behalf from the completion funds.',
+  },
+  {
+    question: 'Do first-time buyers pay less stamp duty?',
+    answer: 'Many countries offer relief for first-time buyers. In England, first-time buyers pay 0% on the first £300,000 and 5% up to £500,000 (as of April 2025). Australia offers state-level exemptions or concessions. The Netherlands offers a full exemption for buyers under 35 on properties under €510,000. Toggle the buyer type above to see the rate that applies to you.',
+  },
+  {
+    question: 'Is stamp duty tax-deductible?',
+    answer: 'Stamp duty or transfer tax is not deductible against income tax for owner-occupiers in most countries. However, it is typically added to the cost base of the property for capital gains tax purposes, reducing your taxable gain when you eventually sell. Investors in some jurisdictions may have different treatment  -  consult a tax adviser for your specific situation.',
+  },
+  {
+    question: 'What happens if I buy a second home?',
+    answer: 'Most countries charge a surcharge for second or additional properties. In England, there is a 5% surcharge on the full purchase price. In Singapore, Additional Buyer Stamp Duty (ABSD) applies to all properties beyond the first. In the Netherlands, investors pay 10.4% rather than the owner-occupier rate of 2%. Toggle "Additional property" above to see the impact.',
+  },
+  {
+    question: 'Does stamp duty apply to new-build properties?',
+    answer: 'Stamp duty rules for new-builds vary by country. In France, new-build properties are exempt from droits de mutation but attract 20% VAT on the purchase price. In England, SDLT applies to both new and existing properties at the same rates. In Spain, new developments attract IVA at 10% instead of ITP transfer tax. Check the rules for the country the property is in.',
+  },
+];
+
 export default async function StampDutyPage({ params }: { params: Promise<{ cc: string }> }) {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) notFound();
@@ -88,12 +112,18 @@ export default async function StampDutyPage({ params }: { params: Promise<{ cc: 
   const versions = await loadStampDutyRules(cc as CountryCode);
   const ruleset = asOf(versions);
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   const h1 = H1[cc] ?? 'Stamp Duty / Transfer Tax Calculator';
   const answerFirst = ANSWER_FIRST[cc] ?? '';
   const callout = LOCAL_CALLOUT[cc] ?? null;
 
   return (
     <>
+      <FAQSchema faqs={FAQS} />
       <BreadcrumbSchema items={[
         { name: 'Home', href: '/' },
         { name: 'Property', href: `/${cc}/property` },
@@ -106,8 +136,8 @@ export default async function StampDutyPage({ params }: { params: Promise<{ cc: 
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/stamp-duty" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -120,15 +150,15 @@ export default async function StampDutyPage({ params }: { params: Promise<{ cc: 
                   Standard model
                 </div>
               )}
-              <StampDutyCalculator country={country} ruleset={ruleset} />
+              <StampDutyCalculator country={country} ruleset={ruleset} fxResult={fxResult} />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
           <TrustDisclosures context={{ type: 'stamp-duty' }} />
 
@@ -142,10 +172,44 @@ export default async function StampDutyPage({ params }: { params: Promise<{ cc: 
             <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--color-ink-mid)', margin: 0 }}>
               Rates sourced from {ruleset.provenance.source}. Last reviewed {ruleset.provenance.lastReviewed}. Effective from {ruleset.provenance.effectiveFrom}. This is an estimate for illustrative purposes only. Confirm with your solicitor or conveyancer before completion.
             </p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How stamp duty is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Most countries use a progressive or banded structure: you pay different rates on each slice of the purchase price, not a flat rate on the whole amount. In England, for example, you pay 0% on the first £250,000 and 5% on the amount between £250,000 and £925,000. The effective rate  -  total tax divided by price  -  is always lower than the top marginal rate. The calculator shows both figures.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This calculator covers stamp duty or transfer tax only. Your total purchase costs will also include legal and conveyancing fees, a property survey or valuation, land registry fees, and potentially a mortgage arrangement fee. In many countries these add another 2–4% on top of the stamp duty figure. Budget for all of them before committing to a purchase price.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why our figure may differ from your solicitor&apos;s</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Rates change with budgets and legislation. This calculator uses the rates current at the date shown in the provenance note above. If a new budget has recently changed the thresholds, there may be a lag before we update. Additionally, some jurisdictions have local variations  -  Wales and Scotland use entirely separate taxes (LTT and LBTT) with different rates. Always confirm the exact figure with your solicitor before completion.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

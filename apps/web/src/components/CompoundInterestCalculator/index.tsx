@@ -1,33 +1,35 @@
 'use client';
 import { useState } from 'react';
-import type { CountryData } from '@reckoner/finance-data';
+import type { CountryData, FxResult } from '@reckoner/finance-data';
 import { calculateAccumulation } from '@reckoner/growth-engine';
+import { SliderInput, SegmentedControl, Disclosure, CurrencyToggle } from '@reckoner/ui';
 import { formatCurrency } from '../../lib/format';
-import { FieldLabel } from '../ui/FieldLabel';
-import { CurrencyInput } from '../ui/CurrencyInput';
 import { GrowthChart } from './GrowthChart';
 
 interface Props {
   country: CountryData;
   defaultPrincipal: number;
   defaultAnnualRate: number;
+  fxResult?: (FxResult & { rates: Record<string, number> }) | null;
 }
 
 type Frequency = 'monthly' | 'quarterly' | 'annually' | 'continuous';
 
-const inputStyle = {
-  fontSize: 18, fontWeight: 400, border: 'none',
-  borderBottom: '1px solid var(--color-ink)', background: 'transparent',
-  outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
-} as const;
+const FREQUENCY_OPTIONS: { label: string; value: Frequency }[] = [
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Quarterly', value: 'quarterly' },
+  { label: 'Annually', value: 'annually' },
+  { label: 'Continuous', value: 'continuous' },
+];
 
-export function CompoundInterestCalculator({ country, defaultPrincipal, defaultAnnualRate }: Props) {
+export function CompoundInterestCalculator({ country, defaultPrincipal, defaultAnnualRate, fxResult }: Props) {
   const [principal, setPrincipal] = useState(defaultPrincipal);
-  const [rate, setRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2))); // displayed as %
+  const [rate, setRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
   const [frequency, setFrequency] = useState<Frequency>('monthly');
   const [monthlyContribution, setMonthlyContribution] = useState(0);
   const [years, setYears] = useState(10);
-  const [inflationRate, setInflationRate] = useState(''); // empty = not provided
+  const [inflationRate, setInflationRate] = useState('');
+  const [fxCurrency, setFxCurrency] = useState('EUR');
 
   const inflation = inflationRate !== '' ? parseFloat(inflationRate) / 100 : undefined;
 
@@ -42,98 +44,113 @@ export function CompoundInterestCalculator({ country, defaultPrincipal, defaultA
 
   const fmt = (v: number) => formatCurrency(v, country.currency, country.locale);
 
-  const metricLabel = { fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 } as const;
-  const metricValue = { fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' } as const;
+  const fxRate = fxResult?.rates?.[fxCurrency];
+  const convertedBalance = fxResult && fxRate && result.finalBalance > 0
+    ? formatCurrency(result.finalBalance * fxRate, fxCurrency, 'en-US') + ' ' + fxCurrency
+    : null;
+
+  const principalMax = Math.max(100000, defaultPrincipal * 10);
+  const principalStep = defaultPrincipal >= 100000 ? 5000 : 1000;
+  const contributionMax = Math.max(5000, defaultPrincipal / 10);
+
+  const secondaries = [
+    { label: 'Total contributed', value: fmt(result.totalContributed) },
+    { label: 'Interest earned', value: fmt(result.totalInterest) },
+    { label: 'Real balance', value: result.realFinalBalance !== undefined ? fmt(result.realFinalBalance) : ' - ' },
+  ];
 
   return (
-    <div style={{ display: 'grid', gap: 32 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div>
-          <FieldLabel tooltip="The lump sum you invest or deposit today">
-            Starting amount
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={principal}
-            onChange={(e) => setPrincipal(parseFloat(e.target.value) || 0)}
-          />
+    <div>
+      {/* Result card */}
+      <div className="calc-panel-result" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px 24px' }}>
+        <div style={{ fontSize: 12, color: 'var(--color-ink-mid)', marginBottom: 8, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>
+          Final balance
         </div>
-        <div>
-          <FieldLabel tooltip="The yearly interest rate applied to your balance">
-            Annual interest rate (%)
-          </FieldLabel>
-          <input
-            type="number" min={0} max={100} step={0.01} style={inputStyle} value={rate}
-            onChange={(e) => setRate(parseFloat(e.target.value) || 0)}
-          />
+        <div style={{ fontSize: 56, fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+          {fmt(result.finalBalance)}
         </div>
-        <div>
-          <FieldLabel tooltip="How often earned interest is added back to your principal — more frequent compounds faster">
-            Compounding frequency
-          </FieldLabel>
-          <select
-            value={frequency}
-            onChange={(e) => setFrequency(e.target.value as Frequency)}
-            style={{ ...inputStyle, cursor: 'pointer' }}
-          >
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annually">Annually</option>
-            <option value="continuous">Continuous</option>
-          </select>
-        </div>
-        <div>
-          <FieldLabel tooltip="A fixed amount added to your investment each month">
-            Monthly contribution
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={monthlyContribution}
-            onChange={(e) => setMonthlyContribution(parseFloat(e.target.value) || 0)}
-          />
-        </div>
-        <div>
-          <FieldLabel tooltip="The total duration of the investment or savings period">
-            Years
-          </FieldLabel>
-          <input
-            type="number" min={1} max={100} step={1} style={inputStyle} value={years}
-            onChange={(e) => setYears(parseInt(e.target.value, 10) || 1)}
-          />
-        </div>
-        <div>
-          <FieldLabel tooltip="Optional — adjusts results to show the real purchasing-power value of your final balance">
-            Inflation rate (%, optional)
-          </FieldLabel>
-          <input
-            type="number" min={0} max={20} step={0.1} style={inputStyle}
-            value={inflationRate} placeholder="e.g. 2.5"
-            onChange={(e) => setInflationRate(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-        <div>
-          <div style={metricLabel}>Final balance</div>
-          <div style={metricValue}>{fmt(result.finalBalance)}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>Total contributed</div>
-          <div style={metricValue}>{fmt(result.totalContributed)}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>Interest earned</div>
-          <div style={metricValue}>{fmt(result.totalInterest)}</div>
-        </div>
-        {result.realFinalBalance !== undefined && (
-          <div>
-            <div style={metricLabel}>Real balance (inflation-adjusted)</div>
-            <div style={metricValue}>{fmt(result.realFinalBalance)}</div>
+        {fxResult && (
+          <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16 }}>
+            <CurrencyToggle convertedAmount={convertedBalance} targetCurrency={fxCurrency} rateDate={fxResult.asOf} onCurrencyChange={(c) => setFxCurrency(c)} />
           </div>
         )}
+        <div className="result-stats" style={{ marginTop: 16 }}>
+          {secondaries.map((m, i) => (
+            <div key={m.label} className={i > 0 ? 'stat-sep' : ''}>
+              <div style={{ fontSize: 11, color: 'var(--color-ink-mid)', marginBottom: 6, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>{m.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 300, letterSpacing: '-0.02em' }}>{m.value}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
+      {/* Input panel */}
+      <div className="calc-panel" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px', marginTop: 24, display: 'grid', gap: 26 }}>
+        <SliderInput
+          label="Starting amount"
+          tooltip="The lump sum you invest or deposit today"
+          value={principal}
+          min={0}
+          max={principalMax}
+          step={principalStep}
+          onChange={(v) => setPrincipal(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Annual interest rate"
+          tooltip="The yearly interest rate applied to your balance"
+          value={rate}
+          min={0}
+          max={30}
+          step={0.1}
+          onChange={(v) => setRate(v)}
+          suffix="%"
+        />
+        <SegmentedControl
+          label="Compounding"
+          tooltip="How often earned interest is added back to your principal  -  more frequent compounds faster"
+          options={FREQUENCY_OPTIONS}
+          value={frequency}
+          onChange={(v) => setFrequency(v as Frequency)}
+        />
+        <SliderInput
+          label="Monthly contribution"
+          tooltip="A fixed amount added to your investment each month"
+          value={monthlyContribution}
+          min={0}
+          max={contributionMax}
+          step={50}
+          onChange={(v) => setMonthlyContribution(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Years"
+          tooltip="The total duration of the investment or savings period"
+          value={years}
+          min={1}
+          max={50}
+          step={1}
+          onChange={(v) => setYears(v)}
+          suffix=" yr"
+        />
+        <Disclosure trigger="Add inflation adjustment" helper="Adjusts results to real purchasing power">
+          <div style={{ paddingTop: 18 }}>
+            <div style={{ fontSize: 12, color: 'var(--color-ink-mid)', marginBottom: 8, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>Inflation rate (%)</div>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              step={0.1}
+              placeholder="e.g. 2.5"
+              value={inflationRate}
+              onChange={(e) => setInflationRate(e.target.value)}
+              style={{ fontSize: 18, border: 'none', borderBottom: '1px solid var(--color-ink)', background: 'transparent', outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0' }}
+            />
+          </div>
+        </Disclosure>
+      </div>
+
+      {/* Chart */}
       <GrowthChart
         schedule={result.schedule}
         principal={principal}

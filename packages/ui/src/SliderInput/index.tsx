@@ -14,11 +14,12 @@ interface SliderInputProps {
   error?: string;
   secondaryField?: React.ReactNode;
   id?: string;
+  tooltip?: string;
 }
 
 export function SliderInput({
   label, value, min, max, step = 1, onChange,
-  prefix, suffix, helper, error, secondaryField, id: idProp,
+  prefix, suffix, helper, error, secondaryField, id: idProp, tooltip,
 }: SliderInputProps) {
   const autoId = useId();
   const id = idProp ?? autoId;
@@ -42,17 +43,30 @@ export function SliderInput({
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 8 }}>
-        <label htmlFor={id} style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>
-          {label}
-        </label>
-        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          <span style={{
+      {/* Label + value row — stacks vertically on mobile */}
+      <div className="slider-row">
+        <label
+          htmlFor={id}
+          style={{
+            fontSize: 12, fontWeight: 500, letterSpacing: '0.08em',
+            textTransform: 'uppercase' as const,
             display: 'inline-flex', alignItems: 'center',
-            border: `1px solid ${borderColor}`, borderRadius: 0,
-            padding: '8px 12px', minWidth: 110,
-            background: 'var(--color-canvas)',
-          }}>
+          }}
+        >
+          {label}
+          {tooltip && (
+            <span className="field-tip" style={{ marginLeft: 5, textTransform: 'none', letterSpacing: 0 }}>
+              <span className="field-tip-icon">i</span>
+              <span className="field-tip-body">{tooltip}</span>
+            </span>
+          )}
+        </label>
+
+        <div className="slider-input-group">
+          <span
+            className="slider-input-box"
+            style={{ border: `1px solid ${borderColor}` }}
+          >
             {prefix && <span style={{ color: 'var(--color-ink-mid)', marginRight: 4 }}>{prefix}</span>}
             <input
               id={id}
@@ -75,6 +89,7 @@ export function SliderInput({
         </div>
       </div>
 
+      {/* Slider track */}
       <div style={{ position: 'relative', height: 24, display: 'flex', alignItems: 'center' }}>
         <div style={{ height: 2, width: '100%', background: 'var(--color-hairline)', borderRadius: 100 }} />
         <div style={{

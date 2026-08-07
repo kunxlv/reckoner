@@ -66,13 +66,15 @@ export function CountrySelector({ current, countries }: CountrySelectorProps) {
           role="dialog"
           aria-label="Choose the country the property is in"
           style={{
-            position: 'absolute',
-            right: 0,
-            top: 'calc(100% + 8px)',
-            width: 420,
+            position: 'fixed',
+            right: 16,
+            top: 64,
+            width: 'min(420px, calc(100vw - 32px))',
             background: 'var(--color-canvas)',
             boxShadow: '0 8px 40px rgba(0,0,0,0.14)',
             zIndex: 50,
+            maxHeight: 'calc(100dvh - 80px)',
+            overflowY: 'auto',
           }}
         >
           <div style={{ padding: '20px 24px 16px' }}>

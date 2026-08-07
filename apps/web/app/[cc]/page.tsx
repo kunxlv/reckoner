@@ -26,12 +26,12 @@ const FLAG_MAP: Record<string, string> = {
 };
 
 const COUNTRY_INTRO: Record<string, string> = {
-  us: "US mortgage rates are published weekly by Freddie Mac, and standard loans compound monthly. Stamp duty — called transfer tax — varies by state, as do income multiples and debt-to-income limits. The calculators below use federal conventions and current published average rates.",
+  us: "US mortgage rates are published weekly by Freddie Mac, and standard loans compound monthly. Stamp duty  -  called transfer tax  -  varies by state, as do income multiples and debt-to-income limits. The calculators below use federal conventions and current published average rates.",
   uk: "UK mortgages typically run on fixed periods of 2–5 years before reverting to the lender's standard variable rate. Stamp duty applies in progressive bands, with first-time buyer relief. Interest is calculated monthly on the outstanding balance.",
   ca: "Canadian fixed-rate mortgages compound semi-annually by law, not monthly, which makes the effective rate slightly lower than a US-style calculation implies. CMHC mortgage insurance is required when the down payment is under 20% of the purchase price.",
   au: "Australian home loans are quoted as annual rates and calculated monthly. Most lenders offer fortnightly repayments at no extra cost, which shortens the term by the equivalent of one extra monthly payment per year. The RBA cash rate drives variable mortgage pricing.",
   ie: "Irish mortgages are regulated by the Central Bank, which caps most loans at 3.5 times gross income and 90% loan-to-value for first-time buyers. Rates are ECB-influenced, and stamp duty applies at 1% on residential properties up to €1m.",
-  de: "German mortgages (Annuitätendarlehen) fix the rate for a set period — typically 10–15 years — but the loan is not fully repaid by then. The outstanding balance at the end of the fixed period is the Restschuld, which must be refinanced at prevailing rates.",
+  de: "German mortgages (Annuitätendarlehen) fix the rate for a set period  -  typically 10–15 years  -  but the loan is not fully repaid by then. The outstanding balance at the end of the fixed period is the Restschuld, which must be refinanced at prevailing rates.",
   nl: "Dutch mortgages can be taken as annuity (annuïteiten, flat monthly payment) or linear (lineaire hypotheek, falling monthly payment). The Netherlands has a mortgage interest deduction (hypotheekrenteaftrek) that reduces the effective annual cost.",
   nz: "New Zealand home loans are quoted as annual rates. Weekly and fortnightly repayment options are widely available and reduce total interest paid. The RBNZ sets loan-to-value speed limits that restrict high-LTV lending.",
   fr: "French mortgages require borrower's insurance (assurance emprunteur) in practice, which adds meaningfully to the total annual cost (TAEG). Most French mortgages are fixed-rate with full amortisation over the term.",
@@ -50,7 +50,7 @@ interface Tool {
 const PROPERTY_TOOLS: Tool[] = [
   { slug: 'mortgage-calculator', label: 'Mortgage Calculator', description: 'Monthly payment, full amortisation schedule, and total interest.' },
   { slug: 'stamp-duty', label: 'Stamp Duty / Transfer Tax', description: 'Progressive tax calculation using official government rates, including first-time buyer relief.' },
-  { slug: 'affordability', label: 'Affordability Calculator', description: "Maximum borrowing under your country's regulatory limits — income multiples, LTV caps, or debt servicing ratios." },
+  { slug: 'affordability', label: 'Affordability Calculator', description: "Maximum borrowing under your country's regulatory limits  -  income multiples, LTV caps, or debt servicing ratios." },
   { slug: 'refinance', label: 'Refinance Break-Even', description: 'How many months until a lower rate recovers your closing costs.' },
   { slug: 'rent-vs-buy', label: 'Rent vs Buy', description: 'Ten-year projection of the financial outcome of renting versus buying.' },
 ];
@@ -121,7 +121,7 @@ export default async function CountryHubPage({
       />
       <Header currentCountry={country} allCountries={allCountries} />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
+        <div className="page-outer" style={{ paddingBottom: 64 }}>
           <h1
             style={{
               fontSize: 36,
@@ -206,7 +206,7 @@ export default async function CountryHubPage({
           ))}
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

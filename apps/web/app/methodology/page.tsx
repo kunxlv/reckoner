@@ -82,7 +82,7 @@ where:
           ))}
         </div>
       </main>
-      <Footer countries={countries} />
+      <Footer />
     </>
   );
 }

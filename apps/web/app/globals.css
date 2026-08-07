@@ -119,6 +119,283 @@ details summary::-webkit-details-marker {
   display: none;
 }
 
+/* ─── Responsive layout ──────────────────────────────────────────────────── */
+
+/* Outer page wrapper */
+.page-outer {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+
+/* Section below the main calc (chart, trust, prose) */
+.page-section {
+  max-width: 1160px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+}
+
+/* Section that sits flush with no top-margin offset */
+.page-section-flush {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Two-column layout: calculator | 300px ad sidebar */
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 48px;
+  align-items: start;
+}
+
+/* Sticky ad column */
+.ad-sidebar {
+  position: sticky;
+  top: 72px;
+}
+
+/* Footer 4-column grid */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+
+/* Result-card secondary stats row — always 3 columns */
+.result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid var(--color-hairline);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+/* Stat item with left divider */
+.stat-sep {
+  border-left: 1px solid var(--color-hairline);
+  padding-left: 24px;
+}
+
+/* Segmented control outer row */
+.segmented-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Header: desktop nav group (centred) */
+.header-desktop-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+/* Header: hamburger button (hidden on desktop) */
+.header-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--color-ink);
+}
+
+/* Mobile full-screen drawer */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-canvas);
+  border-top: 1px solid var(--color-hairline);
+  z-index: 39;
+  overflow-y: auto;
+  padding: 8px 0 32px;
+}
+.mobile-menu.open {
+  display: block;
+}
+
+/* Inner calculator panels (result card / input panel) */
+.calc-panel {
+  border: 1px solid var(--color-hairline);
+  padding: 28px 32px;
+}
+.calc-panel-result {
+  border: 1px solid var(--color-hairline);
+  padding: 28px 32px 24px;
+}
+
+/* Currency toggle dropdown — clamp so it never overflows viewport */
+.currency-dropdown {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  background: var(--color-canvas);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+  z-index: 20;
+  min-width: 200px;
+  max-width: calc(100vw - 32px);
+}
+
+/* SliderInput label + input row */
+.slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.slider-input-group {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.slider-input-box {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0;
+  padding: 8px 12px;
+  min-width: 110px;
+  background: var(--color-canvas);
+}
+
+/* Deposit % badge — hide on mobile (redundant when label is above) */
+@media (max-width: 600px) {
+  .deposit-pct-badge { display: none !important; }
+}
+
+/* Inline text-field rows (property tax, insurance, PMI, extra payment) */
+.inline-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.inline-field-box {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0;
+  padding: 8px 12px;
+  flex-shrink: 0;
+  background: var(--color-canvas);
+  justify-content: space-between;
+  min-width: 120px;
+}
+
+/* Home page category grid */
+.home-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+/* Hub tool list — single column list of tool links */
+.hub-tool-list {
+  display: grid;
+  gap: 2px;
+}
+
+/* ─── Breakpoints ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  /* Header: hide desktop nav, show hamburger */
+  .header-desktop-nav { display: none; }
+  .header-hamburger { display: flex; }
+
+  /* Home page category grid: 2 columns on tablet */
+  .home-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+  /* Calculator grid: single column, hide ad */
+  .calc-grid { grid-template-columns: 1fr; gap: 0; }
+  .ad-sidebar { display: none; }
+
+  /* Horizontal padding reduction */
+  .page-outer { padding: 32px 16px 0; }
+  .page-section { padding: 0 16px; }
+  .page-section-flush { padding: 0 16px; }
+
+  /* Inner panel padding — !important overrides inline styles */
+  .calc-panel { padding: 20px !important; }
+  .calc-panel-result { padding: 20px 20px 16px !important; }
+
+  /* Footer: 2 columns on tablet */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+
+  /* Segmented control: allow wrapping */
+  .segmented-row { flex-wrap: wrap; gap: 12px; }
+}
+
+@media (max-width: 600px) {
+  .page-outer { padding: 24px 16px 0; }
+
+  /* Stat grid: single column, horizontal separators instead of vertical */
+  .result-stats {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+  }
+  .result-stats > * {
+    padding: 14px 0;
+    border-top: 1px solid var(--color-hairline) !important;
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+  .result-stats > *:first-child {
+    border-top: none !important;
+    padding-top: 4px;
+    padding-bottom: 14px;
+  }
+
+  /* Footer: single column on phones */
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+
+  /* Home category grid: single column on phones */
+  .home-cat-grid { grid-template-columns: 1fr; gap: 32px; }
+
+  /* Inline field rows (property tax, insurance etc.) */
+  .inline-field-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .inline-field-row > span:first-child,
+  .inline-field-row > label:first-child {
+    flex: 0 0 100%;
+  }
+  .inline-field-box {
+    flex: 1;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* SliderInput: label on own line, input expands to full width */
+  .slider-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .slider-row > label,
+  .slider-row > span:first-child {
+    flex: 0 0 100%;
+  }
+  .slider-input-group {
+    width: 100%;
+    flex-shrink: 1;
+  }
+  .slider-input-box {
+    flex: 1;
+    min-width: 0 !important;
+  }
+}
+
+
 /* ─── Field tooltips ─────────────────────────────────────────────────────── */
 .field-tip {
   position: relative;
@@ -137,8 +414,8 @@ details summary::-webkit-details-marker {
   justify-content: center;
   color: var(--color-ink-mid);
   cursor: default;
-  font-style: italic;
-  font-weight: 700;
+  font-style: normal;
+  font-weight: 600;
   flex-shrink: 0;
   line-height: 1;
   user-select: none;

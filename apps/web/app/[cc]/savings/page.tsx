@@ -50,11 +50,11 @@ const TOOLS: Array<{ slug: string; label: string; description: string }> = [
 const SAVINGS_FAQS = [
   {
     question: 'What is compound interest?',
-    answer: 'Compound interest is interest calculated on both the original principal and all previously earned interest. Because each period\'s interest earns interest in subsequent periods, growth accelerates over time — the longer the horizon, the more dramatic the effect.',
+    answer: 'Compound interest is interest calculated on both the original principal and all previously earned interest. Because each period\'s interest earns interest in subsequent periods, growth accelerates over time  -  the longer the horizon, the more dramatic the effect.',
   },
   {
     question: 'What is a safe withdrawal rate in retirement?',
-    answer: 'The 4% rule — based on the Trinity Study of US market data — suggests withdrawing 4% of your portfolio in year one, then adjusting for inflation each year. Actual sustainability depends on asset allocation, market returns, and the length of your retirement. 3.5% is more conservative for longer retirements.',
+    answer: 'The 4% rule  -  based on the Trinity Study of US market data  -  suggests withdrawing 4% of your portfolio in year one, then adjusting for inflation each year. Actual sustainability depends on asset allocation, market returns, and the length of your retirement. 3.5% is more conservative for longer retirements.',
   },
   {
     question: 'What is a FIRE number?',
@@ -106,7 +106,7 @@ export default async function SavingsHubPage({ params }: { params: Promise<{ cc:
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="savings" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
+        <div className="page-outer" style={{ paddingBottom: 64 }}>
           <h1
             style={{
               fontSize: 36, fontWeight: 400, letterSpacing: '-0.03em',
@@ -121,7 +121,7 @@ export default async function SavingsHubPage({ params }: { params: Promise<{ cc:
               maxWidth: '60ch', color: 'var(--color-ink-deep)',
             }}
           >
-            Compound interest, retirement projections, and investment return — each using standard financial maths with no approximations.
+            Compound interest, retirement projections, and investment return  -  each using standard financial maths with no approximations.
           </p>
 
           <div style={{ display: 'grid', gap: 2 }}>
@@ -142,7 +142,7 @@ export default async function SavingsHubPage({ params }: { params: Promise<{ cc:
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

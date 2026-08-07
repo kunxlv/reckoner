@@ -61,7 +61,7 @@ const FAQS = [
       },
       {
         question: 'What is the difference between fixed and variable rate mortgages?',
-        answer: 'A fixed-rate mortgage locks your interest rate for a set period — typically 2–30 years depending on the country — so your monthly payment stays the same. A variable rate moves with a reference rate such as the Bank of England base rate or US SOFR, so your payment can rise or fall. Fixed rates provide payment certainty; variable rates are often lower initially but carry repricing risk.',
+        answer: 'A fixed-rate mortgage locks your interest rate for a set period  -  typically 2–30 years depending on the country  -  so your monthly payment stays the same. A variable rate moves with a reference rate such as the Bank of England base rate or US SOFR, so your payment can rise or fall. Fixed rates provide payment certainty; variable rates are often lower initially but carry repricing risk.',
       },
       {
         question: 'How much deposit do I need to buy a house?',
@@ -76,7 +76,7 @@ const FAQS = [
         answer: "Remortgaging means replacing your current mortgage with a new one, either with your existing lender or a new one, usually to secure a lower interest rate or release equity. It makes financial sense when the monthly saving exceeds the combined exit fees, valuation, and legal costs within two to three years. In the UK, most borrowers remortgage when their fixed period ends to avoid reverting to the lender's standard variable rate.",
       },
       {
-        question: 'Should I rent or buy — how do I decide?',
+        question: 'Should I rent or buy  -  how do I decide?',
         answer: 'The key financial comparison is the opportunity cost of the deposit and the monthly difference between owning costs (mortgage, maintenance, property tax) and rent. Buying is financially better when the price-to-rent ratio is low or when you plan to stay for many years. Renting preserves capital flexibility and avoids maintenance costs. The rent vs buy calculator computes the ten-year financial outcome of each option.',
       },
     ],
@@ -90,7 +90,7 @@ const FAQS = [
       },
       {
         question: 'What is APR and how is it different from the interest rate?',
-        answer: 'APR (Annual Percentage Rate) is the total cost of borrowing expressed as a yearly rate, including both the interest rate and mandatory fees such as origination fees. The interest rate only covers the cost of the money itself. If a lender charges 6% interest plus a 2% origination fee on a three-year loan, the APR is higher than 6% — often around 7.5–8% — because the fee is amortised over the loan term.',
+        answer: 'APR (Annual Percentage Rate) is the total cost of borrowing expressed as a yearly rate, including both the interest rate and mandatory fees such as origination fees. The interest rate only covers the cost of the money itself. If a lender charges 6% interest plus a 2% origination fee on a three-year loan, the APR is higher than 6%  -  often around 7.5–8%  -  because the fee is amortised over the loan term.',
       },
       {
         question: 'How is an auto loan different from a personal loan?',
@@ -98,7 +98,7 @@ const FAQS = [
       },
       {
         question: 'What is the minimum payment trap on a credit card?',
-        answer: 'Credit card minimum payments are typically set at 1–3% of the outstanding balance or a small fixed amount, whichever is greater. Paying only the minimum keeps the balance high for years because most of each payment covers interest, not principal. On a $5,000 balance at 20% APR with a 2% minimum payment, paying only the minimum takes over 30 years to clear and costs roughly $6,000 in interest — more than the original balance.',
+        answer: 'Credit card minimum payments are typically set at 1–3% of the outstanding balance or a small fixed amount, whichever is greater. Paying only the minimum keeps the balance high for years because most of each payment covers interest, not principal. On a $5,000 balance at 20% APR with a 2% minimum payment, paying only the minimum takes over 30 years to clear and costs roughly $6,000 in interest  -  more than the original balance.',
       },
       {
         question: 'What is the difference between the debt snowball and debt avalanche?',
@@ -115,7 +115,7 @@ const FAQS = [
     items: [
       {
         question: 'How does compound interest work?',
-        answer: 'Compound interest means you earn interest not just on your initial principal but also on previously accumulated interest. With annual compounding, $10,000 at 5% becomes $10,500 after one year and $11,025 after two years — the second year earns interest on $10,500, not just $10,000. More frequent compounding (monthly, daily) produces slightly higher returns. The formula is A = P(1 + r/n)^(nt), where P is principal, r the annual rate, n compounding periods per year, and t years.',
+        answer: 'Compound interest means you earn interest not just on your initial principal but also on previously accumulated interest. With annual compounding, $10,000 at 5% becomes $10,500 after one year and $11,025 after two years  -  the second year earns interest on $10,500, not just $10,000. More frequent compounding (monthly, daily) produces slightly higher returns. The formula is A = P(1 + r/n)^(nt), where P is principal, r the annual rate, n compounding periods per year, and t years.',
       },
       {
         question: 'What is the difference between nominal and real returns?',
@@ -127,7 +127,7 @@ const FAQS = [
       },
       {
         question: 'What is the FIRE number and how is it calculated?',
-        answer: 'The FIRE (Financial Independence, Retire Early) number is the portfolio size at which investment returns can sustain your spending indefinitely. It is calculated as annual expenses divided by your planned withdrawal rate — typically 4%, based on the Trinity Study. For $50,000 in annual spending at a 4% withdrawal rate, the FIRE number is $1,250,000. A lower withdrawal rate (such as 3%) produces a larger but safer target.',
+        answer: 'The FIRE (Financial Independence, Retire Early) number is the portfolio size at which investment returns can sustain your spending indefinitely. It is calculated as annual expenses divided by your planned withdrawal rate  -  typically 4%, based on the Trinity Study. For $50,000 in annual spending at a 4% withdrawal rate, the FIRE number is $1,250,000. A lower withdrawal rate (such as 3%) produces a larger but safer target.',
       },
       {
         question: 'What is CAGR and how do I use it to compare investments?',
@@ -145,7 +145,7 @@ const ALL_FAQS = FAQS.flatMap((g) => g.items);
 
 export const metadata = {
   title: "Financial Calculators for 12 Countries | Reckoner",
-  description: 'Mortgage, loan, and savings calculators for the US, UK, Canada, Australia, and 8 more countries — each applying official local rules. Free, no signup.',
+  description: 'Mortgage, loan, and savings calculators for the US, UK, Canada, Australia, and 8 more countries  -  each applying official local rules. Free, no signup.',
 };
 
 export default function HubPage() {
@@ -164,7 +164,7 @@ export default function HubPage() {
       />
       <Header allCountries={countries} />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px 0' }}>
+        <div className="page-outer" style={{ maxWidth: 1160, margin: '0 auto', paddingBottom: 0 }}>
 
           {/* Hero */}
           <h1
@@ -190,18 +190,11 @@ export default function HubPage() {
           >
             Most calculators run one formula and change the currency symbol. Ours apply each
             country&apos;s compounding convention, regulatory limits, and local costs. Choose a
-            calculator below — or pick your country to see everything available.
+            calculator below  -  or pick your country to see everything available.
           </p>
 
           {/* Tool grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 32,
-              marginBottom: 80,
-            }}
-          >
+          <div className="home-cat-grid" style={{ marginBottom: 80 }}>
             {CATEGORIES.map((category) => (
               <div key={category.path}>
                 <h2
@@ -281,7 +274,7 @@ export default function HubPage() {
           {/* Country grid */}
           <h2 style={{ fontSize: 20, fontWeight: 500, margin: '0 0 8px' }}>Choose your country</h2>
           <p style={{ fontSize: 14, color: 'var(--color-ink-mid)', margin: '0 0 24px' }}>
-            Calculators adjust to each country&apos;s rules — compounding conventions, regulatory
+            Calculators adjust to each country&apos;s rules  -  compounding conventions, regulatory
             caps, and local costs.
           </p>
 
@@ -391,7 +384,7 @@ export default function HubPage() {
           </div>
         </div>
       </main>
-      <Footer countries={countries} />
+      <Footer />
     </>
   );
 }

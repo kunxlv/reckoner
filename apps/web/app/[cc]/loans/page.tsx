@@ -57,7 +57,7 @@ const LOANS_FAQS = [
   },
   {
     question: 'Does paying off a loan early save money?',
-    answer: 'Yes — you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee (sometimes one to two months of interest). Check your loan agreement before making a lump-sum payment to confirm the net saving.',
+    answer: 'Yes  -  you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee (sometimes one to two months of interest). Check your loan agreement before making a lump-sum payment to confirm the net saving.',
   },
 ];
 
@@ -105,7 +105,7 @@ export default async function LoansHubPage({
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="loans" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
+        <div className="page-outer" style={{ paddingBottom: 64 }}>
           <h1
             style={{
               fontSize: 36,
@@ -126,7 +126,7 @@ export default async function LoansHubPage({
               color: 'var(--color-ink-deep)',
             }}
           >
-            Monthly payments, total interest, and APR — calculated with exact annuity maths, not rule-of-thumb estimates.
+            Monthly payments, total interest, and APR  -  calculated with exact annuity maths, not rule-of-thumb estimates.
           </p>
 
           <div style={{ display: 'grid', gap: 2 }}>
@@ -153,7 +153,7 @@ export default async function LoansHubPage({
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

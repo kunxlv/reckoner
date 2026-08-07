@@ -16,7 +16,7 @@ export default function AboutPage() {
           <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Found an error in the calculation or rate data? <a href="/contact" style={{ color: '#0072f0' }}>Contact us</a> with the details.</p>
         </div>
       </main>
-      <Footer countries={countries} />
+      <Footer />
     </>
   );
 }

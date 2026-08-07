@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
@@ -38,14 +38,14 @@ const INTRO: Record<string, string> = {
   us: 'Enter your loan amount, interest rate and term to see your monthly payment, total interest, and full repayment schedule. If your lender charges an origination fee, add it to see your true APR.',
   uk: 'Enter your loan amount, interest rate and term to see your monthly payment, total interest, and full repayment schedule. Adding a fee shows your true APR.',
   ca: 'Enter your loan amount, interest rate and term. Canadian personal loans typically use monthly compounding on the stated rate.',
-  au: 'Enter your loan amount, interest rate and term. Australian personal loan rates are quoted as comparison rates — use the actual interest rate for this calculator.',
+  au: 'Enter your loan amount, interest rate and term. Australian personal loan rates are quoted as comparison rates  -  use the actual interest rate for this calculator.',
   ie: 'Enter your loan amount, interest rate and term. If your lender quotes an APR, use the underlying interest rate to see how the payment is built up.',
   de: 'Geben Sie Darlehensbetrag, Zinssatz und Laufzeit ein, um Ihre monatliche Rate zu berechnen.',
   nl: 'Voer het leenbedrag, de rente en de looptijd in om uw maandelijkse betaling te berekenen.',
   nz: 'Enter your loan amount, interest rate and term to see your monthly payment and full repayment schedule.',
   fr: 'Entrez le montant, le taux et la durée pour voir votre mensualité et le coût total du crédit.',
   es: 'Introduzca el importe, el tipo de interés y el plazo para ver su cuota mensual y el coste total.',
-  sg: 'Enter your loan amount, interest rate and term. Singapore personal loan rates are quoted as flat rates by some lenders — use the effective interest rate (EIR) here.',
+  sg: 'Enter your loan amount, interest rate and term. Singapore personal loan rates are quoted as flat rates by some lenders  -  use the effective interest rate (EIR) here.',
   in: 'Enter your loan amount, interest rate and term to see your EMI, total interest, and full repayment schedule.',
 };
 
@@ -79,7 +79,7 @@ const PERSONAL_LOAN_FAQS = [
   },
   {
     question: 'Does early repayment save money?',
-    answer: 'Yes — you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee of one to two months of interest. Check your loan agreement first, then use the calculator to confirm the net saving after any fee.',
+    answer: 'Yes  -  you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee of one to two months of interest. Check your loan agreement first, then use the calculator to confirm the net saving after any fee.',
   },
 ];
 
@@ -114,6 +114,11 @@ export default async function PersonalLoanPage({
   const h1 = H1[cc] ?? 'Personal Loan Calculator';
   const intro = INTRO[cc] ?? INTRO.us!;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   return (
     <>
       <BreadcrumbSchema items={[
@@ -133,15 +138,8 @@ export default async function PersonalLoanPage({
         currentTool="loans/personal-loan"
       />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 300px',
-              gap: 48,
-              alignItems: 'start',
-            }}
-          >
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1
                 style={{
@@ -169,20 +167,59 @@ export default async function PersonalLoanPage({
                 defaultRate={defaults.rate}
                 defaultAmount={defaults.amount}
                 defaultTermMonths={defaults.termMonths}
+                fxResult={fxResult}
               />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '0 0 32px' }} />
           <TrustDisclosures context={{ type: 'personal-loan' }} />
         </div>
+
+        <div className="page-section-flush">
+          <div style={{ maxWidth: '72ch', padding: '48px 0 0' }}>
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How your monthly payment is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Your monthly payment is fixed using the standard annuity formula, which keeps payments equal throughout the term. Each payment covers that month&apos;s interest on the outstanding balance first, with the remainder reducing the principal. In the early months, most of each payment is interest. By the final months, almost all of it is principal. The balance chart below the calculator shows this progression month by month.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This calculator covers principal and interest only. Your actual loan cost may also include an origination or arrangement fee (add it in the field above to see the true APR), optional payment protection insurance, and any early repayment charge if you pay off early. Some lenders quote a flat rate rather than an APR  -  flat rates produce a higher effective cost than they appear. Always compare loans using the APR or effective interest rate.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why your lender&apos;s quote may show a different figure</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Lenders quote rates based on your credit score, income, and existing debt level. The rate you see advertised is typically the representative APR, which only 51% of applicants need to receive. If your credit profile is weaker, you may be offered a higher rate. Conversely, strong applicants sometimes receive a better rate than advertised. Always get a personalised quote, which will not affect your credit file if done as a soft search.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {PERSONAL_LOAN_FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          </div>
+        </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

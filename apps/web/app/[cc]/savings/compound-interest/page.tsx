@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
@@ -71,7 +71,7 @@ const COMPOUND_INTEREST_FAQS = [
   },
   {
     question: 'What is the difference between real and nominal returns?',
-    answer: 'A nominal return is the stated rate before adjusting for inflation. A real return subtracts inflation, showing actual purchasing-power growth. At 6% nominal and 3% inflation, your real return is roughly 3% — your money grows in quantity but less in what it can buy.',
+    answer: 'A nominal return is the stated rate before adjusting for inflation. A real return subtracts inflation, showing actual purchasing-power growth. At 6% nominal and 3% inflation, your real return is roughly 3%  -  your money grows in quantity but less in what it can buy.',
   },
   {
     question: 'Do regular monthly contributions matter much?',
@@ -104,6 +104,11 @@ export default async function CompoundInterestPage({ params }: { params: Promise
   const h1 = H1[cc] ?? 'Compound Interest Calculator';
   const intro = INTRO[cc] ?? INTRO.us!;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   return (
     <>
       <BreadcrumbSchema items={[
@@ -119,8 +124,8 @@ export default async function CompoundInterestPage({ params }: { params: Promise
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="savings/compound-interest" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -130,19 +135,57 @@ export default async function CompoundInterestPage({ params }: { params: Promise
                 country={country}
                 defaultPrincipal={defaults.principal}
                 defaultAnnualRate={defaults.annualRate}
+                fxResult={fxResult}
               />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '0 0 32px' }} />
           <TrustDisclosures context={{ type: 'compound-interest' }} />
         </div>
+        <div className="page-section-flush">
+          <div style={{ maxWidth: '72ch', padding: '32px 0 0' }}>
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How compound interest works</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Your interest each period is calculated on the current balance  -  not just the original principal. At monthly compounding, the interest from January becomes part of the balance that earns interest in February. The more frequently interest compounds, the faster the balance grows. Continuous compounding is the theoretical limit of this effect, producing the highest possible balance for a given rate and period. The difference between annual and monthly compounding grows significantly over 10 or more years.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This calculator projects pre-tax, pre-fee growth at a fixed rate. Real savings accounts and investments are subject to income tax on interest earned, ongoing management fees (for investment funds), and rates that change over time rather than remaining constant. Inflation also erodes purchasing power  -  enable the inflation adjustment to see what your balance is worth in today&apos;s terms. Use this as a planning tool, not a precise forecast.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why your bank&apos;s projection may differ</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Banks calculate compound interest based on daily balances in many countries, even when they credit interest monthly. They may also compound on the basis of a 360-day year rather than 365 days. These conventions produce slightly different outcomes. The calculator uses monthly compounding by default and a 365-day basis. For small differences over short periods, the effect is negligible; over 20 or 30 years with large balances, it may be noticeable.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {COMPOUND_INTEREST_FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          </div>
+        </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

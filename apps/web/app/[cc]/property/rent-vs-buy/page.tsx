@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
 import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { RentVsBuyCalculator } from '../../../../src/components/RentVsBuyCalculator';
@@ -76,6 +77,29 @@ const LOCAL_CALLOUT: Record<string, { heading: string; body: string }> = {
   in: { heading: 'EMI tax benefits reduce the effective cost of ownership', body: 'Under Section 24(b), you can deduct up to Rs 2 lakh per year of home loan interest from taxable income on a self-occupied property. Under Section 80C, up to Rs 1.5 lakh per year of principal repayment is deductible. At a 30% tax bracket, these deductions can reduce the net cost of your EMI by Rs 1-1.5 lakh per year, which meaningfully shifts the buy case.' },
 };
 
+const FAQS = [
+  {
+    question: 'Is buying always better than renting long-term?',
+    answer: 'Not necessarily. The outcome depends on local property appreciation, the opportunity cost of your deposit, how long you stay, and what you pay in transaction costs upfront. In high-cost cities where prices are stretched relative to rents, renting and investing the saved capital has historically kept pace with buying over 10-year horizons. The calculator lets you model your specific assumptions.',
+  },
+  {
+    question: 'What appreciation rate should I use?',
+    answer: 'Use a long-run real (inflation-adjusted) appreciation rate for the specific market. UK-wide average has been roughly 4-5% nominal over long periods, but London has been higher and some northern cities lower. Australian capital cities have averaged 6-7% nominal since the 1990s. For a conservative base case, use 3% nominal. The calculator is sensitive to this input  -  try a range.',
+  },
+  {
+    question: 'Does the calculator include stamp duty, legal fees, and other purchase costs?',
+    answer: 'The default calculation does not include transaction costs  -  they are not added to the deposit or effective cost of ownership automatically. For a realistic comparison, you should factor these in by increasing your effective deposit amount by the transaction costs (typically 3-8% of the property price depending on country). This extends the break-even period significantly.',
+  },
+  {
+    question: 'What is the opportunity cost of a deposit?',
+    answer: 'Your deposit cannot be invested once it is used to buy a property. The opportunity cost is what that capital could have earned if invested in shares or bonds instead. The deposit return field represents this: the annual return you could realistically achieve in an alternative investment. Using a 7% equity return is common for long-run projections, but it is speculative  -  equity returns are highly variable year to year.',
+  },
+  {
+    question: 'How is the net buy advantage calculated?',
+    answer: 'The calculator computes the total cash paid as a buyer (mortgage payments plus the opportunity cost of the deposit) versus the total rent paid over 10 years. It then adds the equity built through appreciation and principal paydown. The net buy advantage is the difference: positive means buying produced more total wealth, negative means renting and investing the deposit ahead.',
+  },
+];
+
 export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: string }> }) {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) notFound();
@@ -88,12 +112,18 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
 
   const defaultRate = rateResult?.value ?? country.defaults.rate;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   const h1 = COUNTRY_H1[cc] ?? 'Rent vs Buy Calculator';
   const answerFirst = ANSWER_FIRST[cc] ?? '';
   const callout = LOCAL_CALLOUT[cc] ?? { heading: 'The result is highly sensitive to assumptions', body: 'Small changes to the appreciation rate and investment return significantly change the outcome. Use this as a starting point, not a conclusion.' };
 
   return (
     <>
+      <FAQSchema faqs={FAQS} />
       <BreadcrumbSchema items={[
         { name: 'Home', href: '/' },
         { name: 'Property', href: `/${cc}/property` },
@@ -106,8 +136,8 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/rent-vs-buy" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -126,15 +156,15 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
                 <h2 style={{ fontSize: 15, fontWeight: 500, margin: '0 0 6px' }}>{callout.heading}</h2>
                 <p style={{ fontSize: 15, lineHeight: 1.6, margin: 0, color: 'var(--color-ink-deep)' }}>{callout.body}</p>
               </div>
-              <RentVsBuyCalculator country={country} defaultRate={defaultRate} />
+              <RentVsBuyCalculator country={country} defaultRate={defaultRate} fxResult={fxResult} />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
           <TrustDisclosures context={{ type: 'rent-vs-buy' }} rateResult={rateResult} />
           <div style={{ maxWidth: '72ch', padding: '48px 0 32px' }}>
@@ -143,10 +173,44 @@ export default async function RentVsBuyPage({ params }: { params: Promise<{ cc: 
               This is an estimate for illustrative purposes only. Confirm costs and rates with your lender before
               proceeding.
             </p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How the rent vs buy comparison works</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Buying and renting are not directly comparable because buyers build equity while renters do not. The calculator accounts for this by computing the deposit&apos;s opportunity cost  -  what it would have earned if invested. Mortgage payments are split into interest (a cost, like rent) and principal (equity you keep). Appreciation adds to the buyer&apos;s net worth. The result shows which option produced more total wealth over 10 years given your assumptions.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This is a simplified financial model. It does not include property maintenance costs (typically 1–2% of value per year), buildings and contents insurance, property taxes or council tax, or the transaction costs of eventually selling (estate agent fees, legal costs). These favour renting in the short run and erode the buy advantage, especially for shorter holding periods.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why the result is sensitive to assumptions</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Small changes to the appreciation rate or the deposit return assumption can flip the result. At 3% appreciation and 7% investment return, renting often wins over 10 years in expensive markets. At 6% appreciation and 4% investment return, buying typically wins. Neither assumption is guaranteed. Use this to understand the range of outcomes, not to reach a definitive answer. The non-financial factors  -  stability, school catchments, flexibility  -  are real and matter.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

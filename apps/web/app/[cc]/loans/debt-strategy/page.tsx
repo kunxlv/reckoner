@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
 import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -101,6 +102,29 @@ const DEFAULT_DEBTS: Record<string, Debt[]> = {
   ],
 };
 
+const FAQS = [
+  {
+    question: 'What is the difference between the avalanche and snowball methods?',
+    answer: 'The avalanche method directs extra payments to the highest-interest debt first, minimising total interest paid  -  the mathematically optimal approach. The snowball method pays the lowest balance first, producing quicker wins that some people find motivating. The calculator above shows the total interest and months to payoff for both, so you can see the actual cost difference for your specific debts.',
+  },
+  {
+    question: 'How much extra should I pay each month?',
+    answer: 'Any amount above the minimums accelerates payoff and reduces total interest. Even an extra £50 or $50 per month can cut years off a debt with a high interest rate. Enter different extra monthly amounts in the field above to see the impact on each strategy. The optimal extra payment is the maximum you can sustain consistently  -  irregular large payments are less efficient than smaller consistent ones.',
+  },
+  {
+    question: 'Should I consolidate my debts before using this calculator?',
+    answer: 'Debt consolidation  -  combining multiple debts into one loan at a lower rate  -  can reduce total interest paid and simplify repayment. However, it only helps if the consolidation rate is genuinely lower than your weighted average rate across the existing debts. Use this calculator to find your current total interest, then compare it against a consolidation loan quote to see if the switch is worthwhile.',
+  },
+  {
+    question: 'What if I cannot afford the minimums?',
+    answer: 'If your minimum payments already exceed your income or cash flow, this calculator may not reflect your actual situation. Contact a non-profit debt advice service in your country  -  Citizens Advice in the UK, NFCC in the US, or the National Debt Helpline in Australia  -  for free, regulated advice. Many options exist (payment plans, debt management plans) that this calculator does not model.',
+  },
+  {
+    question: 'Does the order of paying off debts affect my credit score?',
+    answer: 'Yes, indirectly. Paying off a credit card reduces your credit utilisation ratio (balance divided by credit limit), which is a significant factor in most credit scoring models. Fully closing a card account can temporarily reduce your score by shortening your average account age. The avalanche approach tends to pay off high-rate cards quickly, which usually improves your credit utilisation and score over time.',
+  },
+];
+
 export async function generateMetadata({
   params,
 }: {
@@ -132,6 +156,11 @@ export default async function DebtStrategyPage({
   const h1 = H1[cc] ?? 'Debt Strategy Calculator';
   const intro = INTRO[cc] ?? INTRO.us!;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   return (
     <>
       <BreadcrumbSchema items={[
@@ -139,6 +168,7 @@ export default async function DebtStrategyPage({
         { name: 'Loans', href: `/${cc}/loans` },
         { name: h1, href: `/${cc}/loans/debt-strategy` },
       ]} />
+      <FAQSchema faqs={FAQS} />
       <CalculatorSchema
         name="Debt Strategy Calculator"
         description="Compare snowball, avalanche, and minimum-payment strategies for up to 5 debts."
@@ -150,8 +180,8 @@ export default async function DebtStrategyPage({
         currentTool="loans/debt-strategy"
       />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1
                 style={{
@@ -171,20 +201,59 @@ export default async function DebtStrategyPage({
                 country={country}
                 defaultDebts={defaultDebts}
                 defaultExtraMonthlyCents={10000}
+                fxResult={fxResult}
               />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '0 0 32px' }} />
           <TrustDisclosures context={{ type: 'debt-strategy' }} />
         </div>
+
+        <div className="page-section-flush">
+          <div style={{ maxWidth: '72ch', padding: '32px 0 0' }}>
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How each repayment strategy is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Each strategy applies the same total monthly budget (minimums plus any extra). In the avalanche method, the extra goes to the highest-APR debt; in the snowball, to the lowest balance. Each month, interest is charged at the monthly rate for each debt, the minimum is paid, and the extra is applied. When one debt is cleared, its minimum payment is redirected to the next target. The calculator runs this simulation until all debts reach zero.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This models fixed debts with fixed minimum payments. It does not account for variable minimum payments (where the minimum is a percentage of the balance), interest rate changes, new borrowing, or balance transfer offers. If your credit card minimum is set as a percentage rather than a fixed amount, the actual minimum will fall as the balance does  -  enter the current month&apos;s minimum as a fixed amount for the closest approximation.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why the total interest figures may differ from your statements</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>The calculator charges interest on the opening balance each month using a simple monthly rate (APR ÷ 12). Some lenders compound daily, some charge interest on the average daily balance, and some apply interest before the minimum is deducted rather than after. These differences can produce small variations in total interest. The calculator gives a reliable estimate for comparison purposes  -  the relative ranking of strategies will be correct even if the absolute figure differs slightly.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          </div>
+        </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

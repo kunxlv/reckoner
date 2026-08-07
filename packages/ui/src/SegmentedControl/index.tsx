@@ -11,17 +11,24 @@ interface SegmentedControlProps<T extends string | number> {
   options: Option<T>[];
   value: T;
   onChange: (value: T) => void;
+  tooltip?: string;
 }
 
 export function SegmentedControl<T extends string | number>({
-  label, options, value, onChange,
+  label, options, value, onChange, tooltip,
 }: SegmentedControlProps<T>) {
   const groupId = useId();
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>
+    <div className="segmented-row">
+      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, display: 'inline-flex', alignItems: 'center' }}>
         {label}
+        {tooltip && (
+          <span className="field-tip" style={{ marginLeft: 5, textTransform: 'none', letterSpacing: 0 }}>
+            <span className="field-tip-icon">i</span>
+            <span className="field-tip-body">{tooltip}</span>
+          </span>
+        )}
       </span>
       <div
         role="group"

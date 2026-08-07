@@ -36,21 +36,21 @@ export function ResultCard({
       </div>
 
       {conversionLine && (
-        <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 12 }}>
+        <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16 }}>
           {conversionLine}
         </div>
       )}
 
-      <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
+      <div className="result-stats">
         <div>
           <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--color-ink-mid)', marginBottom: 4 }}>Total interest</div>
           <div style={{ fontSize: 28, fontWeight: 400, letterSpacing: '-0.02em' }}>{totalInterest}</div>
         </div>
-        <div style={{ borderLeft: '1px solid var(--color-hairline)', paddingLeft: 24 }}>
+        <div className="stat-sep">
           <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--color-ink-mid)', marginBottom: 4 }}>Total paid</div>
           <div style={{ fontSize: 28, fontWeight: 400, letterSpacing: '-0.02em' }}>{totalPaid}</div>
         </div>
-        <div style={{ borderLeft: '1px solid var(--color-hairline)', paddingLeft: 24 }}>
+        <div className="stat-sep">
           <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--color-ink-mid)', marginBottom: 4 }}>Paid off</div>
           <div style={{ fontSize: 28, fontWeight: 400, letterSpacing: '-0.02em' }}>{payoffDate}</div>
         </div>

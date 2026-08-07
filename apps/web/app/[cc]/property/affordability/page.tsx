@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate, loadAffordabilityRules } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate, loadAffordabilityRules, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { asOf } from '@reckoner/rules-core';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
 import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { AffordabilityCalculator } from '../../../../src/components/AffordabilityCalculator';
@@ -78,6 +79,29 @@ const LOCAL_CALLOUT: Record<string, { heading: string; body: string } | null> = 
   in: { heading: 'Prepayment is where the real saving is', body: 'Floating-rate home loans in India carry no prepayment penalty for individual borrowers under RBI rules. A lump-sum prepayment of Rs 5 lakh in year 3 on a Rs 80 lakh, 20-year loan at 8.5% removes approximately Rs 27 lakh from the total interest bill. Early lump-sum prepayments are particularly effective because almost all of each EMI in the early years is interest.' },
 };
 
+const FAQS = [
+  {
+    question: 'What is a mortgage stress test?',
+    answer: 'A stress test assesses whether you could still afford repayments if interest rates rose. In the UK, lenders test at roughly 3% above the revert rate. In Canada, the qualifying rate is the higher of your contract rate plus 2% or 5.25%. In Australia, APRA requires a 3% buffer above the loan rate. The stress test is often the binding constraint  -  not the income multiple.',
+  },
+  {
+    question: 'How does a larger deposit affect how much I can borrow?',
+    answer: 'A larger deposit reduces the loan-to-value ratio, which can unlock better interest rates and remove mortgage insurance requirements. It does not directly increase most lenders\' income multiples, but a lower rate means a given income can support a larger loan amount. In some countries, exceeding certain LTV thresholds (e.g., 90% in Ireland) requires regulatory exceptions.',
+  },
+  {
+    question: 'Does the result include stamp duty or closing costs?',
+    answer: 'No. This calculator shows the maximum loan amount. Stamp duty, legal fees, survey costs, and other purchase costs must come from your savings separately. In most countries you cannot borrow to cover these costs, and lenders will verify your ability to fund them independently.',
+  },
+  {
+    question: 'Why might my bank offer me less than the calculator shows?',
+    answer: 'Lenders apply their own internal criteria on top of regulatory requirements. Your credit score, monthly outgoings, existing debt commitments, employment type, and the specific property can all lead a lender to offer less. The calculator applies the regulatory maximum  -  individual lender decisions sit below that ceiling.',
+  },
+  {
+    question: 'Do existing debts reduce how much I can borrow?',
+    answer: 'Yes, significantly. Car loans, student loans, credit card minimum payments, and personal loan commitments all reduce the income available to service a mortgage. Add your monthly debt payments in the optional field above to see how much they reduce your borrowing capacity under the debt-to-income or income multiple rules in your country.',
+  },
+];
+
 export default async function AffordabilityPage({ params }: { params: Promise<{ cc: string }> }) {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) notFound();
@@ -93,12 +117,18 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
 
   const defaultRate = rateResult?.value ?? country.defaults.rate;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   const h1 = COUNTRY_H1[cc] ?? 'How Much Can I Borrow?';
   const answerFirst = ANSWER_FIRST[cc] ?? '';
   const callout = LOCAL_CALLOUT[cc] ?? null;
 
   return (
     <>
+      <FAQSchema faqs={FAQS} />
       <BreadcrumbSchema items={[
         { name: 'Home', href: '/' },
         { name: 'Property', href: `/${cc}/property` },
@@ -111,8 +141,8 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/affordability" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -125,15 +155,15 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
                   Standard model
                 </div>
               )}
-              <AffordabilityCalculator country={country} ruleset={ruleset} defaultRate={defaultRate} />
+              <AffordabilityCalculator country={country} ruleset={ruleset} defaultRate={defaultRate} fxResult={fxResult} />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
           <TrustDisclosures context={{ type: 'affordability', method: ruleset.method }} rateResult={rateResult} />
           <div style={{ maxWidth: '72ch', padding: '48px 0 32px' }}>
@@ -146,10 +176,44 @@ export default async function AffordabilityPage({ params }: { params: Promise<{ 
             <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--color-ink-mid)', margin: 0 }}>
               Rules sourced from {ruleset.provenance.source}. Last reviewed {ruleset.provenance.lastReviewed}.
             </p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How your borrowing limit is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Lenders apply two types of constraints. The first is an income multiple or debt-to-income ratio  -  a cap on the loan size relative to your gross income. The second is a stressed affordability assessment: your income must support the monthly payment at a higher, hypothetical interest rate. Whichever constraint produces the lower loan amount is the binding one. The calculator shows which rule limits you under the binding constraint field.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This is an estimate based on published regulatory rules. Individual lenders also consider your credit score, employment stability, nature of income (self-employed versus salaried), existing financial commitments, and the property type. A lender may offer less than the regulatory maximum for any of these reasons. The figure here is a starting point for conversations with lenders, not a guaranteed offer.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why your lender may quote a different figure</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Lenders have discretion to lend below the regulatory cap and to grant exceptions above it in limited cases. The stress test rate varies by lender  -  some use a rate higher than the regulatory floor. Bonus, commission, or overtime income may be discounted by 50% or more. If the bank&apos;s figure is significantly lower than this calculator suggests, ask them which specific constraint is limiting your application.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

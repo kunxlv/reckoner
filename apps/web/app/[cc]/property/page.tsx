@@ -33,7 +33,7 @@ const TOOLS: Array<{ slug: string; label: string; description: string }> = [
   {
     slug: 'affordability',
     label: 'Affordability Calculator',
-    description: "Maximum borrowing under your country's regulatory limits — income multiples, LTV caps, or debt servicing ratios.",
+    description: "Maximum borrowing under your country's regulatory limits  -  income multiples, LTV caps, or debt servicing ratios.",
   },
   {
     slug: 'refinance',
@@ -54,7 +54,7 @@ const PROPERTY_FAQS = [
   },
   {
     question: 'What is stamp duty?',
-    answer: 'Stamp duty (or transfer tax) is a government tax on property purchases. It is calculated in progressive bands in most countries — the rate rises as the purchase price increases. First-time buyers receive relief in many jurisdictions.',
+    answer: 'Stamp duty (or transfer tax) is a government tax on property purchases. It is calculated in progressive bands in most countries  -  the rate rises as the purchase price increases. First-time buyers receive relief in many jurisdictions.',
   },
   {
     question: 'How much can I borrow for a mortgage?',
@@ -110,7 +110,7 @@ export default async function PropertyHubPage({
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '64px 24px' }}>
+        <div className="page-outer" style={{ paddingBottom: 64 }}>
           <h1
             style={{
               fontSize: 36,
@@ -131,7 +131,7 @@ export default async function PropertyHubPage({
               color: 'var(--color-ink-deep)',
             }}
           >
-            Each calculator applies {countryName}&apos;s actual rules — the compounding convention,
+            Each calculator applies {countryName}&apos;s actual rules  -  the compounding convention,
             regulatory limits, and official tax bands in force today.
           </p>
 
@@ -153,7 +153,7 @@ export default async function PropertyHubPage({
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

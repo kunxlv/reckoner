@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
@@ -35,7 +35,7 @@ const H1: Record<string, string> = {
 };
 
 const INTRO: Record<string, string> = {
-  us: 'Enter your balance and APR to see how long minimum payments will take to clear your card — and how much you can save by paying extra each month.',
+  us: 'Enter your balance and APR to see how long minimum payments will take to clear your card  -  and how much you can save by paying extra each month.',
   uk: 'Enter your balance and APR to see the payoff timeline and total interest under minimum payments, then add an extra monthly amount to see the saving.',
   ca: 'Enter your balance and annual interest rate to see how long minimum payments take, and how much you save by paying more each month.',
   au: 'Enter your balance and the purchase rate APR to see your payoff timeline. Adding extra payments shows the saving in months and total interest.',
@@ -76,7 +76,7 @@ const CREDIT_CARD_FAQS = [
   },
   {
     question: 'What is EIR and why does Singapore quote it?',
-    answer: "Singapore and some other markets quote credit card rates as a flat monthly rate (e.g. 1.5% per month). The Effective Interest Rate (EIR) converts this to a true annualised basis — the equivalent APR — which is typically around 26% for a 1.5% monthly flat rate. EIR allows accurate comparison across loan products.",
+    answer: "Singapore and some other markets quote credit card rates as a flat monthly rate (e.g. 1.5% per month). The Effective Interest Rate (EIR) converts this to a true annualised basis  -  the equivalent APR  -  which is typically around 26% for a 1.5% monthly flat rate. EIR allows accurate comparison across loan products.",
   },
   {
     question: 'Should I use the avalanche or snowball method for multiple credit cards?',
@@ -115,6 +115,11 @@ export default async function CreditCardPayoffPage({
   const h1 = H1[cc] ?? 'Credit Card Payoff Calculator';
   const intro = INTRO[cc] ?? INTRO.us!;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   return (
     <>
       <BreadcrumbSchema items={[
@@ -134,8 +139,8 @@ export default async function CreditCardPayoffPage({
         currentTool="loans/credit-card-payoff"
       />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1
                 style={{
@@ -155,20 +160,59 @@ export default async function CreditCardPayoffPage({
                 country={country}
                 defaultBalanceCents={defaults.balanceCents}
                 defaultAnnualRate={defaults.annualRate}
+                fxResult={fxResult}
               />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '0 0 32px' }} />
           <TrustDisclosures context={{ type: 'credit-card-payoff' }} />
         </div>
+
+        <div className="page-section-flush">
+          <div style={{ maxWidth: '72ch', padding: '32px 0 0' }}>
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How the payoff timeline is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Each month, interest is added to the outstanding balance at the monthly rate (APR ÷ 12), then the minimum payment is deducted. If the minimum is a percentage of the balance, it shrinks as the balance falls  -  meaning less goes to principal over time. This is why minimum-only payoff timelines are so long: the payment reduces almost in step with the balance, keeping you in debt for years. Adding even a small fixed extra payment breaks this cycle.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>This models only the existing balance at the stated rate. It does not account for new purchases added to the card, annual or monthly fees, promotional 0% periods expiring, or balance transfer fees. If you continue using the card while paying it down, the actual payoff will be longer. For the most useful result, treat this as the payoff plan for a frozen balance  -  no new spending on that card.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why your card statement shows a different figure</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>Card statements in many countries now show a payoff estimate, but these often assume the minimum percentage stays constant rather than shrinking as the balance falls. Your statement may also include the current month&apos;s interest before it has been applied, or use a daily compounding method rather than monthly. The calculator above uses the most common monthly compounding model.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {CREDIT_CARD_FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          </div>
+        </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

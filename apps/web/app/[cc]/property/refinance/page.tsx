@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate } from '@reckoner/finance-data';
+import { getCountry, getAllCountries, COUNTRY_CODES, fetchRate, fetchFxRates } from '@reckoner/finance-data';
 import type { CountryCode } from '@reckoner/finance-data';
 import { AdSlot } from '@reckoner/analytics';
 import { getToolMetadata } from '@reckoner/seo';
 import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
 import { RefinanceCalculator } from '../../../../src/components/RefinanceCalculator';
@@ -77,6 +78,29 @@ const LOCAL_CALLOUT: Record<string, { heading: string; body: string }> = {
   in: { heading: 'The processing fee is the main cost', body: "Since RBI prohibits prepayment penalties on floating-rate loans for individual borrowers, the main cost of a balance transfer is the new lender's processing fee, typically 0.5-1% of the outstanding loan. On a Rs 50 lakh balance that is Rs 25,000-50,000. A 50 basis point rate saving covers that within about one year on the same balance." },
 };
 
+const FAQS = [
+  {
+    question: 'What is a refinance break-even period?',
+    answer: 'The break-even is the number of months it takes for your accumulated monthly savings to recover the upfront costs of refinancing. If refinancing costs £2,000 and saves you £100 a month, the break-even is 20 months. If you plan to sell or move before then, refinancing costs more than it saves.',
+  },
+  {
+    question: 'What costs should I include in the refinancing costs field?',
+    answer: 'Include all upfront costs: arrangement or product fees, valuation fees, legal fees (if switching lenders), any early repayment charge on your current loan, and broker fees if applicable. In the US, closing costs typically run 2–5% of the loan balance. In the UK, the total is usually £1,000–3,000. Enter the full amount to see the true break-even.',
+  },
+  {
+    question: 'Is it worth refinancing for a small rate reduction?',
+    answer: 'It depends on the break-even period relative to how long you plan to stay in the property. A 0.5% rate reduction on a £300,000 mortgage saves roughly £125 a month. If closing costs are £2,500, the break-even is 20 months  -  worthwhile if you are staying more than 2 years. Use the calculator above to find your specific break-even for any rate difference.',
+  },
+  {
+    question: 'Does refinancing restart my amortisation clock?',
+    answer: 'Yes, if you refinance into a new 25-year or 30-year mortgage. This lowers monthly payments but means you pay interest for longer in total, increasing lifetime interest paid even at a lower rate. To avoid this, refinance into a term equal to your remaining years on the current loan. The break-even chart above shows total saving, not just monthly saving, so you can factor this in.',
+  },
+  {
+    question: 'What is a no-cost refinance?',
+    answer: 'A no-cost refinance means the lender covers closing costs  -  but charges a slightly higher interest rate in exchange. You get immediate savings with no upfront cash, but pay a higher rate for the life of the loan. Set the refinancing costs field to zero to model this scenario and compare it against a standard refinance where you pay costs upfront.',
+  },
+];
+
 export default async function RefinancePage({ params }: { params: Promise<{ cc: string }> }) {
   const { cc } = await params;
   if (!COUNTRY_CODES.includes(cc as CountryCode)) notFound();
@@ -89,12 +113,18 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
 
   const defaultRate = rateResult?.value ?? country.defaults.rate;
 
+  let fxResult = null;
+  if (country.currency !== 'EUR') {
+    try { fxResult = await fetchFxRates(country.currency); } catch { /* hide conversion */ }
+  }
+
   const h1 = COUNTRY_H1[cc] ?? 'Refinance / Remortgage Break-Even Calculator';
   const answerFirst = ANSWER_FIRST[cc] ?? '';
   const callout = LOCAL_CALLOUT[cc] ?? { heading: 'End of fixed term versus mid-term refinancing', body: 'Refinancing at the end of a fixed-rate period typically carries no early repayment charge. Breaking a fixed term early usually does. Often one to five percent of the outstanding balance. Add any early repayment charge to the refinancing costs field to see the true break-even.' };
 
   return (
     <>
+      <FAQSchema faqs={FAQS} />
       <BreadcrumbSchema items={[
         { name: 'Home', href: '/' },
         { name: 'Property', href: `/${cc}/property` },
@@ -107,8 +137,8 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/refinance" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -116,7 +146,7 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
               <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px', maxWidth: '72ch' }}>
                 {answerFirst}
               </p>
-              <RefinanceCalculator country={country} defaultRate={defaultRate} />
+              <RefinanceCalculator country={country} defaultRate={defaultRate} fxResult={fxResult} />
 
               <div
                 style={{
@@ -134,13 +164,13 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
                 </p>
               </div>
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+        <div className="page-section">
           <AdSlot width={728} height={90} style={{ margin: '32px 0' }} />
           <TrustDisclosures context={{ type: 'refinance' }} rateResult={rateResult} />
           <div style={{ maxWidth: '72ch', padding: '48px 0 32px' }}>
@@ -149,10 +179,44 @@ export default async function RefinancePage({ params }: { params: Promise<{ cc: 
               This is an estimate for illustrative purposes only. Confirm costs and rates with your lender before
               proceeding.
             </p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>How the break-even is calculated</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>The calculator computes the monthly payment under your current loan and under the new terms. The difference is your monthly saving. Dividing the total upfront refinancing cost by that monthly saving gives the break-even in months. Before that point, the cumulative saving has not yet recovered your costs. After it, every month adds to your net saving. The chart shows exactly when that crossover happens.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>What this doesn&apos;t include</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>The calculation is principal and interest only. It does not include any tax benefit from mortgage interest deductibility (available in some countries), the impact on your credit score of a new application, or the opportunity cost of the cash used to pay closing costs. It also does not model the risk that rates fall further after you lock in  -  a genuine cost of refinancing at the wrong time.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '0 0 10px' }}>Why your lender&apos;s figures may differ</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>The monthly saving depends on the exact remaining balance and term, which your lender knows precisely. This calculator uses the inputs you provide. If your balance has changed since you last checked, or if your lender applies interest differently (some compute daily rather than monthly), the saving may differ slightly. Always request an exact redemption statement and a formal quote before committing to refinance.</p>
+
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '16px 0 6px' }}>Frequently asked questions</h2>
+            {FAQS.map(({ question, answer }) => (
+              <div key={question} style={{ borderTop: '1px solid var(--color-hairline)', padding: '16px 0' }}>
+                <h3 style={{ fontSize: 16, fontWeight: 500, margin: '0 0 6px' }}>{question}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.6, margin: 0 }}>{answer}</p>
+              </div>
+            ))}
+
+            {/* Embed section */}
+            <h2 style={{ fontSize: 26, fontWeight: 400, letterSpacing: '-0.025em', margin: '48px 0 10px' }}>Add this calculator to your site</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.6, margin: '0 0 16px' }}>Free to use. The embed is under 40KB, carries no ads and no tracking, and inherits your page&apos;s background. The code includes a link back to this page.</p>
+            <button type="button" style={{ fontSize: 14, fontWeight: 500, background: 'var(--color-ink)', color: 'var(--color-canvas)', borderRadius: 0, padding: '9px 18px', border: 'none', cursor: 'pointer' }}>
+              Copy embed code
+            </button>
+
+            {/* Author box */}
+            <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '20px 24px', margin: '48px 0' }}>
+              <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Written and maintained by the Reckoner team</div>
+              <p style={{ fontSize: 14, lineHeight: 1.55, color: 'var(--color-ink-mid)', margin: 0 }}>
+                The repayment engines behind this site are tested against worked examples published by FRED, the Bank of Canada, the Bank of England and the Reserve Bank of Australia.{' '}
+                Found an error? <a href="/contact">Contact us</a>
+              </p>
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginTop: 8 }}>Last reviewed {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+            </div>
           </div>
         </div>
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

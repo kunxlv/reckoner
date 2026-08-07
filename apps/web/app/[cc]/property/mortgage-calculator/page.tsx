@@ -167,8 +167,8 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
       />
       <Header currentCountry={country} allCountries={allCountries} currentTool="property/mortgage-calculator" />
       <main id="main">
-        <div style={{ maxWidth: 1160, margin: '0 auto', padding: '48px 24px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 48, alignItems: 'start' }}>
+        <div className="page-outer">
+          <div className="calc-grid">
             <div>
               <h1 style={{ fontSize: 40, fontWeight: 400, letterSpacing: '-0.03em', lineHeight: 1.1, margin: '0 0 12px' }}>
                 {h1}
@@ -189,7 +189,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
                 fxResult={fxResult}
               />
             </div>
-            <div style={{ position: 'sticky', top: 72 }}>
+            <div className="ad-sidebar">
               <AdSlot width={300} height={600} />
             </div>
           </div>
@@ -197,7 +197,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
 
         {/* Chart section */}
         {prefillResult && (
-          <div style={{ maxWidth: 1160, margin: '32px auto 0', padding: '0 24px' }}>
+          <div className="page-section">
             <div style={{ background: 'var(--color-canvas)', border: '1px solid var(--color-hairline)', borderRadius: 0, padding: '28px 32px' }}>
               <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>Where your money goes</div>
               <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>Cumulative payments over the life of the loan</div>
@@ -261,7 +261,7 @@ export default async function MortgageCalculatorPage({ params }: { params: Promi
           </div>
         )}
       </main>
-      <Footer countries={allCountries} currentCc={cc} />
+      <Footer currentCc={cc} />
     </>
   );
 }

@@ -1,29 +1,25 @@
 'use client';
 import { useState } from 'react';
-import type { CountryData } from '@reckoner/finance-data';
+import type { CountryData, FxResult } from '@reckoner/finance-data';
 import { calculateAccumulation } from '@reckoner/growth-engine';
+import { SliderInput, CurrencyToggle } from '@reckoner/ui';
 import { formatCurrency } from '../../lib/format';
-import { FieldLabel } from '../ui/FieldLabel';
-import { CurrencyInput } from '../ui/CurrencyInput';
 import { FireChart } from './FireChart';
 
 interface Props {
   country: CountryData;
   defaultCurrentSavings: number;
   defaultAnnualRate: number;
+  fxResult?: (FxResult & { rates: Record<string, number> }) | null;
 }
 
-const inputStyle = {
-  fontSize: 18, fontWeight: 400, border: 'none', borderBottom: '1px solid var(--color-ink)',
-  background: 'transparent', outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
-} as const;
-
-export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAnnualRate }: Props) {
+export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAnnualRate, fxResult }: Props) {
   const [currentSavings, setCurrentSavings] = useState(defaultCurrentSavings);
   const [annualExpenses, setAnnualExpenses] = useState(40000);
-  const [withdrawalRate, setWithdrawalRate] = useState(4); // as %
+  const [withdrawalRate, setWithdrawalRate] = useState(4);
   const [monthlyContrib, setMonthlyContrib] = useState(1000);
   const [annualReturn, setAnnualReturn] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
+  const [fxCurrency, setFxCurrency] = useState('EUR');
 
   const fireNumber = annualExpenses / (withdrawalRate / 100);
 
@@ -38,71 +34,93 @@ export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAn
   const crossingRow = result.schedule.find((row) => row.balance >= fireNumber);
 
   const fmt = (v: number) => formatCurrency(v, country.currency, country.locale);
-  const metricLabel = { fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 } as const;
-  const metricValue = { fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' } as const;
+
+  const fxRate = fxResult?.rates?.[fxCurrency];
+  const convertedFireNumber = fxResult && fxRate && fireNumber > 0
+    ? formatCurrency(fireNumber * fxRate, fxCurrency, 'en-US') + ' ' + fxCurrency
+    : null;
+
+  const secondaries = [
+    { label: 'Years to FIRE', value: crossingRow ? `${crossingRow.year} yrs` : '>60 yrs' },
+    { label: 'Current gap', value: fmt(Math.max(0, fireNumber - currentSavings)) },
+    { label: 'Monthly income at FIRE', value: fmt(fireNumber * (withdrawalRate / 100) / 12) },
+  ];
 
   return (
-    <div style={{ display: 'grid', gap: 32 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div>
-          <FieldLabel tooltip="How much you have already saved toward financial independence">
-            Current savings
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={currentSavings}
-            onChange={(e) => setCurrentSavings(parseFloat(e.target.value) || 0)}
-          />
+    <div>
+      <div className="calc-panel-result" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px 24px' }}>
+        <div style={{ fontSize: 12, color: 'var(--color-ink-mid)', marginBottom: 8, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>
+          FIRE number
         </div>
-        <div>
-          <FieldLabel tooltip="The yearly amount you plan to spend once you stop working — the lower this is, the sooner you reach FIRE">
-            Annual expenses in retirement
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={annualExpenses}
-            onChange={(e) => setAnnualExpenses(parseFloat(e.target.value) || 0)}
-          />
+        <div style={{ fontSize: 56, fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+          {fmt(fireNumber)}
         </div>
-        <div>
-          <FieldLabel tooltip="The percentage of your portfolio you withdraw each year — 4% is the classic rule of thumb from the Trinity Study">
-            Withdrawal rate (%)
-          </FieldLabel>
-          <input type="number" min={0.1} max={20} step={0.1} style={inputStyle} value={withdrawalRate}
-            onChange={(e) => setWithdrawalRate(parseFloat(e.target.value) || 4)} />
-        </div>
-        <div>
-          <FieldLabel tooltip="How much you add to your savings each month until you reach your FIRE number">
-            Monthly savings contribution
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={monthlyContrib}
-            onChange={(e) => setMonthlyContrib(parseFloat(e.target.value) || 0)}
-          />
-        </div>
-        <div>
-          <FieldLabel tooltip="Average yearly investment return during your accumulation phase">
-            Expected annual return (%)
-          </FieldLabel>
-          <input type="number" min={0} max={30} step={0.1} style={inputStyle} value={annualReturn}
-            onChange={(e) => setAnnualReturn(parseFloat(e.target.value) || 0)} />
+        {fxResult && (
+          <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16 }}>
+            <CurrencyToggle convertedAmount={convertedFireNumber} targetCurrency={fxCurrency} rateDate={fxResult.asOf} onCurrencyChange={(c) => setFxCurrency(c)} />
+          </div>
+        )}
+        <div className="result-stats" style={{ marginTop: 16 }}>
+          {secondaries.map((m, i) => (
+            <div key={m.label} className={i > 0 ? 'stat-sep' : ''}>
+              <div style={{ fontSize: 11, color: 'var(--color-ink-mid)', marginBottom: 6, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>{m.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 300, letterSpacing: '-0.02em' }}>{m.value}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-        <div>
-          <div style={metricLabel}>FIRE number</div>
-          <div style={metricValue}>{fmt(fireNumber)}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>Years to FIRE</div>
-          <div style={metricValue}>{crossingRow ? `${crossingRow.year} yrs` : '>60 yrs'}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>{currentSavings >= fireNumber ? 'Already there!' : 'Gap'}</div>
-          <div style={metricValue}>{fmt(Math.max(0, fireNumber - currentSavings))}</div>
-        </div>
+      <div className="calc-panel" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px', marginTop: 24, display: 'grid', gap: 26 }}>
+        <SliderInput
+          label="Current savings"
+          tooltip="How much you have already saved toward financial independence"
+          value={currentSavings}
+          min={0}
+          max={Math.max(500000, defaultCurrentSavings * 10)}
+          step={defaultCurrentSavings >= 100000 ? 5000 : 1000}
+          onChange={(v) => setCurrentSavings(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Annual expenses"
+          tooltip="The yearly amount you plan to spend once you stop working  -  the lower this is, the sooner you reach FIRE"
+          value={annualExpenses}
+          min={0}
+          max={200000}
+          step={1000}
+          onChange={(v) => setAnnualExpenses(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Withdrawal rate"
+          tooltip="The percentage of your portfolio you withdraw each year  -  4% is the classic rule of thumb from the Trinity Study"
+          value={withdrawalRate}
+          min={1}
+          max={10}
+          step={0.1}
+          onChange={(v) => setWithdrawalRate(v)}
+          suffix="%"
+        />
+        <SliderInput
+          label="Monthly contribution"
+          tooltip="How much you add to your savings each month until you reach your FIRE number"
+          value={monthlyContrib}
+          min={0}
+          max={10000}
+          step={100}
+          onChange={(v) => setMonthlyContrib(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Expected annual return"
+          tooltip="Average yearly investment return during your accumulation phase"
+          value={annualReturn}
+          min={0}
+          max={20}
+          step={0.1}
+          onChange={(v) => setAnnualReturn(v)}
+          suffix="%"
+        />
       </div>
 
       <FireChart

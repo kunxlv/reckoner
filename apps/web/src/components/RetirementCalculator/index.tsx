@@ -1,32 +1,27 @@
 'use client';
 import { useState } from 'react';
-import type { CountryData } from '@reckoner/finance-data';
+import type { CountryData, FxResult } from '@reckoner/finance-data';
 import { calculateAccumulation, calculateDrawdown } from '@reckoner/growth-engine';
+import { SliderInput, Disclosure, CurrencyToggle } from '@reckoner/ui';
 import { formatCurrency } from '../../lib/format';
-import { FieldLabel } from '../ui/FieldLabel';
-import { CurrencyInput } from '../ui/CurrencyInput';
 import { RetirementChart } from './RetirementChart';
 
 interface Props {
   country: CountryData;
   defaultSavings: number;
   defaultAnnualRate: number;
+  fxResult?: (FxResult & { rates: Record<string, number> }) | null;
 }
 
-const inputStyle = {
-  fontSize: 18, fontWeight: 400, border: 'none',
-  borderBottom: '1px solid var(--color-ink)', background: 'transparent',
-  outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
-} as const;
-
-export function RetirementCalculator({ country, defaultSavings, defaultAnnualRate }: Props) {
+export function RetirementCalculator({ country, defaultSavings, defaultAnnualRate, fxResult }: Props) {
   const [currentSavings, setCurrentSavings] = useState(defaultSavings);
   const [monthlyContrib, setMonthlyContrib] = useState(500);
   const [yearsToRetirement, setYearsToRetirement] = useState(25);
   const [accumRate, setAccumRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
-  const [annualExpenses, setAnnualExpenses] = useState(defaultSavings * 0.4);
+  const [annualExpenses, setAnnualExpenses] = useState(Math.round(defaultSavings * 0.4));
   const [yearsInRetirement, setYearsInRetirement] = useState(30);
   const [inflationRate, setInflationRate] = useState('');
+  const [fxCurrency, setFxCurrency] = useState('EUR');
 
   const inflation = inflationRate !== '' ? parseFloat(inflationRate) / 100 : undefined;
 
@@ -51,6 +46,11 @@ export function RetirementCalculator({ country, defaultSavings, defaultAnnualRat
 
   const fmt = (v: number) => formatCurrency(v, country.currency, country.locale);
 
+  const fxRate = fxResult?.rates?.[fxCurrency];
+  const convertedBalance = fxResult && fxRate && retirementBalance > 0
+    ? formatCurrency(retirementBalance * fxRate, fxCurrency, 'en-US') + ' ' + fxCurrency
+    : null;
+
   const chartData = [
     ...accumResult.schedule.map((row) => ({
       label: `Yr ${row.year}`,
@@ -66,96 +66,129 @@ export function RetirementCalculator({ country, defaultSavings, defaultAnnualRat
 
   const retirementLabel = `Yr ${accumResult.schedule.length}`;
 
-  const metricLabel = { fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 } as const;
-  const metricValue = { fontSize: 28, fontWeight: 300, letterSpacing: '-0.03em' } as const;
+  const secondaries = [
+    { label: 'Interest earned', value: fmt(accumResult.totalInterest) },
+    {
+      label: 'Retirement lasts',
+      value: drawResult.yearsToDepletion === Math.max(1, Math.round(yearsInRetirement))
+        ? `${drawResult.yearsToDepletion}+ yrs`
+        : `${drawResult.yearsToDepletion} yrs`,
+    },
+    {
+      label: 'Real balance',
+      value: accumResult.realFinalBalance !== undefined ? fmt(accumResult.realFinalBalance) : '–',
+    },
+  ];
 
   return (
-    <div style={{ display: 'grid', gap: 32 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-        <div>
-          <FieldLabel tooltip="The amount you have already saved for retirement">
-            Current savings
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={currentSavings}
-            onChange={(e) => setCurrentSavings(parseFloat(e.target.value) || 0)}
-          />
+    <div>
+      <div className="calc-panel-result" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px 24px' }}>
+        <div style={{ fontSize: 12, color: 'var(--color-ink-mid)', marginBottom: 8, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>
+          Retirement balance
         </div>
-        <div>
-          <FieldLabel tooltip="The amount you add to your retirement savings each month going forward">
-            Monthly contribution
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={monthlyContrib}
-            onChange={(e) => setMonthlyContrib(parseFloat(e.target.value) || 0)}
-          />
+        <div style={{ fontSize: 56, fontWeight: 300, letterSpacing: '-0.03em', lineHeight: 1.05 }}>
+          {fmt(retirementBalance)}
         </div>
-        <div>
-          <FieldLabel tooltip="How many years from now until you plan to retire">
-            Years to retirement
-          </FieldLabel>
-          <input type="number" min={1} max={60} style={inputStyle} value={yearsToRetirement}
-            onChange={(e) => setYearsToRetirement(parseInt(e.target.value, 10) || 1)} />
-        </div>
-        <div>
-          <FieldLabel tooltip="The average yearly return you expect on your investments during the accumulation phase">
-            Annual investment return (%)
-          </FieldLabel>
-          <input type="number" min={0} max={30} step={0.1} style={inputStyle} value={accumRate}
-            onChange={(e) => setAccumRate(parseFloat(e.target.value) || 0)} />
-        </div>
-        <div>
-          <FieldLabel tooltip="Your estimated annual spending once retired — used to model how long your savings last">
-            Annual expenses in retirement
-          </FieldLabel>
-          <CurrencyInput
-            currencySymbol={country.currencySymbol}
-            type="number" min={0} value={annualExpenses}
-            onChange={(e) => setAnnualExpenses(parseFloat(e.target.value) || 0)}
-          />
-        </div>
-        <div>
-          <FieldLabel tooltip="How many years you plan to spend in retirement">
-            Years in retirement
-          </FieldLabel>
-          <input type="number" min={1} max={60} style={inputStyle} value={yearsInRetirement}
-            onChange={(e) => setYearsInRetirement(parseInt(e.target.value, 10) || 1)} />
-        </div>
-        <div>
-          <FieldLabel tooltip="Optional — models the erosion of purchasing power over time">
-            Inflation rate (%, optional)
-          </FieldLabel>
-          <input type="number" min={0} max={20} step={0.1} style={inputStyle}
-            value={inflationRate} placeholder="e.g. 2.5"
-            onChange={(e) => setInflationRate(e.target.value)} />
+        {fxResult && (
+          <div style={{ borderTop: '1px solid var(--color-hairline)', marginTop: 16, paddingTop: 16 }}>
+            <CurrencyToggle convertedAmount={convertedBalance} targetCurrency={fxCurrency} rateDate={fxResult.asOf} onCurrencyChange={(c) => setFxCurrency(c)} />
+          </div>
+        )}
+        <div className="result-stats" style={{ marginTop: 16 }}>
+          {secondaries.map((m, i) => (
+            <div key={m.label} className={i > 0 ? 'stat-sep' : ''}>
+              <div style={{ fontSize: 11, color: 'var(--color-ink-mid)', marginBottom: 6, textTransform: 'uppercase' as const, letterSpacing: '0.06em', fontWeight: 500 }}>{m.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 300, letterSpacing: '-0.02em' }}>{m.value}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-        <div>
-          <div style={metricLabel}>Retirement balance</div>
-          <div style={metricValue}>{fmt(retirementBalance)}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>Interest earned (accumulation)</div>
-          <div style={metricValue}>{fmt(accumResult.totalInterest)}</div>
-        </div>
-        <div>
-          <div style={metricLabel}>Retirement lasts</div>
-          <div style={metricValue}>
-            {drawResult.yearsToDepletion === Math.max(1, Math.round(yearsInRetirement))
-              ? `${drawResult.yearsToDepletion}+ yrs`
-              : `${drawResult.yearsToDepletion} yrs`}
+      <div className="calc-panel" style={{ border: '1px solid var(--color-hairline)', padding: '28px 32px', marginTop: 24, display: 'grid', gap: 26 }}>
+        <SliderInput
+          label="Current savings"
+          tooltip="The amount you have already saved for retirement"
+          value={currentSavings}
+          min={0}
+          max={Math.max(500000, defaultSavings * 10)}
+          step={defaultSavings >= 100000 ? 5000 : 1000}
+          onChange={(v) => setCurrentSavings(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Monthly contribution"
+          tooltip="The amount you add to your retirement savings each month going forward"
+          value={monthlyContrib}
+          min={0}
+          max={5000}
+          step={50}
+          onChange={(v) => setMonthlyContrib(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Years to retirement"
+          tooltip="How many years from now until you plan to retire"
+          value={yearsToRetirement}
+          min={1}
+          max={50}
+          step={1}
+          onChange={(v) => setYearsToRetirement(v)}
+          suffix=" yr"
+        />
+        <SliderInput
+          label="Annual return"
+          tooltip="The average yearly return you expect on your investments during the accumulation phase"
+          value={accumRate}
+          min={0}
+          max={20}
+          step={0.1}
+          onChange={(v) => setAccumRate(v)}
+          suffix="%"
+        />
+        <SliderInput
+          label="Annual expenses in retirement"
+          tooltip="Your estimated annual spending once retired  -  used to model how long your savings last"
+          value={annualExpenses}
+          min={0}
+          max={Math.max(200000, Math.round(defaultSavings * 0.4) * 5)}
+          step={defaultSavings >= 500000 ? 10000 : 1000}
+          onChange={(v) => setAnnualExpenses(v)}
+          prefix={country.currencySymbol}
+        />
+        <SliderInput
+          label="Years in retirement"
+          tooltip="How many years you plan to spend in retirement"
+          value={yearsInRetirement}
+          min={5}
+          max={50}
+          step={1}
+          onChange={(v) => setYearsInRetirement(v)}
+          suffix=" yr"
+        />
+        <Disclosure trigger="Add inflation adjustment" helper="Models real purchasing power">
+          <div style={{ display: 'grid', gap: 26 }}>
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' as const, display: 'block', marginBottom: 8 }}>
+                Inflation rate (%)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={20}
+                step={0.1}
+                value={inflationRate}
+                placeholder="e.g. 2.5"
+                onChange={(e) => setInflationRate(e.target.value)}
+                style={{
+                  fontSize: 16, border: '1px solid var(--color-hairline)',
+                  background: 'var(--color-canvas)', outline: 'none',
+                  width: '100%', color: 'var(--color-ink)', padding: '8px 12px',
+                  boxSizing: 'border-box' as const,
+                }}
+              />
+            </div>
           </div>
-        </div>
-        {accumResult.realFinalBalance !== undefined && (
-          <div>
-            <div style={metricLabel}>Retirement balance (real)</div>
-            <div style={metricValue}>{fmt(accumResult.realFinalBalance)}</div>
-          </div>
-        )}
+        </Disclosure>
       </div>
 
       <RetirementChart
