@@ -4,6 +4,8 @@ import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-da
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
+import { FAQSchema } from '../../../../src/components/FAQSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -62,6 +64,25 @@ const DEFAULTS: Record<string, { amount: number; rate: number; termMonths: numbe
   in: { amount: 500000, rate: 0.13, termMonths: 36 },
 };
 
+const PERSONAL_LOAN_FAQS = [
+  {
+    question: 'What is an origination fee?',
+    answer: 'An origination fee is a one-off charge deducted from the loan proceeds at disbursement, typically 1–8% of the loan amount. It raises the effective APR above the stated interest rate. Enter it in the fee field above to see the true APR.',
+  },
+  {
+    question: 'How is my monthly payment calculated?',
+    answer: 'Using the standard annuity formula: payment = principal × r / (1 − (1 + r)^−n), where r is the monthly interest rate (annual rate ÷ 12) and n is the number of monthly payments. This is the same formula used by banks.',
+  },
+  {
+    question: 'Should I use a personal loan or a credit card?',
+    answer: 'Personal loans have fixed terms and typically lower rates, making them better for large, one-off purchases you will repay over 1–5 years. Credit cards are better for smaller amounts you can clear each month, since many offer interest-free periods. For large balances carried month-to-month, a personal loan is almost always cheaper.',
+  },
+  {
+    question: 'Does early repayment save money?',
+    answer: 'Yes — you stop accruing interest from the day of repayment. However, some lenders charge an early repayment fee of one to two months of interest. Check your loan agreement first, then use the calculator to confirm the net saving after any fee.',
+  },
+];
+
 export async function generateMetadata({
   params,
 }: {
@@ -95,6 +116,12 @@ export default async function PersonalLoanPage({
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Loans', href: `/${cc}/loans` },
+        { name: h1, href: `/${cc}/loans/personal-loan` },
+      ]} />
+      <FAQSchema faqs={PERSONAL_LOAN_FAQS} />
       <CalculatorSchema
         name="Personal Loan Calculator"
         description="Calculate monthly payment, total interest, and true APR on a personal loan."

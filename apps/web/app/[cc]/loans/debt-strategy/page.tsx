@@ -4,6 +4,7 @@ import { getCountry, getAllCountries, COUNTRY_CODES } from '@reckoner/finance-da
 import type { CountryCode } from '@reckoner/finance-data';
 import { getToolMetadata } from '@reckoner/seo';
 import { AdSlot } from '@reckoner/analytics';
+import { BreadcrumbSchema } from '../../../../src/components/BreadcrumbSchema';
 import { CalculatorSchema } from '../../../../src/components/CalculatorSchema';
 import { Header } from '../../../../src/components/Header';
 import { Footer } from '../../../../src/components/Footer';
@@ -133,6 +134,11 @@ export default async function DebtStrategyPage({
 
   return (
     <>
+      <BreadcrumbSchema items={[
+        { name: 'Home', href: '/' },
+        { name: 'Loans', href: `/${cc}/loans` },
+        { name: h1, href: `/${cc}/loans/debt-strategy` },
+      ]} />
       <CalculatorSchema
         name="Debt Strategy Calculator"
         description="Compare snowball, avalanche, and minimum-payment strategies for up to 5 debts."
