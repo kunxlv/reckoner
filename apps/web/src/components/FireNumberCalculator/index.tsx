@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateAccumulation } from '@reckoner/growth-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { FireChart } from './FireChart';
 
 interface Props {
@@ -15,7 +17,6 @@ const inputStyle = {
   fontSize: 18, fontWeight: 400, border: 'none', borderBottom: '1px solid var(--color-ink)',
   background: 'transparent', outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
 } as const;
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6, color: 'var(--color-ink-mid)' } as const;
 
 export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAnnualRate }: Props) {
   const [currentSavings, setCurrentSavings] = useState(defaultCurrentSavings);
@@ -44,28 +45,47 @@ export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAn
     <div style={{ display: 'grid', gap: 32 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <div>
-          <label style={labelStyle}>Current savings ({country.currency})</label>
-          <input type="number" min="0" style={inputStyle} value={currentSavings}
-            onChange={(e) => setCurrentSavings(parseFloat(e.target.value) || 0)} />
+          <FieldLabel tooltip="How much you have already saved toward financial independence">
+            Current savings
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" min={0} value={currentSavings}
+            onChange={(e) => setCurrentSavings(parseFloat(e.target.value) || 0)}
+          />
         </div>
         <div>
-          <label style={labelStyle}>Annual expenses in retirement ({country.currency})</label>
-          <input type="number" min="0" style={inputStyle} value={annualExpenses}
-            onChange={(e) => setAnnualExpenses(parseFloat(e.target.value) || 0)} />
+          <FieldLabel tooltip="The yearly amount you plan to spend once you stop working — the lower this is, the sooner you reach FIRE">
+            Annual expenses in retirement
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" min={0} value={annualExpenses}
+            onChange={(e) => setAnnualExpenses(parseFloat(e.target.value) || 0)}
+          />
         </div>
         <div>
-          <label style={labelStyle}>Withdrawal rate (%)</label>
-          <input type="number" min="0.1" max="20" step="0.1" style={inputStyle} value={withdrawalRate}
+          <FieldLabel tooltip="The percentage of your portfolio you withdraw each year — 4% is the classic rule of thumb from the Trinity Study">
+            Withdrawal rate (%)
+          </FieldLabel>
+          <input type="number" min={0.1} max={20} step={0.1} style={inputStyle} value={withdrawalRate}
             onChange={(e) => setWithdrawalRate(parseFloat(e.target.value) || 4)} />
         </div>
         <div>
-          <label style={labelStyle}>Monthly savings contribution ({country.currency})</label>
-          <input type="number" min="0" style={inputStyle} value={monthlyContrib}
-            onChange={(e) => setMonthlyContrib(parseFloat(e.target.value) || 0)} />
+          <FieldLabel tooltip="How much you add to your savings each month until you reach your FIRE number">
+            Monthly savings contribution
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" min={0} value={monthlyContrib}
+            onChange={(e) => setMonthlyContrib(parseFloat(e.target.value) || 0)}
+          />
         </div>
         <div>
-          <label style={labelStyle}>Expected annual return (%)</label>
-          <input type="number" min="0" max="30" step="0.1" style={inputStyle} value={annualReturn}
+          <FieldLabel tooltip="Average yearly investment return during your accumulation phase">
+            Expected annual return (%)
+          </FieldLabel>
+          <input type="number" min={0} max={30} step={0.1} style={inputStyle} value={annualReturn}
             onChange={(e) => setAnnualReturn(parseFloat(e.target.value) || 0)} />
         </div>
       </div>

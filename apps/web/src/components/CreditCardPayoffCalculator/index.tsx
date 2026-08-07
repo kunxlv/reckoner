@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateCardPayoff } from '@reckoner/card-payoff-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { PayoffChart } from './PayoffChart';
 
 interface Props {
@@ -23,14 +25,6 @@ const inputStyle = {
   width: '100%',
   color: 'var(--color-ink)',
   padding: '4px 0',
-} as const;
-
-const labelStyle = {
-  display: 'block',
-  fontSize: 13,
-  fontWeight: 500,
-  marginBottom: 6,
-  color: 'var(--color-ink-mid)',
 } as const;
 
 export function CreditCardPayoffCalculator({ country, defaultBalanceCents, defaultAnnualRate }: Props) {
@@ -87,30 +81,29 @@ export function CreditCardPayoffCalculator({ country, defaultBalanceCents, defau
       {/* Inputs */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
         <div>
-          <label style={labelStyle}>Current balance ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={balanceCents / 100}
-            min={1}
-            step={100}
+          <FieldLabel tooltip="The total amount currently owed on your credit card">
+            Current balance
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={balanceCents / 100} min={1} step={100}
             onChange={(e) => setBalanceCents(Math.round(Number(e.target.value) * 100))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Annual interest rate (APR %)</label>
+          <FieldLabel tooltip="Annual Percentage Rate — the yearly cost of carrying an unpaid balance">
+            Annual interest rate (APR %)
+          </FieldLabel>
           <input
-            type="number"
-            value={annualRate}
-            min={0}
-            max={99}
-            step={0.1}
+            type="number" value={annualRate} min={0} max={99} step={0.1}
             onChange={(e) => setAnnualRate(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Minimum payment type</label>
+          <FieldLabel tooltip="Choose how your minimum payment is calculated: a percentage of your balance, or a fixed dollar amount">
+            Minimum payment type
+          </FieldLabel>
           <select
             value={minType}
             onChange={(e) => setMinType(e.target.value as MinType)}
@@ -123,51 +116,46 @@ export function CreditCardPayoffCalculator({ country, defaultBalanceCents, defau
         {minType === 'percent' ? (
           <>
             <div>
-              <label style={labelStyle}>Minimum % of balance</label>
+              <FieldLabel tooltip="Your card charges this percentage of your current balance as the minimum payment each month">
+                Minimum % of balance
+              </FieldLabel>
               <input
-                type="number"
-                value={minRate}
-                min={0.5}
-                max={10}
-                step={0.5}
+                type="number" value={minRate} min={0.5} max={10} step={0.5}
                 onChange={(e) => setMinRate(Number(e.target.value))}
                 style={inputStyle}
               />
             </div>
             <div>
-              <label style={labelStyle}>Minimum floor ({country.currencySymbol})</label>
-              <input
-                type="number"
-                value={minFloorCents / 100}
-                min={1}
-                step={5}
+              <FieldLabel tooltip="Even if the % calculation is lower, you must pay at least this amount each month">
+                Minimum floor
+              </FieldLabel>
+              <CurrencyInput
+                currencySymbol={country.currencySymbol}
+                type="number" value={minFloorCents / 100} min={1} step={5}
                 onChange={(e) => setMinFloorCents(Math.round(Number(e.target.value) * 100))}
-                style={inputStyle}
               />
             </div>
           </>
         ) : (
           <div>
-            <label style={labelStyle}>Fixed minimum ({country.currencySymbol})</label>
-            <input
-              type="number"
-              value={fixedAmountCents / 100}
-              min={1}
-              step={10}
+            <FieldLabel tooltip="A set minimum payment amount regardless of what your balance is">
+              Fixed minimum
+            </FieldLabel>
+            <CurrencyInput
+              currencySymbol={country.currencySymbol}
+              type="number" value={fixedAmountCents / 100} min={1} step={10}
               onChange={(e) => setFixedAmountCents(Math.round(Number(e.target.value) * 100))}
-              style={inputStyle}
             />
           </div>
         )}
         <div>
-          <label style={labelStyle}>Extra monthly payment ({country.currencySymbol}, optional)</label>
-          <input
-            type="number"
-            value={extraMonthly}
-            min={0}
-            step={10}
+          <FieldLabel tooltip="Paying more than the minimum reduces interest and pays off debt faster">
+            Extra monthly payment (optional)
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={extraMonthly} min={0} step={10}
             onChange={(e) => setExtraMonthly(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
       </div>

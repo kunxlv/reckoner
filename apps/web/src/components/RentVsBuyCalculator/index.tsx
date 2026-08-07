@@ -3,12 +3,26 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
 import { calcRentVsBuy } from '../../lib/rentVsBuy';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { ComparisonChart } from './ComparisonChart';
 
 interface RentVsBuyCalculatorProps {
   country: CountryData;
   defaultRate: number;
 }
+
+const inputStyle = {
+  fontSize: 18,
+  fontWeight: 400,
+  border: 'none',
+  borderBottom: '1px solid var(--color-ink)',
+  background: 'transparent',
+  outline: 'none',
+  width: '100%',
+  color: 'var(--color-ink)',
+  padding: '4px 0',
+} as const;
 
 export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculatorProps) {
   const [propertyPrice, setPropertyPrice] = useState(country.defaults.price);
@@ -22,100 +36,81 @@ export function RentVsBuyCalculator({ country, defaultRate }: RentVsBuyCalculato
   const result = calcRentVsBuy({ propertyPrice, deposit, annualRate, termYears, monthlyRent, annualAppreciation, annualInvestmentReturn });
   const { mortgagePayment, effectiveBuyCost, netBuyAdvantage } = result;
 
-  const inputStyle = {
-    fontSize: 18,
-    fontWeight: 400,
-    border: 'none',
-    borderBottom: '1px solid var(--color-ink)',
-    background: 'transparent',
-    outline: 'none',
-    width: '100%',
-    color: 'var(--color-ink)',
-    padding: '4px 0',
-  } as const;
-
-  const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 } as const;
-
   return (
     <div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
         <div>
-          <label style={labelStyle}>Property price ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={propertyPrice}
-            min={0}
-            step={country.defaults.priceStep}
+          <FieldLabel tooltip="The purchase price of the property you're considering buying">
+            Property price
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={propertyPrice} min={0} step={country.defaults.priceStep}
             onChange={(e) => setPropertyPrice(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Deposit ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={deposit}
-            min={0}
-            step={country.defaults.depositStep}
+          <FieldLabel tooltip="The down payment amount you would put down">
+            Deposit
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={deposit} min={0} step={country.defaults.depositStep}
             onChange={(e) => setDeposit(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Mortgage rate (%)</label>
+          <FieldLabel tooltip="The annual interest rate on the mortgage">
+            Mortgage rate (%)
+          </FieldLabel>
           <input
             type="number"
             value={(annualRate * 100).toFixed(2)}
-            min={0}
-            max={20}
-            step={0.1}
+            min={0} max={20} step={0.1}
             onChange={(e) => setAnnualRate(Number(e.target.value) / 100)}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Mortgage term (years)</label>
+          <FieldLabel tooltip="The duration of the mortgage in years">
+            Mortgage term (years)
+          </FieldLabel>
           <input
-            type="number"
-            value={termYears}
-            min={1}
-            max={40}
-            step={1}
+            type="number" value={termYears} min={1} max={40} step={1}
             onChange={(e) => setTermYears(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Monthly rent ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={monthlyRent}
-            min={0}
-            step={100}
+          <FieldLabel tooltip="The monthly rent for comparable housing if you continue renting">
+            Monthly rent
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={monthlyRent} min={0} step={100}
             onChange={(e) => setMonthlyRent(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Annual property appreciation (%)</label>
+          <FieldLabel tooltip="The expected average annual increase in the property's value">
+            Annual property appreciation (%)
+          </FieldLabel>
           <input
             type="number"
             value={(annualAppreciation * 100).toFixed(1)}
-            min={-10}
-            max={20}
-            step={0.5}
+            min={-10} max={20} step={0.5}
             onChange={(e) => setAnnualAppreciation(Number(e.target.value) / 100)}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Deposit investment return (%)</label>
+          <FieldLabel tooltip="The annual return you could earn by investing the deposit instead of using it to buy">
+            Deposit investment return (%)
+          </FieldLabel>
           <input
             type="number"
             value={(annualInvestmentReturn * 100).toFixed(1)}
-            min={0}
-            max={20}
-            step={0.5}
+            min={0} max={20} step={0.5}
             onChange={(e) => setAnnualInvestmentReturn(Number(e.target.value) / 100)}
             style={inputStyle}
           />

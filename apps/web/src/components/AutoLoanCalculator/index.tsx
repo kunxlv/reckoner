@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateAutoLoan } from '@reckoner/loan-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { LoanBalanceChart } from '../PersonalLoanCalculator/LoanBalanceChart';
 
 export interface AutoLoanDefaults {
@@ -29,14 +31,6 @@ const inputStyle = {
   width: '100%',
   color: 'var(--color-ink)',
   padding: '4px 0',
-} as const;
-
-const labelStyle = {
-  display: 'block',
-  fontSize: 13,
-  fontWeight: 500,
-  marginBottom: 6,
-  color: 'var(--color-ink-mid)',
 } as const;
 
 const TERM_OPTIONS = [24, 36, 48, 60, 72, 84] as const;
@@ -73,70 +67,59 @@ export function AutoLoanCalculator({ country, defaults }: AutoLoanCalculatorProp
         }}
       >
         <div>
-          <label style={labelStyle}>
-            Vehicle price ({country.currencySymbol})
-          </label>
-          <input
-            type="number"
-            value={vehiclePrice}
-            min={0}
-            step={1000}
+          <FieldLabel tooltip="The purchase price of the vehicle before any deductions">
+            Vehicle price
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={vehiclePrice} min={0} step={1000}
             onChange={(e) => setVehiclePrice(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>
-            Down payment ({country.currencySymbol})
-          </label>
-          <input
-            type="number"
-            value={downPayment}
-            min={0}
-            step={500}
+          <FieldLabel tooltip="Cash paid upfront — reduces the amount you finance and total interest paid">
+            Down payment
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={downPayment} min={0} step={500}
             onChange={(e) => setDownPayment(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>
-            Trade-in value ({country.currencySymbol})
-          </label>
-          <input
-            type="number"
-            value={tradeInValue}
-            min={0}
-            step={500}
+          <FieldLabel tooltip="If you're trading in a vehicle, its value is applied against the purchase price">
+            Trade-in value
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={tradeInValue} min={0} step={500}
             onChange={(e) => setTradeInValue(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Sales tax / VAT (%)</label>
+          <FieldLabel tooltip="The tax rate applied to the vehicle purchase in your state or country">
+            Sales tax / VAT (%)
+          </FieldLabel>
           <input
-            type="number"
-            value={salesTaxRate}
-            min={0}
-            max={50}
-            step={0.1}
+            type="number" value={salesTaxRate} min={0} max={50} step={0.1}
             onChange={(e) => setSalesTaxRate(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Annual interest rate (%)</label>
+          <FieldLabel tooltip="The yearly interest rate charged on the amount you finance">
+            Annual interest rate (%)
+          </FieldLabel>
           <input
-            type="number"
-            value={annualRate}
-            min={0}
-            max={50}
-            step={0.1}
+            type="number" value={annualRate} min={0} max={50} step={0.1}
             onChange={(e) => setAnnualRate(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Loan term (months)</label>
+          <FieldLabel tooltip="The number of months over which the loan is repaid">
+            Loan term (months)
+          </FieldLabel>
           <select
             value={termMonths}
             onChange={(e) => setTermMonths(Number(e.target.value))}
@@ -150,16 +133,13 @@ export function AutoLoanCalculator({ country, defaults }: AutoLoanCalculatorProp
           </select>
         </div>
         <div>
-          <label style={labelStyle}>
-            Documentation / dealer fee ({country.currencySymbol}, optional)
-          </label>
-          <input
-            type="number"
-            value={docFee}
-            min={0}
-            step={50}
+          <FieldLabel tooltip="Fees charged by the dealer for paperwork — added to your total out-of-pocket cost">
+            Documentation / dealer fee (optional)
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={docFee} min={0} step={50}
             onChange={(e) => setDocFee(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
       </div>
@@ -186,13 +166,7 @@ export function AutoLoanCalculator({ country, defaults }: AutoLoanCalculatorProp
             { label: 'APR', value: `${(apr * 100).toFixed(2)}%`, accent: false },
           ].map(({ label, value, accent }) => (
             <div key={label}>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: 'var(--color-ink-mid)',
-                  marginBottom: 4,
-                }}
-              >
+              <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
                 {label}
               </div>
               <div
@@ -213,9 +187,7 @@ export function AutoLoanCalculator({ country, defaults }: AutoLoanCalculatorProp
       <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
         Loan balance over time
       </div>
-      <div
-        style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}
-      >
+      <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>
         Remaining balance and cumulative interest by month
       </div>
       <LoanBalanceChart

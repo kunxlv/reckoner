@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateLoan } from '@reckoner/loan-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { LoanBalanceChart } from './LoanBalanceChart';
 
 interface PersonalLoanCalculatorProps {
@@ -22,14 +24,6 @@ const inputStyle = {
   width: '100%',
   color: 'var(--color-ink)',
   padding: '4px 0',
-} as const;
-
-const labelStyle = {
-  display: 'block',
-  fontSize: 13,
-  fontWeight: 500,
-  marginBottom: 6,
-  color: 'var(--color-ink-mid)',
 } as const;
 
 const TERM_OPTIONS = [12, 24, 36, 48, 60, 72, 84] as const;
@@ -63,32 +57,29 @@ export function PersonalLoanCalculator({
         }}
       >
         <div>
-          <label style={labelStyle}>
-            Loan amount ({country.currencySymbol})
-          </label>
-          <input
-            type="number"
-            value={amount}
-            min={100}
-            step={500}
+          <FieldLabel tooltip="The total amount you want to borrow">
+            Loan amount
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={amount} min={100} step={500}
             onChange={(e) => setAmount(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Annual interest rate (%)</label>
+          <FieldLabel tooltip="The nominal yearly interest rate charged on the outstanding balance">
+            Annual interest rate (%)
+          </FieldLabel>
           <input
-            type="number"
-            value={rate}
-            min={0}
-            max={50}
-            step={0.1}
+            type="number" value={rate} min={0} max={50} step={0.1}
             onChange={(e) => setRate(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Loan term (months)</label>
+          <FieldLabel tooltip="The duration over which you repay the loan in equal monthly instalments">
+            Loan term (months)
+          </FieldLabel>
           <select
             value={termMonths}
             onChange={(e) => setTermMonths(Number(e.target.value))}
@@ -102,16 +93,13 @@ export function PersonalLoanCalculator({
           </select>
         </div>
         <div>
-          <label style={labelStyle}>
-            Origination fee ({country.currencySymbol}, optional)
-          </label>
-          <input
-            type="number"
-            value={originationFee}
-            min={0}
-            step={50}
+          <FieldLabel tooltip="A one-time upfront fee charged by the lender — this is factored into the APR shown below">
+            Origination fee (optional)
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={originationFee} min={0} step={50}
             onChange={(e) => setOriginationFee(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
       </div>
@@ -131,86 +119,34 @@ export function PersonalLoanCalculator({
           }}
         >
           <div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--color-ink-mid)',
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
               Monthly payment
             </div>
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 300,
-                letterSpacing: '-0.03em',
-                color: 'var(--color-ink)',
-              }}
-            >
+            <div style={{ fontSize: 32, fontWeight: 300, letterSpacing: '-0.03em', color: 'var(--color-ink)' }}>
               {formatCurrency(monthlyPayment, country.currency, country.locale)}
             </div>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--color-ink-mid)',
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
               Total interest
             </div>
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 300,
-                letterSpacing: '-0.03em',
-                color: 'var(--color-interest)',
-              }}
-            >
+            <div style={{ fontSize: 32, fontWeight: 300, letterSpacing: '-0.03em', color: 'var(--color-interest)' }}>
               {formatCurrency(totalInterest, country.currency, country.locale)}
             </div>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--color-ink-mid)',
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
               Total cost
             </div>
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 300,
-                letterSpacing: '-0.03em',
-                color: 'var(--color-ink)',
-              }}
-            >
+            <div style={{ fontSize: 32, fontWeight: 300, letterSpacing: '-0.03em', color: 'var(--color-ink)' }}>
               {formatCurrency(totalCost, country.currency, country.locale)}
             </div>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: 13,
-                color: 'var(--color-ink-mid)',
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 4 }}>
               APR
             </div>
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 300,
-                letterSpacing: '-0.03em',
-                color: 'var(--color-ink)',
-              }}
-            >
+            <div style={{ fontSize: 32, fontWeight: 300, letterSpacing: '-0.03em', color: 'var(--color-ink)' }}>
               {(apr * 100).toFixed(2)}%
             </div>
           </div>
@@ -220,13 +156,7 @@ export function PersonalLoanCalculator({
       <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>
         Balance and cumulative interest over time
       </div>
-      <div
-        style={{
-          fontSize: 13,
-          color: 'var(--color-ink-mid)',
-          marginBottom: 16,
-        }}
-      >
+      <div style={{ fontSize: 13, color: 'var(--color-ink-mid)', marginBottom: 16 }}>
         Month-by-month breakdown
       </div>
       <LoanBalanceChart

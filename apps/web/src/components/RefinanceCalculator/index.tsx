@@ -3,12 +3,26 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { formatCurrency } from '../../lib/format';
 import { calcRefinance } from '../../lib/refinance';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { BreakEvenChart } from './BreakEvenChart';
 
 interface RefinanceCalculatorProps {
   country: CountryData;
   defaultRate: number;
 }
+
+const inputStyle = {
+  fontSize: 18,
+  fontWeight: 400,
+  border: 'none',
+  borderBottom: '1px solid var(--color-ink)',
+  background: 'transparent',
+  outline: 'none',
+  width: '100%',
+  color: 'var(--color-ink)',
+  padding: '4px 0',
+} as const;
 
 export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculatorProps) {
   const [balance, setBalance] = useState(country.defaults.price * 0.7);
@@ -20,79 +34,61 @@ export function RefinanceCalculator({ country, defaultRate }: RefinanceCalculato
   const result = calcRefinance({ balance, currentRate, newRate, remainingYears, closingCosts });
   const { monthlySavings, breakEvenMonths, totalSavingOverTerm } = result;
 
-  const inputStyle = {
-    fontSize: 18,
-    fontWeight: 400,
-    border: 'none',
-    borderBottom: '1px solid var(--color-ink)',
-    background: 'transparent',
-    outline: 'none',
-    width: '100%',
-    color: 'var(--color-ink)',
-    padding: '4px 0',
-  } as const;
-
-  const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 } as const;
-
   return (
     <div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
         <div>
-          <label style={labelStyle}>Outstanding balance ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={balance}
-            min={0}
-            step={10000}
+          <FieldLabel tooltip="The remaining principal on your current mortgage">
+            Outstanding balance
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={balance} min={0} step={10000}
             onChange={(e) => setBalance(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Years remaining on current loan</label>
+          <FieldLabel tooltip="How many years are left on your current loan">
+            Years remaining on current loan
+          </FieldLabel>
           <input
-            type="number"
-            value={remainingYears}
-            min={1}
-            max={40}
-            step={1}
+            type="number" value={remainingYears} min={1} max={40} step={1}
             onChange={(e) => setRemainingYears(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Current interest rate (%)</label>
+          <FieldLabel tooltip="Your existing mortgage interest rate">
+            Current interest rate (%)
+          </FieldLabel>
           <input
             type="number"
             value={(currentRate * 100).toFixed(2)}
-            min={0}
-            max={20}
-            step={0.1}
+            min={0} max={20} step={0.1}
             onChange={(e) => setCurrentRate(Number(e.target.value) / 100)}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>New interest rate (%)</label>
+          <FieldLabel tooltip="The rate being offered on the refinanced loan">
+            New interest rate (%)
+          </FieldLabel>
           <input
             type="number"
             value={(newRate * 100).toFixed(2)}
-            min={0}
-            max={20}
-            step={0.1}
+            min={0} max={20} step={0.1}
             onChange={(e) => setNewRate(Number(e.target.value) / 100)}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Refinancing costs ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={closingCosts}
-            min={0}
-            step={100}
+          <FieldLabel tooltip="Total costs to set up the new loan (fees, legal, etc.) — affects your break-even timeline">
+            Refinancing costs
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={closingCosts} min={0} step={100}
             onChange={(e) => setClosingCosts(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
       </div>

@@ -4,6 +4,8 @@ import type { CountryData } from '@reckoner/finance-data';
 import { calculateDebtStrategy } from '@reckoner/debt-strategy-engine';
 import type { Debt } from '@reckoner/debt-strategy-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { StrategyChart } from './StrategyChart';
 
 interface Props {
@@ -24,7 +26,7 @@ const inputStyle = {
   padding: '4px 0',
 } as const;
 
-const labelStyle = {
+const compactLabel = {
   display: 'block',
   fontSize: 12,
   fontWeight: 500,
@@ -79,7 +81,9 @@ export function DebtStrategyCalculator({ country, defaultDebts, defaultExtraMont
             }}
           >
             <div>
-              <label style={labelStyle}>Name</label>
+              <FieldLabel tooltip="A label to identify this debt in the results" style={compactLabel}>
+                Name
+              </FieldLabel>
               <input
                 type="text"
                 value={debt.name}
@@ -88,41 +92,37 @@ export function DebtStrategyCalculator({ country, defaultDebts, defaultExtraMont
               />
             </div>
             <div>
-              <label style={labelStyle}>Balance ({country.currencySymbol})</label>
-              <input
-                type="number"
-                value={debt.balanceCents / 100}
-                min={1}
-                step={100}
-                onChange={(e) =>
-                  updateDebt(idx, 'balanceCents', Math.round(Number(e.target.value) * 100))
-                }
-                style={inputStyle}
+              <FieldLabel tooltip="The current outstanding balance on this debt" style={compactLabel}>
+                Balance
+              </FieldLabel>
+              <CurrencyInput
+                currencySymbol={country.currencySymbol}
+                fontSize={16}
+                type="number" value={debt.balanceCents / 100} min={1} step={100}
+                onChange={(e) => updateDebt(idx, 'balanceCents', Math.round(Number(e.target.value) * 100))}
               />
             </div>
             <div>
-              <label style={labelStyle}>APR (%)</label>
+              <FieldLabel tooltip="Annual Percentage Rate — the yearly interest cost for this debt" style={compactLabel}>
+                APR (%)
+              </FieldLabel>
               <input
                 type="number"
                 value={(debt.annualRate * 100).toFixed(1)}
-                min={0}
-                max={99}
-                step={0.1}
+                min={0} max={99} step={0.1}
                 onChange={(e) => updateDebt(idx, 'annualRate', Number(e.target.value) / 100)}
                 style={inputStyle}
               />
             </div>
             <div>
-              <label style={labelStyle}>Min payment ({country.currencySymbol})</label>
-              <input
-                type="number"
-                value={debt.minPaymentCents / 100}
-                min={1}
-                step={10}
-                onChange={(e) =>
-                  updateDebt(idx, 'minPaymentCents', Math.round(Number(e.target.value) * 100))
-                }
-                style={inputStyle}
+              <FieldLabel tooltip="The minimum monthly payment currently required on this debt" style={compactLabel}>
+                Min payment
+              </FieldLabel>
+              <CurrencyInput
+                currencySymbol={country.currencySymbol}
+                fontSize={16}
+                type="number" value={debt.minPaymentCents / 100} min={1} step={10}
+                onChange={(e) => updateDebt(idx, 'minPaymentCents', Math.round(Number(e.target.value) * 100))}
               />
             </div>
             <div>
@@ -168,16 +168,13 @@ export function DebtStrategyCalculator({ country, defaultDebts, defaultExtraMont
       )}
 
       <div style={{ maxWidth: 300, marginBottom: 32 }}>
-        <label style={{ ...labelStyle, fontSize: 13 }}>
-          Extra monthly budget above minimums ({country.currencySymbol})
-        </label>
-        <input
-          type="number"
-          value={extraMonthlyCents / 100}
-          min={0}
-          step={10}
+        <FieldLabel tooltip="Additional amount above all minimums — distributed by each strategy differently (avalanche: highest rate first; snowball: lowest balance first)">
+          Extra monthly budget above minimums
+        </FieldLabel>
+        <CurrencyInput
+          currencySymbol={country.currencySymbol}
+          type="number" value={extraMonthlyCents / 100} min={0} step={10}
           onChange={(e) => setExtraMonthlyCents(Math.round(Number(e.target.value) * 100))}
-          style={inputStyle}
         />
       </div>
 

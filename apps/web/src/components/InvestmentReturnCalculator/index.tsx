@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateCAGR, calculateAccumulation } from '@reckoner/growth-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { ReturnChart } from './ReturnChart';
 
 interface Props {
@@ -17,7 +19,6 @@ const inputStyle = {
   fontSize: 18, fontWeight: 400, border: 'none', borderBottom: '1px solid var(--color-ink)',
   background: 'transparent', outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
 } as const;
-const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6, color: 'var(--color-ink-mid)' } as const;
 
 export function InvestmentReturnCalculator({ country, defaultInitialValue, defaultAnnualRate }: Props) {
   const [mode, setMode] = useState<Mode>('find-cagr');
@@ -55,7 +56,6 @@ export function InvestmentReturnCalculator({ country, defaultInitialValue, defau
     color: active ? 'var(--color-canvas)' : 'var(--color-ink)',
   } as const);
 
-  // Build chart data
   const chartData = mode === 'find-cagr'
     ? Array.from({ length: Math.max(1, Math.round(cagrYears)) + 1 }, (_, i) => ({
         year: i,
@@ -77,36 +77,57 @@ export function InvestmentReturnCalculator({ country, defaultInitialValue, defau
       {mode === 'find-cagr' ? (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
           <div>
-            <label style={labelStyle}>Initial value ({country.currency})</label>
-            <input type="number" min="0.01" style={inputStyle} value={initialValue}
-              onChange={(e) => setInitialValue(parseFloat(e.target.value) || 1)} />
+            <FieldLabel tooltip="The value of the investment at the start of the period">
+              Initial value
+            </FieldLabel>
+            <CurrencyInput
+              currencySymbol={country.currencySymbol}
+              type="number" min={0.01} value={initialValue}
+              onChange={(e) => setInitialValue(parseFloat(e.target.value) || 1)}
+            />
           </div>
           <div>
-            <label style={labelStyle}>Final value ({country.currency})</label>
-            <input type="number" min="0.01" style={inputStyle} value={finalValue}
-              onChange={(e) => setFinalValue(parseFloat(e.target.value) || 1)} />
+            <FieldLabel tooltip="The value of the investment at the end of the period">
+              Final value
+            </FieldLabel>
+            <CurrencyInput
+              currencySymbol={country.currencySymbol}
+              type="number" min={0.01} value={finalValue}
+              onChange={(e) => setFinalValue(parseFloat(e.target.value) || 1)}
+            />
           </div>
           <div>
-            <label style={labelStyle}>Years</label>
-            <input type="number" min="1" max="100" style={inputStyle} value={cagrYears}
+            <FieldLabel tooltip="The length of the investment period in years">
+              Years
+            </FieldLabel>
+            <input type="number" min={1} max={100} style={inputStyle} value={cagrYears}
               onChange={(e) => setCagrYears(parseInt(e.target.value, 10) || 1)} />
           </div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
           <div>
-            <label style={labelStyle}>Starting value ({country.currency})</label>
-            <input type="number" min="0" style={inputStyle} value={projectInitial}
-              onChange={(e) => setProjectInitial(parseFloat(e.target.value) || 0)} />
+            <FieldLabel tooltip="The initial amount you invest">
+              Starting value
+            </FieldLabel>
+            <CurrencyInput
+              currencySymbol={country.currencySymbol}
+              type="number" min={0} value={projectInitial}
+              onChange={(e) => setProjectInitial(parseFloat(e.target.value) || 0)}
+            />
           </div>
           <div>
-            <label style={labelStyle}>CAGR (%)</label>
-            <input type="number" min="0" max="100" step="0.1" style={inputStyle} value={projectCagr}
+            <FieldLabel tooltip="Compound Annual Growth Rate — the constant yearly return used to project future value">
+              CAGR (%)
+            </FieldLabel>
+            <input type="number" min={0} max={100} step={0.1} style={inputStyle} value={projectCagr}
               onChange={(e) => setProjectCagr(parseFloat(e.target.value) || 0)} />
           </div>
           <div>
-            <label style={labelStyle}>Years</label>
-            <input type="number" min="1" max="100" style={inputStyle} value={projectYears}
+            <FieldLabel tooltip="How many years into the future to project the investment">
+              Years
+            </FieldLabel>
+            <input type="number" min={1} max={100} style={inputStyle} value={projectYears}
               onChange={(e) => setProjectYears(parseInt(e.target.value, 10) || 1)} />
           </div>
         </div>

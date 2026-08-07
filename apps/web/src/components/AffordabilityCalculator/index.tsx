@@ -4,6 +4,8 @@ import type { CountryData } from '@reckoner/finance-data';
 import type { AffordabilityRuleSet } from '@reckoner/rules-core';
 import { calculateAffordability } from '@reckoner/affordability-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { BorrowingChart } from './BorrowingChart';
 
 interface AffordabilityCalculatorProps {
@@ -11,6 +13,18 @@ interface AffordabilityCalculatorProps {
   ruleset: AffordabilityRuleSet;
   defaultRate: number;
 }
+
+const inputStyle = {
+  fontSize: 18,
+  fontWeight: 400,
+  border: 'none',
+  borderBottom: '1px solid var(--color-ink)',
+  background: 'transparent',
+  outline: 'none',
+  width: '100%',
+  color: 'var(--color-ink)',
+  padding: '4px 0',
+} as const;
 
 export function AffordabilityCalculator({ country, ruleset, defaultRate }: AffordabilityCalculatorProps) {
   const [grossIncome, setGrossIncome] = useState(80_000);
@@ -38,82 +52,65 @@ export function AffordabilityCalculator({ country, ruleset, defaultRate }: Affor
     });
   }, [grossIncome, monthlyDebts, propertyPrice, annualRate, termYears, buyerType, ruleset]);
 
-  const inputStyle = {
-    fontSize: 18,
-    fontWeight: 400,
-    border: 'none',
-    borderBottom: '1px solid var(--color-ink)',
-    background: 'transparent',
-    outline: 'none',
-    width: '100%',
-    color: 'var(--color-ink)',
-    padding: '4px 0',
-  } as const;
-
-  const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6 } as const;
-
   return (
     <div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
         <div>
-          <label style={labelStyle}>Gross annual income ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={grossIncome}
-            min={0}
-            step={1000}
+          <FieldLabel tooltip="Your total annual income before tax — lenders use this to calculate borrowing limits">
+            Gross annual income
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={grossIncome} min={0} step={1000}
             onChange={(e) => setGrossIncome(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Existing monthly debt payments ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={monthlyDebts}
-            min={0}
-            step={100}
+          <FieldLabel tooltip="Your current monthly debt obligations (car loan, student debt, etc.) — these reduce how much you can borrow for a mortgage">
+            Existing monthly debt payments
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={monthlyDebts} min={0} step={100}
             onChange={(e) => setMonthlyDebts(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Property price ({country.currencySymbol})</label>
-          <input
-            type="number"
-            value={propertyPrice}
-            min={0}
-            step={country.defaults.priceStep}
+          <FieldLabel tooltip="The purchase price you want to test affordability against">
+            Property price
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" value={propertyPrice} min={0} step={country.defaults.priceStep}
             onChange={(e) => setPropertyPrice(Number(e.target.value))}
-            style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Interest rate (%)</label>
+          <FieldLabel tooltip="Expected mortgage interest rate">
+            Interest rate (%)
+          </FieldLabel>
           <input
             type="number"
             value={(annualRate * 100).toFixed(2)}
-            min={0}
-            max={20}
-            step={0.1}
+            min={0} max={20} step={0.1}
             onChange={(e) => setAnnualRate(Number(e.target.value) / 100)}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Term (years)</label>
+          <FieldLabel tooltip="Mortgage duration in years">
+            Term (years)
+          </FieldLabel>
           <input
-            type="number"
-            value={termYears}
-            min={5}
-            max={40}
-            step={1}
+            type="number" value={termYears} min={5} max={40} step={1}
             onChange={(e) => setTermYears(Number(e.target.value))}
             style={inputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Buyer type</label>
+          <FieldLabel tooltip="Your buyer status — first-time buyers may qualify for government programs or reduced stamp duty">
+            Buyer type
+          </FieldLabel>
           <select
             value={buyerType}
             onChange={(e) => setBuyerType(e.target.value as typeof buyerType)}

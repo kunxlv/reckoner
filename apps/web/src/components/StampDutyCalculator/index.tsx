@@ -4,6 +4,7 @@ import type { CountryData } from '@reckoner/finance-data';
 import type { TransferTaxRuleSet } from '@reckoner/rules-core';
 import { calculateTransferTax } from '@reckoner/transfer-tax-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
 import { TaxCurveChart } from './TaxCurveChart';
 
 interface StampDutyCalculatorProps {
@@ -49,9 +50,9 @@ export function StampDutyCalculator({ country, ruleset }: StampDutyCalculatorPro
     <div>
       {/* Price input */}
       <div style={{ marginBottom: 24 }}>
-        <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 8 }}>
+        <FieldLabel tooltip="The purchase price of the property — stamp duty is calculated on this amount" style={{ marginBottom: 8 }}>
           Property price
-        </label>
+        </FieldLabel>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 16, color: 'var(--color-ink-mid)' }}>{country.currencySymbol}</span>
           <input

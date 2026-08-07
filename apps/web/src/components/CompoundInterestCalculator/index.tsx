@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { CountryData } from '@reckoner/finance-data';
 import { calculateAccumulation } from '@reckoner/growth-engine';
 import { formatCurrency } from '../../lib/format';
+import { FieldLabel } from '../ui/FieldLabel';
+import { CurrencyInput } from '../ui/CurrencyInput';
 import { GrowthChart } from './GrowthChart';
 
 interface Props {
@@ -17,11 +19,6 @@ const inputStyle = {
   fontSize: 18, fontWeight: 400, border: 'none',
   borderBottom: '1px solid var(--color-ink)', background: 'transparent',
   outline: 'none', width: '100%', color: 'var(--color-ink)', padding: '4px 0',
-} as const;
-
-const labelStyle = {
-  display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 6,
-  color: 'var(--color-ink-mid)',
 } as const;
 
 export function CompoundInterestCalculator({ country, defaultPrincipal, defaultAnnualRate }: Props) {
@@ -52,21 +49,28 @@ export function CompoundInterestCalculator({ country, defaultPrincipal, defaultA
     <div style={{ display: 'grid', gap: 32 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
         <div>
-          <label style={labelStyle}>Starting amount ({country.currency})</label>
-          <input
-            type="number" min="0" style={inputStyle} value={principal}
+          <FieldLabel tooltip="The lump sum you invest or deposit today">
+            Starting amount
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" min={0} value={principal}
             onChange={(e) => setPrincipal(parseFloat(e.target.value) || 0)}
           />
         </div>
         <div>
-          <label style={labelStyle}>Annual interest rate (%)</label>
+          <FieldLabel tooltip="The yearly interest rate applied to your balance">
+            Annual interest rate (%)
+          </FieldLabel>
           <input
-            type="number" min="0" max="100" step="0.01" style={inputStyle} value={rate}
+            type="number" min={0} max={100} step={0.01} style={inputStyle} value={rate}
             onChange={(e) => setRate(parseFloat(e.target.value) || 0)}
           />
         </div>
         <div>
-          <label style={labelStyle}>Compounding frequency</label>
+          <FieldLabel tooltip="How often earned interest is added back to your principal — more frequent compounds faster">
+            Compounding frequency
+          </FieldLabel>
           <select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as Frequency)}
@@ -79,23 +83,30 @@ export function CompoundInterestCalculator({ country, defaultPrincipal, defaultA
           </select>
         </div>
         <div>
-          <label style={labelStyle}>Monthly contribution ({country.currency})</label>
-          <input
-            type="number" min="0" style={inputStyle} value={monthlyContribution}
+          <FieldLabel tooltip="A fixed amount added to your investment each month">
+            Monthly contribution
+          </FieldLabel>
+          <CurrencyInput
+            currencySymbol={country.currencySymbol}
+            type="number" min={0} value={monthlyContribution}
             onChange={(e) => setMonthlyContribution(parseFloat(e.target.value) || 0)}
           />
         </div>
         <div>
-          <label style={labelStyle}>Years</label>
+          <FieldLabel tooltip="The total duration of the investment or savings period">
+            Years
+          </FieldLabel>
           <input
-            type="number" min="1" max="100" step="1" style={inputStyle} value={years}
+            type="number" min={1} max={100} step={1} style={inputStyle} value={years}
             onChange={(e) => setYears(parseInt(e.target.value, 10) || 1)}
           />
         </div>
         <div>
-          <label style={labelStyle}>Inflation rate (%, optional)</label>
+          <FieldLabel tooltip="Optional — adjusts results to show the real purchasing-power value of your final balance">
+            Inflation rate (%, optional)
+          </FieldLabel>
           <input
-            type="number" min="0" max="20" step="0.1" style={inputStyle}
+            type="number" min={0} max={20} step={0.1} style={inputStyle}
             value={inflationRate} placeholder="e.g. 2.5"
             onChange={(e) => setInflationRate(e.target.value)}
           />
