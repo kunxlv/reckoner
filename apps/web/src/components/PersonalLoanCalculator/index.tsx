@@ -41,7 +41,7 @@ export function PersonalLoanCalculator({
   defaultTermMonths,
 }: PersonalLoanCalculatorProps) {
   const [amount, setAmount] = useState(defaultAmount);
-  const [rate, setRate] = useState(defaultRate * 100);
+  const [rate, setRate] = useState(parseFloat((defaultRate * 100).toFixed(2)));
   const [termMonths, setTermMonths] = useState(defaultTermMonths);
   const [originationFee, setOriginationFee] = useState(0);
 

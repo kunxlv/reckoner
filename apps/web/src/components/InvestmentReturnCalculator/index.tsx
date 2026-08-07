@@ -29,7 +29,7 @@ export function InvestmentReturnCalculator({ country, defaultInitialValue, defau
 
   // Project mode state
   const [projectInitial, setProjectInitial] = useState(defaultInitialValue);
-  const [projectCagr, setProjectCagr] = useState(defaultAnnualRate * 100);
+  const [projectCagr, setProjectCagr] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
   const [projectYears, setProjectYears] = useState(10);
 
   const cagrResult = calculateCAGR({

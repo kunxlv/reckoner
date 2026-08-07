@@ -45,8 +45,8 @@ export function AutoLoanCalculator({ country, defaults }: AutoLoanCalculatorProp
   const [vehiclePrice, setVehiclePrice] = useState(defaults.vehiclePrice);
   const [downPayment, setDownPayment] = useState(defaults.downPayment);
   const [tradeInValue, setTradeInValue] = useState(defaults.tradeInValue);
-  const [salesTaxRate, setSalesTaxRate] = useState(defaults.salesTaxRate * 100);
-  const [annualRate, setAnnualRate] = useState(defaults.annualRate * 100);
+  const [salesTaxRate, setSalesTaxRate] = useState(parseFloat((defaults.salesTaxRate * 100).toFixed(2)));
+  const [annualRate, setAnnualRate] = useState(parseFloat((defaults.annualRate * 100).toFixed(2)));
   const [termMonths, setTermMonths] = useState(defaults.termMonths);
   const [docFee, setDocFee] = useState(0);
 

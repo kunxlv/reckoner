@@ -21,7 +21,7 @@ const labelStyle = { display: 'block', fontSize: 13, fontWeight: 500, marginBott
 export function SavingsGoalCalculator({ country, defaultPrincipal, defaultGoal, defaultAnnualRate }: Props) {
   const [principal, setPrincipal] = useState(defaultPrincipal);
   const [goal, setGoal] = useState(defaultGoal);
-  const [rate, setRate] = useState(defaultAnnualRate * 100);
+  const [rate, setRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
   const [monthlyContrib, setMonthlyContrib] = useState(200);
   const [maxYears, setMaxYears] = useState(30);
 

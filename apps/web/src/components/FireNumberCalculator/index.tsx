@@ -22,7 +22,7 @@ export function FireNumberCalculator({ country, defaultCurrentSavings, defaultAn
   const [annualExpenses, setAnnualExpenses] = useState(40000);
   const [withdrawalRate, setWithdrawalRate] = useState(4); // as %
   const [monthlyContrib, setMonthlyContrib] = useState(1000);
-  const [annualReturn, setAnnualReturn] = useState(defaultAnnualRate * 100);
+  const [annualReturn, setAnnualReturn] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
 
   const fireNumber = annualExpenses / (withdrawalRate / 100);
 

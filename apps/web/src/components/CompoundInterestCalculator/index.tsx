@@ -26,7 +26,7 @@ const labelStyle = {
 
 export function CompoundInterestCalculator({ country, defaultPrincipal, defaultAnnualRate }: Props) {
   const [principal, setPrincipal] = useState(defaultPrincipal);
-  const [rate, setRate] = useState(defaultAnnualRate * 100); // displayed as %
+  const [rate, setRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2))); // displayed as %
   const [frequency, setFrequency] = useState<Frequency>('monthly');
   const [monthlyContribution, setMonthlyContribution] = useState(0);
   const [years, setYears] = useState(10);

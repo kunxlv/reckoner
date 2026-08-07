@@ -35,7 +35,7 @@ const labelStyle = {
 
 export function CreditCardPayoffCalculator({ country, defaultBalanceCents, defaultAnnualRate }: Props) {
   const [balanceCents, setBalanceCents] = useState(defaultBalanceCents);
-  const [annualRate, setAnnualRate] = useState(defaultAnnualRate * 100); // displayed as %
+  const [annualRate, setAnnualRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2))); // displayed as %
   const [minType, setMinType] = useState<MinType>('percent');
   const [minRate, setMinRate] = useState(2); // 2%
   const [minFloorCents, setMinFloorCents] = useState(2500); // $25

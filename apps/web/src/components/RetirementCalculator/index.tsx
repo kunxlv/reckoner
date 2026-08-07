@@ -26,7 +26,7 @@ export function RetirementCalculator({ country, defaultSavings, defaultAnnualRat
   const [currentSavings, setCurrentSavings] = useState(defaultSavings);
   const [monthlyContrib, setMonthlyContrib] = useState(500);
   const [yearsToRetirement, setYearsToRetirement] = useState(25);
-  const [accumRate, setAccumRate] = useState(defaultAnnualRate * 100);
+  const [accumRate, setAccumRate] = useState(parseFloat((defaultAnnualRate * 100).toFixed(2)));
   const [annualExpenses, setAnnualExpenses] = useState(defaultSavings * 0.4);
   const [yearsInRetirement, setYearsInRetirement] = useState(30);
   const [inflationRate, setInflationRate] = useState('');
