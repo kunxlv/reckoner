@@ -50,3 +50,24 @@ export function getToolHreflang(
   entries.push({ hrefLang: 'x-default', href: `${BASE}${getToolPath('us', category, slug)}` });
   return entries;
 }
+
+export function getHubPath(cc: CountryCode, category: string): string {
+  return category === '' ? `/${cc}` : `/${cc}/${category}`;
+}
+
+export function getHubCanonical(cc: CountryCode, category: string): string {
+  return `${BASE}${getHubPath(cc, category)}`;
+}
+
+export function getHubHreflang(
+  _cc: CountryCode,
+  category: string,
+): HreflangEntry[] {
+  const entries: HreflangEntry[] = COUNTRY_CODES.map((cc) => ({
+    hrefLang: LOCALE_MAP[cc],
+    href: getHubCanonical(cc, category),
+  }));
+  const xDefaultBase = category === '' ? `${BASE}/us` : `${BASE}/us/${category}`;
+  entries.push({ hrefLang: 'x-default', href: xDefaultBase });
+  return entries;
+}

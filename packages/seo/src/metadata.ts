@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import type { CountryCode } from './types';
-import { getMortgageHreflang, getCanonical, getToolCanonical, getToolHreflang } from './hreflang';
+import {
+  getMortgageHreflang, getCanonical, getToolCanonical, getToolHreflang,
+  getHubCanonical, getHubHreflang,
+} from './hreflang';
 
 const TITLES: Record<CountryCode, string> = {
   us: 'Mortgage Calculator with Amortization Schedule | Reckoner',
@@ -18,7 +21,7 @@ const TITLES: Record<CountryCode, string> = {
 };
 
 const DESCRIPTIONS: Record<CountryCode, string> = {
-  us: 'Work out your monthly mortgage payment, total interest and full amortization schedule. Prefilled with this week\'s Freddie Mac 30-year average. Free, no signup.',
+  us: "Work out your monthly mortgage payment, total interest and full amortization schedule. Prefilled with this week's Freddie Mac 30-year average. Free, no signup.",
   uk: 'Work out UK mortgage repayments, total interest and overpayment savings. Shows what happens when your fixed period ends. Free, no signup.',
   ca: 'Canadian mortgage payments calculated with proper semi-annual compounding, not the US monthly shortcut. Bank of Canada posted rates. Free.',
   au: 'Australian home loan repayments with monthly, fortnightly and weekly options. See how much fortnightly repayments save. RBA rate data.',
@@ -34,14 +37,27 @@ const DESCRIPTIONS: Record<CountryCode, string> = {
 
 export function getMortgageMetadata(cc: CountryCode): Metadata {
   const hreflang = getMortgageHreflang(cc);
+  const canonical = getCanonical(cc);
   return {
     title: TITLES[cc],
     description: DESCRIPTIONS[cc],
     alternates: {
-      canonical: getCanonical(cc),
+      canonical,
       languages: Object.fromEntries(
         hreflang.map(({ hrefLang, href }) => [hrefLang, href])
       ),
+    },
+    openGraph: {
+      title: TITLES[cc],
+      description: DESCRIPTIONS[cc],
+      url: canonical,
+      type: 'website',
+      siteName: 'Reckoner',
+    },
+    twitter: {
+      card: 'summary',
+      title: TITLES[cc],
+      description: DESCRIPTIONS[cc],
     },
     robots: { index: true, follow: true },
   };
@@ -55,14 +71,60 @@ export function getToolMetadata(
   description: string,
 ): Metadata {
   const hreflang = getToolHreflang(cc, category, slug);
+  const canonical = getToolCanonical(cc, category, slug);
   return {
     title,
     description,
     alternates: {
-      canonical: getToolCanonical(cc, category, slug),
+      canonical,
       languages: Object.fromEntries(
         hreflang.map(({ hrefLang, href }) => [hrefLang, href]),
       ),
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: 'website',
+      siteName: 'Reckoner',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    robots: { index: true, follow: true },
+  };
+}
+
+export function getHubMetadata(
+  cc: CountryCode,
+  category: string,
+  title: string,
+  description: string,
+): Metadata {
+  const hreflang = getHubHreflang(cc, category);
+  const canonical = getHubCanonical(cc, category);
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: Object.fromEntries(
+        hreflang.map(({ hrefLang, href }) => [hrefLang, href]),
+      ),
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: 'website',
+      siteName: 'Reckoner',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
     },
     robots: { index: true, follow: true },
   };

@@ -3,6 +3,7 @@ import {
   getToolPath, getToolCanonical, getToolHreflang, getToolMetadata,
   getPropertySitemapEntries, getLoanSitemapEntries, getSavingsSitemapEntries,
   softwareApplicationSchema, websiteSchema,
+  getHubCanonical, getHubHreflang, getHubMetadata,
 } from '../src/index';
 
 describe('getToolPath', () => {
@@ -163,5 +164,75 @@ describe('websiteSchema', () => {
   });
   it('name is Reckoner', () => {
     expect(websiteSchema().name).toBe('Reckoner');
+  });
+});
+
+describe('getToolMetadata openGraph and twitter', () => {
+  it('includes openGraph with siteName Reckoner', () => {
+    const meta = getToolMetadata('us', 'property', 'stamp-duty', 'Title', 'Desc');
+    expect((meta.openGraph as Record<string, unknown>)?.siteName).toBe('Reckoner');
+  });
+  it('openGraph type is website', () => {
+    const meta = getToolMetadata('us', 'property', 'stamp-duty', 'Title', 'Desc');
+    expect((meta.openGraph as Record<string, unknown>)?.type).toBe('website');
+  });
+  it('includes twitter card summary', () => {
+    const meta = getToolMetadata('us', 'property', 'stamp-duty', 'Title', 'Desc');
+    expect((meta.twitter as Record<string, unknown>)?.card).toBe('summary');
+  });
+});
+
+describe('getHubCanonical', () => {
+  it('returns /us/property for category hub', () => {
+    expect(getHubCanonical('us', 'property')).toBe('https://reckoner.tools/us/property');
+  });
+  it('returns /uk with no trailing slash for country hub (category empty string)', () => {
+    expect(getHubCanonical('uk', '')).toBe('https://reckoner.tools/uk');
+  });
+});
+
+describe('getHubHreflang', () => {
+  it('returns 13 entries for a category hub', () => {
+    expect(getHubHreflang('us', 'property')).toHaveLength(13);
+  });
+  it('x-default points to /us/property for category hub', () => {
+    const entries = getHubHreflang('ca', 'property');
+    const xDefault = entries.find((e) => e.hrefLang === 'x-default');
+    expect(xDefault?.href).toBe('https://reckoner.tools/us/property');
+  });
+  it('x-default points to /us for country hub', () => {
+    const entries = getHubHreflang('ca', '');
+    const xDefault = entries.find((e) => e.hrefLang === 'x-default');
+    expect(xDefault?.href).toBe('https://reckoner.tools/us');
+  });
+  it('all non-x-default entries use the correct hub path format', () => {
+    const entries = getHubHreflang('au', 'loans');
+    const real = entries.filter((e) => e.hrefLang !== 'x-default');
+    for (const e of real) {
+      expect(e.href).toMatch(/^https:\/\/reckoner\.tools\/[a-z]+\/loans$/);
+    }
+  });
+});
+
+describe('getHubMetadata', () => {
+  it('sets canonical for category hub', () => {
+    const meta = getHubMetadata('uk', 'savings', 'Title', 'Desc');
+    expect((meta.alternates?.canonical as string)).toBe('https://reckoner.tools/uk/savings');
+  });
+  it('sets canonical for country hub', () => {
+    const meta = getHubMetadata('au', '', 'Title', 'Desc');
+    expect((meta.alternates?.canonical as string)).toBe('https://reckoner.tools/au');
+  });
+  it('includes openGraph siteName', () => {
+    const meta = getHubMetadata('us', 'loans', 'Title', 'Desc');
+    expect((meta.openGraph as Record<string, unknown>)?.siteName).toBe('Reckoner');
+  });
+  it('includes twitter card', () => {
+    const meta = getHubMetadata('us', 'property', 'Title', 'Desc');
+    expect((meta.twitter as Record<string, unknown>)?.card).toBe('summary');
+  });
+  it('hreflang languages object has 13 entries', () => {
+    const meta = getHubMetadata('us', 'savings', 'Title', 'Desc');
+    expect(Object.keys(meta.alternates?.languages ?? {})).toHaveLength(13);
   });
 });

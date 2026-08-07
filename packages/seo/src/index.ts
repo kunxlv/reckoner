@@ -1,7 +1,8 @@
 export { getMortgageHreflang, getMortgagePath, getCanonical, COUNTRY_CODES } from './hreflang';
 export { getToolPath, getToolCanonical, getToolHreflang } from './hreflang';
+export { getHubPath, getHubCanonical, getHubHreflang } from './hreflang';
 export { getMortgageMetadata } from './metadata';
-export { getToolMetadata } from './metadata';
+export { getToolMetadata, getHubMetadata } from './metadata';
 export {
   webApplicationSchema, faqSchema, breadcrumbSchema,
   organizationSchema, datasetSchema, jsonLdScript,
