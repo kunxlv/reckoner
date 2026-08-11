@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${lato.variable} ${instrumentSerif.variable}`}>
       <head>
         <AnalyticsScripts
-          ga4Id="G-7JGXF8343D"
+          ga4Id="G-3YD9S3SJ63"
           {...(process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ? { plausibleDomain: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN } : {})}
         />
       </head>
