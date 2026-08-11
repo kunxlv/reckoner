@@ -15,13 +15,7 @@ export function AnalyticsScripts({ ga4Id, plausibleDomain }: AnalyticsScriptsPro
           />
           <script
             dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${ga4Id}');
-                gtag('set', 'traffic_type', /chatgpt\\.com|perplexity\\.ai|claude\\.ai|gemini|copilot/.test(document.referrer) ? 'ai_referral' : undefined);
-              `,
+              __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${ga4Id}');`,
             }}
           />
         </>
